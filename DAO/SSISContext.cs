@@ -20,6 +20,11 @@ namespace Team8ADProjectSSIS.DAO
         {
             modelBuilder.Entity<Category>().ToTable("Categories");
             modelBuilder.Entity<Status>().ToTable("Status");
+            modelBuilder.Entity<Employee>()
+                        .HasMany(c => c.StockRecords)
+                        .WithOptional(c => c.StoreClerk)
+                        .HasForeignKey(c => c.IdStoreClerk)
+                        .WillCascadeOnDelete(false);
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
         }
         //public DbSet Categories { get; set; }

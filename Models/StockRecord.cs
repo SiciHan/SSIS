@@ -24,7 +24,7 @@ namespace Team8ADProjectSSIS.Models
         [ForeignKey("IdSupplier")]
         public Supplier Supplier { get; set; }
 
-        public int IdStoreClerk { get; set; }
+        public int? IdStoreClerk { get; set; }
         [ForeignKey("IdStoreClerk")]
         public Employee StoreClerk { get; set; }
 
