@@ -9,6 +9,16 @@ namespace Team8ADProjectSSIS.Models
 {
     public class CollectionPoint
     {
+        
+
+        public CollectionPoint(CollectionPoint cp)
+        {
+            this.Location = cp.Location;
+            this.Time = cp.Time;
+            this.Mapcoordinates = cp.Mapcoordinates;
+            this.IdClerk = cp.IdClerk;
+        }
+
         [Key]
         public int IdCollectionPt { get; set; }
         
