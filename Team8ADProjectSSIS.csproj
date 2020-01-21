@@ -146,13 +146,21 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\DepartmentActingHeadController.cs" />
+    <Compile Include="Controllers\DepartmentHeadController.cs" />
+    <Compile Include="Controllers\DepartmentRepresentativeController.cs" />
+    <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\StoreClerkController.cs" />
+    <Compile Include="Controllers\StoreManagerController.cs" />
+    <Compile Include="Controllers\StoreSupervisorController.cs" />
     <Compile Include="DAO\CollectionPointDAO.cs" />
     <Compile Include="DAO\SSISContext.cs" />
     <Compile Include="DAO\SSISInitializer.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Migrations\202001190936348_InitialCreate.cs" />
     <Compile Include="Migrations\202001190936348_InitialCreate.designer.cs">
       <DependentUpon>202001190936348_InitialCreate.cs</DependentUpon>
@@ -183,6 +191,7 @@
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -222,9 +231,17 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Chat.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\DepartmentActingHead\" />
+    <Folder Include="Views\DepartmentHead\" />
+    <Folder Include="Views\DepartmentRepresentative\" />
+    <Folder Include="Views\Employee\" />
+    <Folder Include="Views\StoreClerk\" />
+    <Folder Include="Views\StoreManager\" />
+    <Folder Include="Views\StoreSupervisor\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

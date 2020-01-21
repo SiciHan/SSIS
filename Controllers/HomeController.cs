@@ -8,6 +8,12 @@ namespace Team8ADProjectSSIS.Controllers
 {
     public class HomeController : Controller
     {
+        public ActionResult Chat()
+        {
+            return View();
+        }
+
+
         public ActionResult Index()
         {
             return View();
