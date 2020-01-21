@@ -46,7 +46,6 @@ namespace Team8ADProjectSSIS.DAO
         public DbSet StockRecords { get; set; }
         public DbSet Suppliers { get; set; }
         public DbSet SupplierItems { get; set; }
-
-
+        public DbSet Categories { get; set; }
     }
 }
