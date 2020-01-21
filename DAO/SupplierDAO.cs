@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Team8ADProjectSSIS.DAO
 {
-    public class Class1
+    public class SupplierDAO
     {
     }
 }

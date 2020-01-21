@@ -20,11 +20,25 @@ namespace Team8ADProjectSSIS.DAO
         {
             modelBuilder.Entity<Category>().ToTable("Categories");
             modelBuilder.Entity<Status>().ToTable("Status");
+
+            //the stockRecords can have optional store clerk 
             modelBuilder.Entity<Employee>()
                         .HasMany(c => c.StockRecords)
                         .WithOptional(c => c.StoreClerk)
                         .HasForeignKey(c => c.IdStoreClerk)
                         .WillCascadeOnDelete(false);
+            // the department can have optional CP (e.g. store department no need a CP)
+
+          modelBuilder.Entity<CollectionPoint>()
+                .HasMany(c => c.Departments)
+                .WithOptional(d=>d.CollectionPt)
+                .HasForeignKey(k=>k.IdCollectionPt)
+                .WillCascadeOnDelete(false);
+           /* modelBuilder.Entity<Employee>()
+             .HasRequired<Department>(c => c.Department)
+             .WithMany(d=>d.Employees)
+             .HasForeignKey(s=>s.CodeDepartment)
+             .WillCascadeOnDelete();*/
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
         }
         //public DbSet Categories { get; set; }
@@ -47,5 +61,6 @@ namespace Team8ADProjectSSIS.DAO
         public DbSet Suppliers { get; set; }
         public DbSet SupplierItems { get; set; }
         public DbSet Categories { get; set; }
+        public DbSet CPClerks { get; set; }
     }
 }

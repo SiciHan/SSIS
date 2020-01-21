@@ -192,8 +192,37 @@
     <Compile Include="Migrations\202001210341296_snapshot2.designer.cs">
       <DependentUpon>202001210341296_snapshot2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001210921570_snapshot3.cs" />
+    <Compile Include="Migrations\202001210921570_snapshot3.designer.cs">
+      <DependentUpon>202001210921570_snapshot3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001210927016_snapshot4.cs" />
+    <Compile Include="Migrations\202001210927016_snapshot4.designer.cs">
+      <DependentUpon>202001210927016_snapshot4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001210927547_snapshot5.cs" />
+    <Compile Include="Migrations\202001210927547_snapshot5.designer.cs">
+      <DependentUpon>202001210927547_snapshot5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001210932050_snapshot6.cs" />
+    <Compile Include="Migrations\202001210932050_snapshot6.designer.cs">
+      <DependentUpon>202001210932050_snapshot6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001210933285_snapshot7.cs" />
+    <Compile Include="Migrations\202001210933285_snapshot7.designer.cs">
+      <DependentUpon>202001210933285_snapshot7.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001211110539_snapshot8.cs" />
+    <Compile Include="Migrations\202001211110539_snapshot8.designer.cs">
+      <DependentUpon>202001211110539_snapshot8.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001211118018_snapshot9.cs" />
+    <Compile Include="Migrations\202001211118018_snapshot9.designer.cs">
+      <DependentUpon>202001211118018_snapshot9.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\CPClerk.cs" />
     <Compile Include="Models\Delegation.cs" />
     <Compile Include="Models\Disbursement.cs" />
     <Compile Include="Models\DisbursementItem.cs" />
@@ -288,6 +317,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001210341296_snapshot2.resx">
       <DependentUpon>202001210341296_snapshot2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001210921570_snapshot3.resx">
+      <DependentUpon>202001210921570_snapshot3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001210927016_snapshot4.resx">
+      <DependentUpon>202001210927016_snapshot4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001210927547_snapshot5.resx">
+      <DependentUpon>202001210927547_snapshot5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001210932050_snapshot6.resx">
+      <DependentUpon>202001210932050_snapshot6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001210933285_snapshot7.resx">
+      <DependentUpon>202001210933285_snapshot7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001211110539_snapshot8.resx">
+      <DependentUpon>202001211110539_snapshot8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001211118018_snapshot9.resx">
+      <DependentUpon>202001211118018_snapshot9.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
