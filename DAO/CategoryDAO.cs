@@ -8,41 +8,46 @@ namespace Team8ADProjectSSIS.DAO
 {
     public class CategoryDAO
     {
-        public void Update(Category c)
+        private readonly SSISContext context;
+
+        public CategoryDAO()
         {
-            using (SSISContext context = new SSISContext())
-            {
-                 Category cat=context.Categories.OfType<Category>().Where(x=> x.IdCategory==c.IdCategory).FirstOrDefault<Category>();
-                 cat.Label = c.Label;
-                 context.SaveChanges();
-            }
-        }
-        public void Create(Category cp)
-        {
-            using (SSISContext context = new SSISContext())
-            {
-                context.Categories.Add(cp);
-                context.SaveChanges();
-            }
+            this.context=new SSISContext();
         }
 
-        public List< Category> FindAll()
+/*        public CategoryDAO(SSISContext context)
         {
-            using (SSISContext context = new SSISContext())
-            {
-                return context.Categories.OfType<Category>().ToList<Category>();
-            }
+            this.context = context;
+        }*/
+
+        public Category Create(Category category)
+        {
+            context.Categories.Add(category);
+            context.SaveChanges();
+            return category;
+            
         }
 
-        public void Delete(Category cp)
+        public Category Delete(int id)
         {
-            using (SSISContext context = new SSISContext())
+            Category category = (Category)context.Categories.Find(id);
+            if (category != null)
             {
-                Category  Category = context.Categories.OfType<Category>().Where(x => x.IdCategory == cp.IdCategory).FirstOrDefault();
-                context. Categories.Remove(Category);
-                context.SaveChanges();
+                context.Categories.Remove(category);
             }
+            context.SaveChanges();
+            return category;
+
         }
 
+        public IEnumerable<Category> FindAllCategories()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Category Update(Category category)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

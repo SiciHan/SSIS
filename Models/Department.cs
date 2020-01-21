@@ -9,19 +9,6 @@ namespace Team8ADProjectSSIS.Models
         [Key]
         public string CodeDepartment { get; set; }
         public string Name { get; set; }
-
-       /* public int IdHead { get; set; }
-        [ForeignKey("IdHead")]
-        public virtual Employee Head { get; set; }*/
-
-        /*public int IdActingHead { get; set; }
-        [ForeignKey("IdActingHead")]
-        public virtual Employee ActingHead { get; set; }*/
-
-        //public int IdRepresentative { get; set; }
-        //[ForeignKey("IdRepresentative")]
-        //public virtual Employee Representative { get; set; }
-
         public int? IdCollectionPt { get; set; }
         [ForeignKey("IdCollectionPt")]
         public virtual CollectionPoint CollectionPt { get; set; }
