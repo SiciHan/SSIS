@@ -24,8 +24,8 @@ namespace Team8ADProjectSSIS.Models
         
         public string Location { get; set; }
 
-        [Column(TypeName = "DateTime2")]
-        public DateTime Time { get; set; }
+        [Column(TypeName = "time")]
+        public TimeSpan Time { get; set; }
         public string Mapcoordinates { get; set; }
 
         //ManyToOne (Many CP to one Clerk)
