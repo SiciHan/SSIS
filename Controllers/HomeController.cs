@@ -39,7 +39,7 @@ namespace Team8ADProjectSSIS.Controllers
             Category c = new Category();
             c.Label = "pen";
             _categoryDAO.Create(c);
-           
+           // DAO method
             return View();
         }
 
@@ -48,6 +48,7 @@ namespace Team8ADProjectSSIS.Controllers
             ViewBag.Message = "Your contact page.";
             using (SSISContext context = new SSISContext())
             {
+                // Context method
                 Role c = new Role();
                 c.Label = "Manager";
                 context.Roles.Add(c);
