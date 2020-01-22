@@ -36,9 +36,11 @@ namespace Team8ADProjectSSIS.Models
         public Item Item3 { get; set; }
 
         //OneToMany
-        public virtual ICollection<CollectionPoint> CollectionPoints { get; set; }
+        //public virtual ICollection<CollectionPoint> CollectionPoints { get; set; }
         //OneToMany
+
         public virtual ICollection<Delegation> Delegations { get; set; }
+        public virtual ICollection<CPClerk> CPClerks { get; set; }
 
         public virtual ICollection<Requisition> Requisitons { get; set; }
 
