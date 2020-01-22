@@ -13,5 +13,10 @@ namespace Team8ADProjectSSIS.Controllers
         {
             return View();
         }
+
+        public ActionResult Home()
+        {
+            return View();
+        }
     }
 }
