@@ -232,6 +232,10 @@
     <Compile Include="Migrations\202001211110539_snapshot8.designer.cs">
       <DependentUpon>202001211110539_snapshot8.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001220308336_snapshot10.cs" />
+    <Compile Include="Migrations\202001220308336_snapshot10.designer.cs">
+      <DependentUpon>202001220308336_snapshot10.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CPClerk.cs" />
@@ -348,6 +352,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001211110539_snapshot8.resx">
       <DependentUpon>202001211110539_snapshot8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001220308336_snapshot10.resx">
+      <DependentUpon>202001220308336_snapshot10.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
