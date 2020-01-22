@@ -10,6 +10,7 @@ namespace Team8ADProjectSSIS.Models
     public class CPClerk
     {
         [Key]
+        [Column("IdCPClerk")]
         public int IdCA { get; set; }
         public int IdCollectionPt { get; set; }
         [ForeignKey("IdCollectionPt")]

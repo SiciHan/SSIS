@@ -15,6 +15,7 @@ namespace Team8ADProjectSSIS.DAO
                 CollectionPoint collectionPoint = context.CollectionPoints.OfType<CollectionPoint>().Where(x => x.IdCollectionPt == cp.IdCollectionPt).FirstOrDefault();
                 collectionPoint = new CollectionPoint(cp);
                 context.SaveChanges();
+                
             }
         }
         public void Create(CollectionPoint cp)
