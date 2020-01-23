@@ -192,6 +192,7 @@
     <Compile Include="DAO\OperationDAO.cs" />
     <Compile Include="DAO\SSISContext.cs" />
     <Compile Include="DAO\SSISInitializer.cs" />
+    <Compile Include="EmailModel\EmailClass.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

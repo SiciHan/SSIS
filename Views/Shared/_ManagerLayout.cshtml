@@ -31,6 +31,11 @@
                     Notification <span class="badge badge-danger">8</span>
                 </a>
 
+                <a href="@Url.Action("Index","StoreManager")"
+                   class="list-group-item list-group-item-action bg-light">
+                    Discrepency <span class="badge badge-danger">3</span>
+                </a>
+
                 @Html.ActionLink("Voucher", "Index", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
                 @Html.ActionLink("Settings", "Index", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
                 @*<a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>*@
@@ -55,7 +60,7 @@
                             Hi, Manager &nbsp; <img src="~/Images/logo.jpg" class="logo" /> &nbsp;&nbsp;&nbsp;
                         </li>
 
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             @Html.ActionLink("Home", "Home", "StoreManager", null, new { @class = "nav-link" })
                         </li>
 
