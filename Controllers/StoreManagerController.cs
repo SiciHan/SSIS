@@ -9,12 +9,12 @@ namespace Team8ADProjectSSIS.Controllers
     public class StoreManagerController : Controller
     {
         // GET: StoreManager
-        public ActionResult Index()
+        public ActionResult Home()
         {
             return View();
         }
 
-        public ActionResult Home()
+        public ActionResult Dashboard()
         {
             return View();
         }

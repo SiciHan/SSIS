@@ -270,7 +270,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Book.jpg" />
+    <Content Include="Images\Book2.jpg" />
+    <Content Include="Images\Furniture.jpg" />
     <Content Include="Images\logo.jpg" />
+    <Content Include="Images\Stationery.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -319,7 +323,7 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Chat.cshtml" />
-    <Content Include="Views\StoreManager\Home.cshtml" />
+    <Content Include="Views\StoreManager\Dashboard.cshtml" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.css.map" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.min.css.map" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.css.map" />
@@ -332,7 +336,7 @@
     <Content Include="Scripts\vendor\bootstrap\js\bootstrap.min.js.map" />
     <Content Include="Scripts\vendor\jquery\jquery.min.map" />
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.map" />
-    <Content Include="Views\StoreManager\Index.cshtml" />
+    <Content Include="Views\StoreManager\Home.cshtml" />
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
