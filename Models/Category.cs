@@ -9,5 +9,6 @@ namespace Team8ADProjectSSIS.Models
         public int IdCategory { get; set; }
         public string Label { get; set; }
         public virtual ICollection<Item> Items { get; set; }
+        public object IdCollectionPt { get; internal set; }
     }
 }

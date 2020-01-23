@@ -16,7 +16,6 @@ namespace Team8ADProjectSSIS.Models
             this.Location = cp.Location;
             this.Time = cp.Time;
             this.Mapcoordinates = cp.Mapcoordinates;
-            this.IdClerk = cp.IdClerk;
         }
 
         [Key]
@@ -24,17 +23,18 @@ namespace Team8ADProjectSSIS.Models
         
         public string Location { get; set; }
 
-        [Column(TypeName = "DateTime2")]
-        public DateTime Time { get; set; }
+        [Column(TypeName = "time")]
+        public TimeSpan Time { get; set; }
         public string Mapcoordinates { get; set; }
 
         //ManyToOne (Many CP to one Clerk)
-        public int IdClerk { get; set; }
+        /*public int IdClerk { get; set; }*/
 
-        [ForeignKey("IdClerk")]
-        public virtual Employee Clerk { get; set; }
+        /*[ForeignKey("IdClerk")]
+        public virtual Employee Clerk { get; set; }*/
 
         //OneToMany
         public virtual ICollection<Department> Departments { get; set; }
+        public virtual ICollection<CPClerk> CPClerks { get; set; }
     }
 }

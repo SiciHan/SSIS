@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using Team8ADProjectSSIS.Models;
 
 namespace Team8ADProjectSSIS.DAO
 {
@@ -12,7 +13,6 @@ namespace Team8ADProjectSSIS.DAO
     {
         protected override void Seed(SSISContext context)
         {
-            //more seeding here
             base.Seed(context);
         }
     }
