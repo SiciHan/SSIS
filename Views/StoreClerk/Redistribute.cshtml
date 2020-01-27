@@ -1,0 +1,39 @@
+﻿@using Team8ADProjectSSIS.Models
+
+@{
+    ViewBag.Title = "Redistribute";
+    Disbursement disb = ViewBag.disb;
+    List<DisbursementItem> disbursementItems = disb.DisbursementItems.ToList();
+}
+
+<h5>Department: <b>@Model.Department.Name</b></h5>
+
+@Model.IdDisbursement
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Description</th>
+            <th scope="col">Qty Requested</th>
+            <th scope="col">Qty from Store</th>
+            <th scope="col">Add Qty</th>
+            <th scope="col">Dept From</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (DisbursementItem i in disbursementItems)
+    {
+        <tr>
+            <td>@i.Item.Description</td>
+            <td>@i.UnitRequested</td>
+            <td>@i.UnitIssued</td>
+            <td>
+                <input type="range" name="transferQty@(i.IdDisbursementItem)" id="transferQtyInput@(i.IdDisbursementItem)" value=0 min="0" max="@i.UnitIssued" oninput='transferQtyOutput@(i.IdDisbursementItem).value = transferQtyInput@(i.IdDisbursementItem).value'/>
+                @*<output name="transferQty@(i.IdDisbursementItem)" id="transferQtyOutput@(i.IdDisbursementItem)">0</output>*@
+                <input type="number" name="transferQty@(i.IdDisbursementItem)" id="transferQtyOutput@(i.IdDisbursementItem)" />
+            </td>
+            <td></td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -332,6 +332,8 @@
     <Content Include="Scripts\vendor\jquery\jquery.min.map" />
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.map" />
     <Content Include="Views\StoreManager\Index.cshtml" />
+    <Content Include="Views\StoreClerk\Disbursement.cshtml" />
+    <Content Include="Views\StoreClerk\Redistribute.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -339,7 +341,6 @@
     <Folder Include="Views\DepartmentHead\" />
     <Folder Include="Views\DepartmentRepresentative\" />
     <Folder Include="Views\Employee\" />
-    <Folder Include="Views\StoreClerk\" />
     <Folder Include="Views\StoreSupervisor\" />
   </ItemGroup>
   <ItemGroup>
