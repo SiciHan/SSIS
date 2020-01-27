@@ -1,13 +1,14 @@
 ﻿@using Team8ADProjectSSIS.Models
 @{
     ViewBag.Title = "Disbursement";
+    Layout = "~/Views/Shared/_ClerkLayout.cshtml";
     List<Disbursement> prepList = ViewBag.prepList;
     List<Disbursement> scheList = ViewBag.scheList;
 }
 <script src="~/Scripts/jquery-3.3.1.min.js"></script>
 <script src="~/Scripts/bootstrap.min.js"></script>
 
-<h2>Disbursement hii</h2>
+<h2>Disbursement</h2>
 
 @using (Html.BeginForm("Schedule", "StoreClerk", FormMethod.Post))
 {
@@ -29,15 +30,13 @@
                 <td>@d.Department.Name</td>
                 <td>@d.Date</td>
                 <td>@d.Status.Label</td>
-                <td><a href="#" class="btn btn-success" onclick="Redistribute(@d.IdDisbursement)"><i class="glyphicon glyphicon-pencil"></i></a></td>
+                <td><a href="#" class="btn btn-success" onclick="Redistribute(@d.IdDisbursement)"><i class="fa fa-pencil"></i></a></td>
                 @*<td>@Html.ActionLink("Redistribute", "Redistribute", "StoreClerk", new { disbId = d.IdDisbursement }, null)</td>*@
             </tr>
         }
     </table>
     <input type="submit" value="Schedule" />
 }
-
-
 
 <table class="table table-hover">
     <thead>
@@ -60,11 +59,11 @@
 </table>
 
 <div class="modal fade" id="modalRedis">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <a href="#" class="close" data-dismiss="modal">&times;</a>
                 <h4 class="modal-title">Redistribute</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
             </div>
             <div class="modal-body" id="modalBodyDivRedistribute">
 

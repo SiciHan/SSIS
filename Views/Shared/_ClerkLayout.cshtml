@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>@ViewBag.Title</title>
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="~/Scripts/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Styles/css/simple-sidebar.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="d-flex" id="wrapper">
+
+        <!--Side Bar-->
+        <div class="bg-light border-right position-fixed" id="sidebar-wrapper">
+            <div class="sidebar-heading">Stationery Store </div>
+            <div class="list-group list-group-flush">
+                @Html.ActionLink("Items", "Items", "StoreClerk", null, new { @class = "list-group-item list-group-item-action bg-light" })
+                @Html.ActionLink("Purchase Order", "PurchaseOrder", "StoreClerk", null, new { @class = "list-group-item list-group-item-action bg-light" })
+
+                <a href="@Url.Action("Requisiton","StoreClerk")"
+                   class="list-group-item list-group-item-action bg-light">
+                    Requisiton <span class="badge badge-danger">8</span>
+                </a>
+
+                @Html.ActionLink("Retrieval", "Retrieval", "StoreClerk", null, new { @class = "list-group-item list-group-item-action bg-light" })
+
+                <a href="@Url.Action("Disbursement","StoreClerk")"
+                   class="list-group-item list-group-item-action bg-light">
+                    Disbursement <span class="badge badge-danger">3</span>
+                </a>
+
+                @Html.ActionLink("Stocktake", "Stocktake", "StoreClerk", null, new { @class = "list-group-item list-group-item-action bg-light" })
+            </div>
+        </div>
+
+        <!--Page Content-->
+        <div id="page-content-wrapper">
+
+            <!--Nav Bar-->
+            <div id="navbar" class="navbar navbar-expand-sm navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle">&#9776; Menu</button>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+
+                        <li class="navbar-brand">
+                            Hi, Clerk &nbsp; @*<img src="~/Images/logo.jpg" class="logo" />*@ &nbsp;&nbsp;&nbsp;
+                        </li>
+
+                        <li class="nav-item">
+                            @Html.ActionLink("Logout", "Logout", "StoreClerk", null, new { @class = "nav-link" })
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!--Content-->
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </div>
+
+    </div>
+
+    <script src="~/Scripts/vendor/jquery/jquery.min.js"></script>
+    <script src="~/Scripts/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+
+    <script>
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+        window.onscroll = function () { myFunction() };
+
+        var navbar = document.getElementById("navbar");
+        var sidebar = document.getElementById("sidebar-wrapper");
+        var sticky = navbar.offsetTop;
+
+        function myFunction() {
+            if (window.pageYOffset >= sticky) {
+                navbar.classList.add("sticky")
+            } else {
+                navbar.classList.remove("sticky");
+            }
+        }
+    </script>
+
+    <style>
+        .logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 36px;
+        }
+
+        .content {
+            padding: 16px;
+            font-size:14px;
+        }
+
+        div.container-fluid {
+            font-size: 14px;
+        }
+
+        .sticky {
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+    </style>
+    <footer style="text-align:center; bottom: 0px; width:100%;">
+        <hr />
+        <p>&copy; @DateTime.Now.Year -Stationery Inventory System | NUS-ISS | SA49 | Team 8</p>
+    </footer>
+</body>
+</html>

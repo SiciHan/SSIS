@@ -339,8 +339,9 @@
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.map" />
     <Content Include="Views\StoreManager\Home.cshtml" />
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
-	<Content Include="Views\StoreClerk\Disbursement.cshtml" />
+    <Content Include="Views\StoreClerk\Disbursement.cshtml" />
     <Content Include="Views\StoreClerk\Redistribute.cshtml" />
+    <Content Include="Views\Shared\_ClerkLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
