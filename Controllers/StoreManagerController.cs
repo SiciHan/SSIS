@@ -12,8 +12,6 @@ namespace Team8ADProjectSSIS.Controllers
         // GET: StoreManager
         public ActionResult Home()
         {
-            EmailClass e = new EmailClass();
-            e.SendTo("huangyuzhe2019@163.com");
             return View();
         }
 
