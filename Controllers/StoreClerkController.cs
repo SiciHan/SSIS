@@ -44,15 +44,17 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult Schedule(IEnumerable<int> disbIdsToSchedule)
         {
             _disbursementDAO.UpdateStatus(disbIdsToSchedule);
+            // add in notification here upon updating status
+
             return RedirectToAction("Disbursement");
         }
 
         // James: Scheduling a single disbursement with redistribution if necessary
         [HttpPost]
-        public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> itemId, IList<int> transferQtyNum)
+        public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> itemId, IList<int> transferQtyNum, IList<int> itemIdDeptFrom)
         {
             //Debugging and PoC
-            System.Diagnostics.Debug.WriteLine(disbId);
+            /*System.Diagnostics.Debug.WriteLine(disbId);
             disbId.ToList().ForEach(x => System.Diagnostics.Debug.WriteLine(x));
             System.Diagnostics.Debug.WriteLine($"itemId Count: {itemId.Count}, transferQtyNum Count: {transferQtyNum.Count}");
             foreach (int i in itemId)
@@ -65,17 +67,23 @@ namespace Team8ADProjectSSIS.Controllers
             {
                 System.Diagnostics.Debug.WriteLine("itemId: " + itemId[i]);
             }
+            foreach (int i in itemIdDeptFrom)
+                System.Diagnostics.Debug.WriteLine("itemIdDeptFrom: " + i);*/
 
+            _disbursementItemDAO.GiveAndTake(itemId, transferQtyNum, itemIdDeptFrom);
             _disbursementDAO.UpdateStatus(disbId);
+            // add in notification here upon updating status and notify on shortfall (if any)
+
             return RedirectToAction("Disbursement");
         }
 
         // James: Opens page to redistribute qty from other disbursements
         public ActionResult Redistribute(int disbId)
         {
-            //var disbId = Url.RequestContext.RouteData.Values["id"];
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
             ViewBag.disb = targetDisbursement;
+
+            ViewBag.dropdownDisbursementItems = _disbursementItemDAO.FindCorrespondingDisbursementItems(targetDisbursement.DisbursementItems);
 
             return PartialView("Redistribute", targetDisbursement);
         }
