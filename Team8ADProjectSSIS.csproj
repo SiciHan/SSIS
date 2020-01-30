@@ -193,6 +193,8 @@
     <Compile Include="DAO\SSISContext.cs" />
     <Compile Include="DAO\SSISInitializer.cs" />
     <Compile Include="EmailModel\EmailClass.cs" />
+    <Compile Include="Filters\AuthenticateFilter.cs" />
+    <Compile Include="Filters\AuthorizeFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -237,9 +239,17 @@
     <Compile Include="Migrations\202001220308336_snapshot10.designer.cs">
       <DependentUpon>202001220308336_snapshot10.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202001300455154_snapshot11.cs" />
-    <Compile Include="Migrations\202001300455154_snapshot11.designer.cs">
-      <DependentUpon>202001300455154_snapshot11.cs</DependentUpon>
+    <Compile Include="Migrations\202001230924016_snapshot11.cs" />
+    <Compile Include="Migrations\202001230924016_snapshot11.designer.cs">
+      <DependentUpon>202001230924016_snapshot11.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001300626212_snapshot12.cs" />
+    <Compile Include="Migrations\202001300626212_snapshot12.designer.cs">
+      <DependentUpon>202001300626212_snapshot12.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001300838426_snapshot13.cs" />
+    <Compile Include="Migrations\202001300838426_snapshot13.designer.cs">
+      <DependentUpon>202001300838426_snapshot13.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
@@ -350,6 +360,8 @@
     <Content Include="Views\StoreClerk\Disbursement.cshtml" />
     <Content Include="Views\StoreClerk\Redistribute.cshtml" />
     <Content Include="Views\Shared\_ClerkLayout.cshtml" />
+    <Content Include="Views\Home\LogIn.cshtml" />
+    <Content Include="Views\StoreClerk\PurchaseOrderList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -404,8 +416,14 @@
     <EmbeddedResource Include="Migrations\202001220308336_snapshot10.resx">
       <DependentUpon>202001220308336_snapshot10.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202001300455154_snapshot11.resx">
-      <DependentUpon>202001300455154_snapshot11.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202001230924016_snapshot11.resx">
+      <DependentUpon>202001230924016_snapshot11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001300626212_snapshot12.resx">
+      <DependentUpon>202001300626212_snapshot12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001300838426_snapshot13.resx">
+      <DependentUpon>202001300838426_snapshot13.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
