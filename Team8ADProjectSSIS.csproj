@@ -192,6 +192,9 @@
     <Compile Include="DAO\OperationDAO.cs" />
     <Compile Include="DAO\SSISContext.cs" />
     <Compile Include="DAO\SSISInitializer.cs" />
+    <Compile Include="EmailModel\EmailClass.cs" />
+    <Compile Include="Filters\AuthenticateFilter.cs" />
+    <Compile Include="Filters\AuthorizeFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -236,6 +239,18 @@
     <Compile Include="Migrations\202001220308336_snapshot10.designer.cs">
       <DependentUpon>202001220308336_snapshot10.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001230924016_snapshot11.cs" />
+    <Compile Include="Migrations\202001230924016_snapshot11.designer.cs">
+      <DependentUpon>202001230924016_snapshot11.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001300626212_snapshot12.cs" />
+    <Compile Include="Migrations\202001300626212_snapshot12.designer.cs">
+      <DependentUpon>202001300626212_snapshot12.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001300838426_snapshot13.cs" />
+    <Compile Include="Migrations\202001300838426_snapshot13.designer.cs">
+      <DependentUpon>202001300838426_snapshot13.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CPClerk.cs" />
@@ -276,6 +291,12 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap-datetimepicker.js" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
+    <Content Include="Images\Book.jpg" />
+    <Content Include="Images\Book2.jpg" />
+    <Content Include="Images\Furniture.jpg" />
+    <Content Include="Images\logo.jpg" />
+    <Content Include="Images\Stationery.jpg" />
+    <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ClassDiagram1.cd" />
@@ -362,6 +383,7 @@
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.min.js" />
     <Content Include="Scripts\jquery.signalR-2.4.1.js" />
     <Content Include="Scripts\jquery.signalR-2.4.1.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -373,6 +395,21 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.css" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.min.css" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.css" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.min.css" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap.css" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap.min.css" />
+    <Content Include="Scripts\vendor\bootstrap\js\bootstrap.bundle.js" />
+    <Content Include="Scripts\vendor\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\vendor\bootstrap\js\bootstrap.js" />
+    <Content Include="Scripts\vendor\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Scripts\vendor\jquery\jquery.js" />
+    <Content Include="Scripts\vendor\jquery\jquery.min.js" />
+    <Content Include="Scripts\vendor\jquery\jquery.slim.js" />
+    <Content Include="Scripts\vendor\jquery\jquery.slim.min.js" />
+    <Content Include="Styles\css\simple-sidebar.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -388,6 +425,27 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Chat.cshtml" />
+    <Content Include="Views\StoreManager\Dashboard.cshtml" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.css.map" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.min.css.map" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.css.map" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.min.css.map" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap.css.map" />
+    <Content Include="Scripts\vendor\bootstrap\css\bootstrap.min.css.map" />
+    <Content Include="Scripts\vendor\bootstrap\js\bootstrap.bundle.js.map" />
+    <Content Include="Scripts\vendor\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <Content Include="Scripts\vendor\bootstrap\js\bootstrap.js.map" />
+    <Content Include="Scripts\vendor\bootstrap\js\bootstrap.min.js.map" />
+    <Content Include="Scripts\vendor\jquery\jquery.min.map" />
+    <Content Include="Scripts\vendor\jquery\jquery.slim.min.map" />
+    <Content Include="Views\StoreManager\Home.cshtml" />
+    <Content Include="Views\Shared\_ManagerLayout.cshtml" />
+    <Content Include="Views\Shared\_SupervisorLayout.cshtml" />
+    <Content Include="Views\StoreSupervisor\Index.cshtml" />
+    <Content Include="Views\StoreManager\ItemsForSuppliers.cshtml" />
+    <Content Include="Views\StoreManager\Suppliers.cshtml" />
+    <Content Include="Views\Home\LogIn.cshtml" />
+    <Content Include="Views\StoreClerk\PurchaseOrderList.cshtml" />
     <Content Include="Views\StoreClerk\FormRetrieve.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -442,6 +500,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001220308336_snapshot10.resx">
       <DependentUpon>202001220308336_snapshot10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001230924016_snapshot11.resx">
+      <DependentUpon>202001230924016_snapshot11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001300626212_snapshot12.resx">
+      <DependentUpon>202001300626212_snapshot12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001300838426_snapshot13.resx">
+      <DependentUpon>202001300838426_snapshot13.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

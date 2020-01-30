@@ -20,8 +20,13 @@ namespace Team8ADProjectSSIS.Models
         public int IdRole { get; set; }
         [ForeignKey("IdRole")]
         public virtual Role Role { get; set; }
-
+        [Display(Name = "Username")]
+        [Required(ErrorMessage = "Username is required")]
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Username can only consist of alphabets")]
         public string UserName { get; set; }
+        [Display(Name = "Password")]
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(32, MinimumLength = 8, ErrorMessage = "Passwords must be between 8 and 32 in length")]
         public string HashedPassward { get; set; }
 
         public int RecentItem1 { get; set; }

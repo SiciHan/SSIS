@@ -30,7 +30,7 @@ namespace Team8ADProjectSSIS.DAO
             return SelectedRequisition;             
         }
 
-        public void RetrieveRequisition(int IdStoreClerk, DateTime StartDate, DateTime EndDate)
+        public List<Retrieval> RetrieveRequisition(int IdStoreClerk, DateTime StartDate, DateTime EndDate)
         {
             // Check IdStoreClerk selected collection point
             List<int> CPClerk = new List<int>();
@@ -69,51 +69,46 @@ namespace Team8ADProjectSSIS.DAO
             {
                 var IdReqItem = context.Requisitions
                                     .Where(x => x.IdStatusCurrent == 3)
-                                    .Where(x => x.ApprovedDate <= StartDate)
-                                    .Where(x => x.ApprovedDate >= EndDate)
+                                    .Where(x => x.ApprovedDate <= EndDate)
+                                    .Where(x => x.ApprovedDate >= StartDate)
                                     .Where(x => x.IdEmployee == ie)
                                     .Select(x => x.IdRequisition);
                 foreach (var iri in IdReqItem)
                     IdRequestedItem.Add(iri);
             }
             Debug.WriteLine(IdRequestedItem);
-                     
-            // Get DepartmentCode from approved requistion Id and where id Employee equals to IdEmplloyee
-            List<>
 
-            List<Retrieval> RequestedItem = new List<Retrieval>();
-            foreach (var sr in SelectedReqisition)
+            // Get DepartmentCode from approved requistion Id and where id Employee equals to IdEmplloyee
+
+            // Get Retrieval Form 
+            List<Retrieval> RetrievalItem = new List<Retrieval>();
+            foreach (var sr in IdRequestedItem)
             {
-                
                 var retrieval = context.Items
                         .Join(context.RequisitionItems,
                         items => items.IdItem, ri => ri.IdItem,
-                        (items, ri) => new Retrieval
+                        (items, ri) => new { items, ri })
+                        .Join(context.Requisitions,
+                        r => r.ri.IdRequisiton, re => re.IdRequisition,
+                        (r, re) => new { r, re })
+                        .Join(context.Employees,
+                        e => e.re.IdEmployee, emp => emp.IdEmployee,
+                        (e, emp) => new Retrieval
                         {
-                            Description = items.Description,
-                            IdItem = items.IdItem,
-                            StockUnit = items.StockUnit,
-                            IdReqItem = ri.IdReqItem,
-                            Unit = ri.Unit,
-                            IdRequisition = ri.IdRequisiton
-                        }).Where(x => x.IdRequisition == sr)
-                        .FirstOrDefault();
-
-                RequestedItem.Add(retrieval);
+                            Description = e.r.items.Description,
+                            IdItem = e.r.items.IdItem,
+                            StockUnit = e.r.items.StockUnit,
+                            Unit = e.r.ri.Unit,
+                            CodeDepartment = emp.CodeDepartment,
+                            IdRequisition = e.re.IdRequisition
+                        }).Where(x => x.IdRequisition == sr);
+                foreach (var r in retrieval)
+                    RetrievalItem.Add(r);
             }
-            List<Retrieval> ItemRetrieve = new List<Retrieval>();
-            ItemRetrieve = RequestedItem.GroupBy(x => x.IdItem)
-                            .Select(y => new Retrieval
-                            {
-                                Description = y.First().Description,
-                                IdItem = y.First().IdItem,
-                                StockUnit = y.First().StockUnit,
-                                IdReqItem = y.Sum(z => z.IdReqItem),            // No physical usage after groupby
-                                IdRequisition = y.Sum(z => z.IdRequisition),    // No physical usage after groupby
-                                Unit = y.Sum(z => z.Unit)
-                            }).ToList();
+            Debug.WriteLine(RetrievalItem);
 
-            return ItemRetrieve;
+            return RetrievalItem;
+
         }
     }
 }

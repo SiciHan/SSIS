@@ -4,9 +4,9 @@
 @{
     ViewBag.Title = "FormRetrieve";
     Boolean NoDisbursement = (Boolean)ViewData["NoDisbursement"];
-    List<Retrieval> SelectedItem = (List<Retrieval>)ViewData["SelectedItem"];
+    List<Retrieval> RetrievalForm = (List<Retrieval>)ViewData["RetrievalForm"];
+    List<Retrieval> RetrievalItem = (List<Retrieval>)ViewData["RetrievalItem"];
 }
-
     <html>
     <head>
         <!-- Bootstrap -->
@@ -22,60 +22,49 @@
         <script type="text/javascript">
             $(function () {
                 $('#StartDate').datepicker({
-                    format: "dd/mm/yyyy",
+                    format: "dd-mm-yyyy",
                 });
             });
             $(function () {
                 $('#EndDate').datepicker({
-                    format: "dd/mm/yyyy",
+                    format: "dd-mm-yyyy",
                 });
             });
         </script>
     </head>
     <body>
-        <h2>FormRetrieve</h2>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
 
-        <table>
-            <tr>
-                <td><h4>@Html.ActionLink("Stocktake", "#", "StoreClerk")</h4></td>
-                <td><h4>@Html.ActionLink("Disbursement", "#", "StoreClerk")</h4></td>
-                <td><h4>@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</h4></td>
-                <td><h4>@Html.ActionLink("Requisition", "#", "StoreClerk")</h4></td>
-                <td><h4>@Html.ActionLink("Purchase Order", "#", "StoreClerk")</h4></td>
-            </tr>
-        </table>
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
+                        <li>@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
+                        <li>@Html.ActionLink("Disbursement", "Index", "StoreClerk")</li>
+                        <li class="active">@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
+                        <li>@Html.ActionLink("StockTake", "Index", "StoreClerk")</li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                        <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <h2>Form Retrieve</h2>
+
         @if (!NoDisbursement)
         {
-            using (Html.BeginForm("StockRetrieved", "StoreClerk", FormMethod.Post))
-            {
-
-                foreach (var requisitionitem in SelectedItem)
-                {
-
-                    <table>
-                        <tr>
-                            <th colspan="2" align="right">Description</th>>
-                            <th>Total Needed</th>
-                            <th>Total Collect</th>
-                            <th>Total Available</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="IdItemRetrieved" value="@requisitionitem.IdItem" />
-                                <input type="hidden" name="StockUnit" value="@requisitionitem.StockUnit" />
-                                <input type="hidden" name="RequestUnit" value="@requisitionitem.Unit" />
-                            </td>
-                            <td align="center">@requisitionitem.Description </td>
-                            <td align="center">@requisitionitem.Unit</td>
-                            <td align="center">0</td>
-                            <td align="center">@requisitionitem.StockUnit</td>
-                        </tr>
-
-                    </table>
-
-                }
-                <div><input type="submit" value="Retrieve" /></div>
-            }
+            <div><h2>You are Retriving Disbursement List status as "Preparing"</h2></div>
         }
         else
         {
@@ -102,7 +91,36 @@
             else
             {
                 <div><h2>Congratulation you are at Get Retrieval Form page!!</h2></div>
+                using (Html.BeginForm("SaveDisbursement", "StoreClerk", FormMethod.Post))
+                {
 
+                    foreach (var retrievalform in RetrievalForm)
+                    {
+
+                        <table>
+                            <tr>
+                                <th colspan="2" align="right">Description</th>>
+                                <th>Total Needed</th>
+                                <th>Total Collect</th>
+                                <th>Total Available</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="IdItemRetrieved" value="@retrievalform.IdItem" />
+                                    <input type="hidden" name="StockUnit" value="@retrievalform.StockUnit" />
+                                    <input type="hidden" name="RequestUnit" value="@retrievalform.Unit" />
+                                </td>
+                                <td align="center">@retrievalform.Description </td>
+                                <td align="center">@retrievalform.Unit</td>
+                                <td align="center">0</td>
+                                <td align="center">@retrievalform.StockUnit</td>
+                            </tr>
+
+                        </table>
+
+                    }
+                    <div><input type="submit" value="Retrieve" /></div>
+                }
             }
 
         }

@@ -61,9 +61,42 @@ namespace Team8ADProjectSSIS.DAO
             return false;
         }
 
-        public void CreateDisbursement()
+        public void CreateDisbursement(List<Retrieval> RetrievalItem)
         {
-            //context.Disbursements.Add();
+            // Get Department from RetrievalItem
+            List<String> SelectedCodeDepartment = new List<String>();
+            foreach (var ri in RetrievalItem)
+            {
+                if (!SelectedCodeDepartment.Any())
+                    SelectedCodeDepartment.Add(ri.CodeDepartment);
+                else if(!SelectedCodeDepartment.Contains(ri.CodeDepartment))
+                    SelectedCodeDepartment.Add(ri.CodeDepartment);
+            }
+            Debug.WriteLine(SelectedCodeDepartment);
+            foreach (var scd in SelectedCodeDepartment)
+            {
+                Department department = context.Departments
+                                        .Where(d => d.CodeDepartment.Equals(scd))
+                                        .FirstOrDefault();
+                Status status = context.Status.Where(s => s.IdStatus == 9).FirstOrDefault();
+                Disbursement NewDisbursement = new Disbursement();
+                NewDisbursement.CodeDepartment = scd;
+                NewDisbursement.Department = department;
+                NewDisbursement.IdStatus = 9;
+                NewDisbursement.Status = status;
+                NewDisbursement.Date = DateTime.Now;
+                context.Disbursements.Add(NewDisbursement);
+                context.SaveChanges();
+            }
+            
+                                    
+                                    
+            foreach (var ri in RetrievalItem)
+            {
+                
+            }
+            
+            
         }
 
     }

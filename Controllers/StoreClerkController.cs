@@ -31,11 +31,11 @@ namespace Team8ADProjectSSIS.Controllers
         {
             return View();
         }
-        // Get Method
+        // Get: FormRetrieve Method
         public ActionResult FormRetrieve()
         {
             // Assume ClerkID
-            int IdStoreClerk = 1;
+            int IdStoreClerk = 3;
 
 
             bool NoDisbursement = false;
@@ -46,18 +46,13 @@ namespace Team8ADProjectSSIS.Controllers
             // If Disbursement contain status "preparing" from last thurseday to today
             if (_disbursementDAO.CheckExistDisbursement(IdStoreClerk, Today, LastThu))
             {
-                // Search Preparing status in D
-                // Search Preparing status in DI
-                // Pass to View
+                // Search Disbursement with status set as "preparing"
+                // Search Disbursement with status set as "preparing"
                 List<int> SelectedRequisition = _requisitionDAO
                                                 .SearchRequisitionForRetrival(Today, LastThu);
-                List<Retrieval> SelectedItem = _requisitionItemDAO
-                                                    .RetrieveRequisitionItemQuantity(SelectedRequisition);
-                ViewData["SelectedItem"] = SelectedItem;
+                
                 NoDisbursement = false;
                 ViewData["NoDisbursement"] = NoDisbursement;
-                /*ViewBag.Today = today.ToString("dd MMMM yyyy");
-                ViewBag.LastFriday = lastfriday.ToString("dd MMMM yyyy");*/
 
             }
             // If Disbursement contain no status "preparing" from last thursday to today
@@ -67,8 +62,8 @@ namespace Team8ADProjectSSIS.Controllers
                 ViewData["NoDisbursement"] = NoDisbursement;
                 ViewBag.StartDate = "";
                 ViewBag.EndDate = "";
-                ViewBag.Today = Today.ToString("dd'/'MM'/'yyyy");
-                ViewBag.LastThu = LastThu.ToString("dd'/'MM'/'yyyy");
+                ViewBag.Today = Today.ToString("dd-MM-yyyy");
+                ViewBag.LastThu = LastThu.ToString("dd-MM-yyyy");
             }
 
 
@@ -79,26 +74,33 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult FormRetrieve(string StartDate, string EndDate)
         {
             // Assume ClerkID
-            int IdStoreClerk = 1;
+            int IdStoreClerk = 3;
 
             ViewData["NoDisbursement"] = true;
             ViewBag.StartDate = StartDate;
             ViewBag.EndDate = EndDate;
-            // Search Requisition
-            _requisitionDAO.RetrieveRequisition(IdStoreClerk, StartDate, EndDate);
-            // Search Requisition Item
-            // Create D
-            _disbursementDAO.CreateDisbursement();
-            // Create DI
+            DateTime SDate = DateTime.ParseExact(StartDate, "dd-MM-yyyy", 
+                            System.Globalization.CultureInfo.InvariantCulture);
+            DateTime EDate = DateTime.ParseExact(EndDate, "dd-MM-yyyy",
+                            System.Globalization.CultureInfo.InvariantCulture);
+            // Search and retrieve Requisition & Requisition Item
+            List<Retrieval> RetrievalItem = _requisitionDAO
+                                            .RetrieveRequisition(IdStoreClerk, SDate, EDate);
+            List<Retrieval> RetrievalForm = _requisitionItemDAO
+                                            .RetrieveRequisitionItem(RetrievalItem);
+            ViewData["RetrievalForm"] = RetrievalForm;
+            ViewData["RetrievalItem"] = RetrievalItem;
+            // Create Disbursement and set status to "preparing"
+            _disbursementDAO.CreateDisbursement(RetrievalItem);
+            // Create DisbursementItem and set status to "preparing"
             _disbursementItemDAO.CreateDisbursementItem();
             
-            // Pass to View
             return View();
         }
 
         
         [HttpPost]
-        public ActionResult StockRetrieved(int[] IdItemRetrieved, int[] StockUnit, int[] RequestUnit) 
+        public ActionResult SaveDisbursement(int[] IdItemRetrieved, int[] StockUnit, int[] RequestUnit) 
         {
             bool ItemRetrieved = false;
             if (IdItemRetrieved.Any())
@@ -118,5 +120,10 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("FormRetrieve", "StoreClerk");
 
         } 
+        public ActionResult PurchaseOrderList()
+        {
+
+            return View();
+        }
     }
 }
