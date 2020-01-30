@@ -237,6 +237,10 @@
     <Compile Include="Migrations\202001220308336_snapshot10.designer.cs">
       <DependentUpon>202001220308336_snapshot10.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001300455154_snapshot11.cs" />
+    <Compile Include="Migrations\202001300455154_snapshot11.designer.cs">
+      <DependentUpon>202001300455154_snapshot11.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CPClerk.cs" />
@@ -339,6 +343,10 @@
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.map" />
     <Content Include="Views\StoreManager\Home.cshtml" />
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
+    <Content Include="Views\Shared\_SupervisorLayout.cshtml" />
+    <Content Include="Views\StoreSupervisor\Index.cshtml" />
+    <Content Include="Views\StoreManager\ItemsForSuppliers.cshtml" />
+    <Content Include="Views\StoreManager\Suppliers.cshtml" />
     <Content Include="Views\StoreClerk\Disbursement.cshtml" />
     <Content Include="Views\StoreClerk\Redistribute.cshtml" />
     <Content Include="Views\Shared\_ClerkLayout.cshtml" />
@@ -350,6 +358,7 @@
     <Folder Include="Views\DepartmentRepresentative\" />
     <Folder Include="Views\Employee\" />
     <Folder Include="Views\StoreSupervisor\" />
+    <Folder Include="Views\StoreClerk\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -394,6 +403,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001220308336_snapshot10.resx">
       <DependentUpon>202001220308336_snapshot10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001300455154_snapshot11.resx">
+      <DependentUpon>202001300455154_snapshot11.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

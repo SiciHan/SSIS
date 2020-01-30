@@ -23,21 +23,17 @@
         <div class="bg-light border-right position-fixed" id="sidebar-wrapper">
             <div class="sidebar-heading">Stationery Store </div>
             <div class="list-group list-group-flush">
-                @Html.ActionLink("Dashboard", "Index", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
-                @Html.ActionLink("Suppliers", "ItemsForSuppliers", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
+                @Html.ActionLink("Dashboard", "Index", "StoreSupervisor", null, new { @class = "list-group-item list-group-item-action bg-light" })
+                @Html.ActionLink("Voucher", "Index", "StoreSupervisor", null, new { @class = "list-group-item list-group-item-action bg-light" })
+                @Html.ActionLink("Purchase Order", "Index", "StoreSupervisor", null, new { @class = "list-group-item list-group-item-action bg-light" })
+                @Html.ActionLink("Discrepency Report", "Index", "StoreSupervisor", null, new { @class = "list-group-item list-group-item-action bg-light" })
+                @Html.ActionLink("Reorder Report", "Index", "StoreSupervisor", null, new { @class = "list-group-item list-group-item-action bg-light" })
 
-                <a href="@Url.Action("Index","StoreManager")"
+                <a href="@Url.Action("Index","StoreSupervisor")"
                    class="list-group-item list-group-item-action bg-light">
                     Notification <span class="badge badge-danger">8</span>
                 </a>
 
-                <a href="@Url.Action("Index","StoreManager")"
-                   class="list-group-item list-group-item-action bg-light">
-                    Discrepency <span class="badge badge-danger">3</span>
-                </a>
-
-                @Html.ActionLink("Voucher", "Index", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
-                @Html.ActionLink("Settings", "Index", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
                 @*<a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>*@
             </div>
         </div>
@@ -57,11 +53,11 @@
                     <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
 
                         <li class="navbar-brand">
-                            Hi, Manager &nbsp; <img src="~/Images/logo.jpg" class="logo" /> &nbsp;&nbsp;&nbsp;
+                            Hi, Supervisor &nbsp; <img src="~/Images/logo.jpg" class="logo" /> &nbsp;&nbsp;&nbsp;
                         </li>
 
                         <li class="nav-item">
-                            @Html.ActionLink("Home", "Home", "StoreManager", null, new { @class = "nav-link" })
+                            @Html.ActionLink("Logout", "Index", "StoreSupervisor", null, new { @class = "nav-link" })
                         </li>
 
                         @*<li class="nav-item dropdown">
@@ -102,8 +98,7 @@
         var sticky = navbar.offsetTop;
 
         function myFunction() {
-            var sticky = navbar.offsetTop;
-            if (window.pageYOffset > sticky) {
+            if (window.pageYOffset >= sticky) {
                 navbar.classList.add("sticky")
             } else {
                 navbar.classList.remove("sticky");
