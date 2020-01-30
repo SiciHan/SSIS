@@ -1,0 +1,111 @@
+﻿
+@model Team8ADProjectSSIS.Models.Retrieval
+@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "FormRetrieve";
+    Boolean NoDisbursement = (Boolean)ViewData["NoDisbursement"];
+    List<Retrieval> SelectedItem = (List<Retrieval>)ViewData["SelectedItem"];
+}
+
+    <html>
+    <head>
+        <!-- Bootstrap -->
+        <script type="text/javascript" src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.3.min.js'></script>
+        <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js'></script>
+        <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css'
+              media="screen" />
+        <!-- Bootstrap -->
+        <!-- Bootstrap DatePicker -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css" type="text/css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js" type="text/javascript"></script>
+        <!-- Bootstrap DatePicker -->
+        <script type="text/javascript">
+            $(function () {
+                $('#StartDate').datepicker({
+                    format: "dd/mm/yyyy",
+                });
+            });
+            $(function () {
+                $('#EndDate').datepicker({
+                    format: "dd/mm/yyyy",
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h2>FormRetrieve</h2>
+
+        <table>
+            <tr>
+                <td><h4>@Html.ActionLink("Stocktake", "#", "StoreClerk")</h4></td>
+                <td><h4>@Html.ActionLink("Disbursement", "#", "StoreClerk")</h4></td>
+                <td><h4>@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</h4></td>
+                <td><h4>@Html.ActionLink("Requisition", "#", "StoreClerk")</h4></td>
+                <td><h4>@Html.ActionLink("Purchase Order", "#", "StoreClerk")</h4></td>
+            </tr>
+        </table>
+        @if (!NoDisbursement)
+        {
+            using (Html.BeginForm("StockRetrieved", "StoreClerk", FormMethod.Post))
+            {
+
+                foreach (var requisitionitem in SelectedItem)
+                {
+
+                    <table>
+                        <tr>
+                            <th colspan="2" align="right">Description</th>>
+                            <th>Total Needed</th>
+                            <th>Total Collect</th>
+                            <th>Total Available</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="IdItemRetrieved" value="@requisitionitem.IdItem" />
+                                <input type="hidden" name="StockUnit" value="@requisitionitem.StockUnit" />
+                                <input type="hidden" name="RequestUnit" value="@requisitionitem.Unit" />
+                            </td>
+                            <td align="center">@requisitionitem.Description </td>
+                            <td align="center">@requisitionitem.Unit</td>
+                            <td align="center">0</td>
+                            <td align="center">@requisitionitem.StockUnit</td>
+                        </tr>
+
+                    </table>
+
+                }
+                <div><input type="submit" value="Retrieve" /></div>
+            }
+        }
+        else
+        {
+            if (ViewBag.StartDate == "" && ViewBag.EndDate == "")
+            {
+                <div>
+                    @using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
+                    {
+                        <table>
+                            <tr>
+                                <td><h5>Start Date: </h5></td>
+                                <td>@Html.TextBox("StartDate", "", new { @class = "form-control datepicker", placeholder = ViewBag.LastThu })</td>
+                                <td><h5>End Date: </h5></td>
+                                <td>@Html.TextBox("EndDate", "", new { @class = "form-control datepicker", placeholder = ViewBag.Today })</td>
+                                <td>
+                                    <input type="submit" name="GetRetrievalForm" value="Get Retrieval Form" />
+                                </td>
+
+                            </tr>
+                        </table>
+                    }
+                </div>
+            }
+            else
+            {
+                <div><h2>Congratulation you are at Get Retrieval Form page!!</h2></div>
+
+            }
+
+        }
+    </body>
+    </html>
+
