@@ -48,7 +48,7 @@ namespace Team8ADProjectSSIS.Controllers
                     sb.Append(b.ToString("x2"));//hexidecimal string of 2 chars
                 }
                 //compare the input password to actual password, if matched
-                if (user.HashedPassward == sb.ToString())
+                if (user.HashedPassward.Equals(sb.ToString()))
                 {
                     //set the user session
                     Session["sessionId"] = Guid.NewGuid();//setting user session
