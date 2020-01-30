@@ -29,7 +29,7 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult Disbursement()
         {
             // retrieve 2 lists of Disbursement Lists which are "Prepared" and "Scheduled" under the same Coll Point
-            // find by Status and Collection Point
+            // find by Status and Clerk's Collection Points
             List<Disbursement> prepList= _disbursementDAO.FindByStatus("Prepared");
             List<Disbursement> scheList= _disbursementDAO.FindByStatus("Scheduled");
 
@@ -51,26 +51,26 @@ namespace Team8ADProjectSSIS.Controllers
 
         // James: Scheduling a single disbursement with redistribution if necessary
         [HttpPost]
-        public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> itemId, IList<int> transferQtyNum, IList<int> itemIdDeptFrom)
+        public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom)
         {
             //Debugging and PoC
             /*System.Diagnostics.Debug.WriteLine(disbId);
             disbId.ToList().ForEach(x => System.Diagnostics.Debug.WriteLine(x));
-            System.Diagnostics.Debug.WriteLine($"itemId Count: {itemId.Count}, transferQtyNum Count: {transferQtyNum.Count}");
-            foreach (int i in itemId)
-                System.Diagnostics.Debug.WriteLine("itemId: " + i);
+            System.Diagnostics.Debug.WriteLine($"disbItemId Count: {disbItemId.Count}, transferQtyNum Count: {transferQtyNum.Count}");
+            foreach (int i in disbItemId)
+                System.Diagnostics.Debug.WriteLine("disbItemId: " + i);
 
             foreach (int i in transferQtyNum)
                 System.Diagnostics.Debug.WriteLine("transferQtyNum: " + i);
 
-            for (int i = 0; i < itemId.Count; i++)
+            for (int i = 0; i < disbItemId.Count; i++)
             {
-                System.Diagnostics.Debug.WriteLine("itemId: " + itemId[i]);
+                System.Diagnostics.Debug.WriteLine("disbItemId: " + disbItemId[i]);
             }
-            foreach (int i in itemIdDeptFrom)
-                System.Diagnostics.Debug.WriteLine("itemIdDeptFrom: " + i);*/
+            foreach (int i in disbItemIdDeptFrom)
+                System.Diagnostics.Debug.WriteLine("disbItemIdDeptFrom: " + i);*/
 
-            _disbursementItemDAO.GiveAndTake(itemId, transferQtyNum, itemIdDeptFrom);
+            _disbursementItemDAO.GiveAndTake(disbItemId, transferQtyNum, disbItemIdDeptFrom);
             _disbursementDAO.UpdateStatus(disbId);
             // add in notification here upon updating status and notify on shortfall (if any)
 

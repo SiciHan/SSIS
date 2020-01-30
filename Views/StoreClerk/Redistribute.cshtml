@@ -24,7 +24,7 @@
             @foreach (DisbursementItem i in disbursementItems)
                 {
                     <tr>
-                        <td>@i.Item.Description<input type="hidden" name="itemId" value="@i.IdDisbursementItem" /></td>
+                        <td>@i.Item.Description<input type="hidden" name="disbItemId" value="@i.IdDisbursementItem" /></td>
                         <td>@i.UnitRequested</td>
                         <td>@i.UnitIssued</td>
                         <td>
@@ -37,7 +37,7 @@
                             </div>
                         </td>
                         <td>
-                            <select id="itemIdDeptFrom@(i.IdDisbursementItem)" name="itemIdDeptFrom" class="form-control itemIdDeptFrom@(i.IdDisbursementItem)">
+                            <select id="disbItemIdDeptFrom@(i.IdDisbursementItem)" name="disbItemIdDeptFrom" class="form-control disbItemIdDeptFrom@(i.IdDisbursementItem)">
                                 <option value="0" data-unitIssued="0">Select</option>
                                 @foreach (DisbursementItem j in dropdownDisbursementItems.Where(x => x.IdItem == i.IdItem).ToList())
                                 {
@@ -46,7 +46,7 @@
                             </select>
                             <script>
                                 $(function () {
-                                    $('#itemIdDeptFrom@(i.IdDisbursementItem)').change(function () {
+                                    $('#disbItemIdDeptFrom@(i.IdDisbursementItem)').change(function () {
                                         var maxUnits = $(this).find('option:selected').attr("data-unitIssued");
                                         //alert(value);
                                         //$('#transferQtyOutput@(i.IdDisbursementItem)').val(0);

@@ -16,9 +16,36 @@ namespace Team8ADProjectSSIS.DAO
         }
 
         //James
-        internal void GiveAndTake(IList<int> itemId, IList<int> transferQtyNum, IList<int> itemIdDeptFrom)
+        internal void GiveAndTake(IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom)
         {
-            throw new NotImplementedException();
+            System.Diagnostics.Debug.WriteLine($"disbItemId Count: {disbItemId.Count}, transferQtyNum Count: {transferQtyNum.Count}, disbItemIdDeptFrom Count: {disbItemIdDeptFrom.Count}");
+            DisbursementItem DItoReceive;
+            DisbursementItem DItoGive;
+            int DIid;
+            int DIidDeptFrom;
+
+            for (int i = 0; i < disbItemId.Count; i++)
+            {
+                System.Diagnostics.Debug.WriteLine("disbItemId: " + disbItemId[i]);
+                if(disbItemIdDeptFrom[i] != 0)
+                {
+                    DIid = disbItemId[i];
+                    DIidDeptFrom = disbItemIdDeptFrom[i];
+                    // 1. get the DI objects for DItoReceive and DItoGive
+                    DItoReceive = context.DisbursementItems.SingleOrDefault(di => di.IdDisbursementItem == DIid);
+                    DItoGive = context.DisbursementItems.SingleOrDefault(di => di.IdDisbursementItem == DIidDeptFrom);
+
+                    // 2. DItoGive.UnitIssued -= transferQtyNum[i]
+                    DItoGive.UnitIssued -= transferQtyNum[i];
+
+                    // 3. DItoReceive.UnitIssued += transferQtyNum[i]
+                    DItoReceive.UnitIssued += transferQtyNum[i];
+
+                    // wrap this in a transaction or db.SaveChanges()
+                    context.SaveChanges();
+                }
+            }
+
         }
         
         //James
