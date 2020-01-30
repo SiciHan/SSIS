@@ -247,6 +247,10 @@
     <Compile Include="Migrations\202001300626212_snapshot12.designer.cs">
       <DependentUpon>202001300626212_snapshot12.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001300838426_snapshot13.cs" />
+    <Compile Include="Migrations\202001300838426_snapshot13.designer.cs">
+      <DependentUpon>202001300838426_snapshot13.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CPClerk.cs" />
@@ -354,6 +358,7 @@
     <Content Include="Views\StoreManager\ItemsForSuppliers.cshtml" />
     <Content Include="Views\StoreManager\Suppliers.cshtml" />
     <Content Include="Views\Home\LogIn.cshtml" />
+    <Content Include="Views\StoreClerk\PurchaseOrderList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -361,7 +366,6 @@
     <Folder Include="Views\DepartmentHead\" />
     <Folder Include="Views\DepartmentRepresentative\" />
     <Folder Include="Views\Employee\" />
-    <Folder Include="Views\StoreClerk\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -412,6 +416,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001300626212_snapshot12.resx">
       <DependentUpon>202001300626212_snapshot12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001300838426_snapshot13.resx">
+      <DependentUpon>202001300838426_snapshot13.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
