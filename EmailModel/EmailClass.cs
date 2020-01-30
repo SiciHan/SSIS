@@ -15,15 +15,15 @@ namespace Team8ADProjectSSIS.EmailModel
             client = new SmtpClient("smtp.gmail.com", 587);
         }
 
-        public void SendTo(String address)
+        public void SendTo(String address, String subject, String body)
         {
             client.Credentials = new System.Net.NetworkCredential(@"huangyuzhe2019@gmail.com", password);
             client.EnableSsl = true;
             //client.Timeout = 5000;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             MailMessage mm = new MailMessage("huangyuzhe2019@gmail.com", address);
-            mm.Subject = "test subject";
-            mm.Body = @"test body";
+            mm.Subject = subject;
+            mm.Body = body;
             client.Send(mm);
         }
 
