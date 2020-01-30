@@ -1,8 +1,13 @@
-﻿
+﻿@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "Suppliers";
-    int itemId = (int)ViewBag.id;
+    List<Supplier> suppliers = (List<Supplier>)ViewBag.suppliers;
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
 
-<h2>@itemId</h2>
+<div class="container">
+
+</div>
+
+
 

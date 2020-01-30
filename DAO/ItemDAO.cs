@@ -9,7 +9,7 @@ namespace Team8ADProjectSSIS.DAO
 {
     public class ItemDAO
     {
-        public static List<Item> GetAllItems()
+        public List<Item> GetAllItems()
         {
             List<Item> items = new List<Item>();
             using(SSISContext db = new SSISContext())
