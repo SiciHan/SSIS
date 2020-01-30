@@ -192,6 +192,7 @@
     <Compile Include="DAO\OperationDAO.cs" />
     <Compile Include="DAO\SSISContext.cs" />
     <Compile Include="DAO\SSISInitializer.cs" />
+    <Compile Include="EmailModel\EmailClass.cs" />
     <Compile Include="Filters\AuthenticateFilter.cs" />
     <Compile Include="Filters\AuthorizeFilter.cs" />
     <Compile Include="Global.asax.cs">
@@ -344,6 +345,10 @@
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.map" />
     <Content Include="Views\StoreManager\Home.cshtml" />
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
+    <Content Include="Views\Shared\_SupervisorLayout.cshtml" />
+    <Content Include="Views\StoreSupervisor\Index.cshtml" />
+    <Content Include="Views\StoreManager\ItemsForSuppliers.cshtml" />
+    <Content Include="Views\StoreManager\Suppliers.cshtml" />
     <Content Include="Views\Home\LogIn.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -353,7 +358,6 @@
     <Folder Include="Views\DepartmentRepresentative\" />
     <Folder Include="Views\Employee\" />
     <Folder Include="Views\StoreClerk\" />
-    <Folder Include="Views\StoreSupervisor\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

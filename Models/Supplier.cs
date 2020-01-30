@@ -14,6 +14,9 @@ namespace Team8ADProjectSSIS.Models
         public string ContactTitle { get; set; }
         public string Tel { get; set; }
         public int SupplyDelay { get; set; }
+        public string Fax { get; set; }
+        public string Address { get; set; }
+        public string RegisNo { get; set; }
 
         public virtual ICollection<SupplierItem> SupplierItems { get; set; }
 
