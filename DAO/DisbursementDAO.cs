@@ -26,13 +26,13 @@ namespace Team8ADProjectSSIS.DAO
         }
 
         //James
-        public void UpdateStatus(IEnumerable<int> disbIdsToSchedule)
+        public void UpdateStatus(IEnumerable<int> disbIdsToSchedule, int idStatus)
         {
             try
             {
                 context.Disbursements.Where(x => disbIdsToSchedule.Contains(x.IdDisbursement))
                     .ToList()
-                    .ForEach(x => x.IdStatus = 10);
+                    .ForEach(x => x.IdStatus = idStatus);
                 context.SaveChanges();
             } catch (Exception e)
             {

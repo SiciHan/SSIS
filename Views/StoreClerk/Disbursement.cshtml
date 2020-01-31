@@ -90,7 +90,7 @@
             <td>@d.Department.Name</td>
             <td>@d.Date</td>
             <td>@d.Status.Label</td>
-            <td><button type="button" class="btn btn-info" onclick="Disbursement(@d.IdDisbursement)"><i class="glyphicon glyphicon-list"></i></button></td>
+            <td><button type="button" class="btn btn-info" onclick="Disbursement(@d.IdDisbursement)" id="disb@(d.IdDisbursement)"><i class="glyphicon glyphicon-list"></i></button></td>
         </tr>
     }
 </table>
@@ -119,6 +119,10 @@
             <div class="modal-body" id="modalBodyDivDisbursement">
 
             </div>
+            <div class="modal-footer" id="modalFootDivDisbursement">
+                <button type="button" class="btn btn-default" onclick="RefreshDisb()">Refresh</button>
+                <label for="confirmDel" class="btn btn-success" tabindex="0">Disburse</label>
+            </div>
         </div>
     </div>
 </div>
@@ -132,12 +136,30 @@
         })
     }
 
+    var d;
+
     var Disbursement = function (disbId) {
         var url = "/StoreClerk/DisbursementDetails?disbId=" + disbId;
-
+        d = disbId;
         $("#modalBodyDivDisbursement").load(url, function () {
             $("#modalDisb").modal("show");
         })
+    }
+
+    // posts and refreshes the partial view!
+    var RefreshDisb = function () {
+        $.ajax({
+            url: "/StoreClerk/RefreshDisbursement",
+                type: "POST",
+                data: $("#refreshDisbForm").serialize(),
+                success: function () {
+                    var url = "/StoreClerk/DisbursementDetails?disbId=" + d;
+                    $("#modalBodyDivDisbursement").load(url, function () {
+                        $("#modalDisb").modal("show");
+                    });
+                    alert("Quantity updated and Dep Rep notified");
+                }
+        });
     }
 
     $('.redistribute_table tr').click(function (event) {

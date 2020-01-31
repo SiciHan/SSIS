@@ -9,10 +9,9 @@
 <link href="~/Styles/css/number-input.css" rel="stylesheet" />
 
 <h5>Department: <b>@disb.Department.Name</b></h5>
-@*<h5>CP: <b>@cp.Location</b></h5>*@
 <h5>CP: <b>@disb.Department.CollectionPt.Location (@disb.Department.CollectionPt.Time)</b></h5>
 
-@using (Html.BeginForm("RefreshDisbursement", "StoreClerk", FormMethod.Post))
+@using (Html.BeginForm("RefreshDisbursement", "StoreClerk", FormMethod.Post, new { id="refreshDisbForm"}))
 {
     <table class="table table-hover">
         <thead>
@@ -20,8 +19,11 @@
                 <th scope="col">Description</th>
                 <th scope="col">Qty Requested</th>
                 <th scope="col">Qty from Store</th>
-                <th scope="col">Qty Disbursed</th>
-            </tr>
+                @if (disb.IdStatus == 10)
+                {
+                    <th scope="col">Qty Disbursed</th>
+                }
+                </tr>
         </thead>
         <tbody>
             @foreach (DisbursementItem i in disbursementItems)
@@ -30,16 +32,23 @@
                     <td>@i.Item.Description<input type="hidden" name="disbItemId" value="@i.IdDisbursementItem" /></td>
                     <td>@i.UnitRequested</td>
                     <td>
-                        @*<input type="number" id="unitIssued@(i.IdDisbursementItem)" class="form-check-input" value="@i.UnitIssued" disabled/>*@
                         <span id="qtyFromStore@(i.IdDisbursementItem)">@i.UnitIssued</span>
                     </td>
-                    <td>
-                        <div class="number-input">
-                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
-                            <input class="qtyDisbursed" type="number" name="qtyDisbursed" id="qtyDisbursed@(i.IdDisbursementItem)" value="@i.UnitIssued" min="0" max="@i.UnitRequested" readonly/>
-                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
-                        </div>
-                    </td>
+                    @if(disb.IdStatus == 10)
+                    {
+                        <td>
+                            <div class="number-input">
+                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                <input class="qtyDisbursed" type="number" name="qtyDisbursed" id="qtyDisbursed@(i.IdDisbursementItem)" value="@i.UnitIssued" min="0" max="@i.UnitIssued" readonly/>
+                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                            </div>
+                        </td>
+                    } else
+                    {
+                        <td>
+                            <input type="hidden" name="qtyDisbursed" value="@i.UnitIssued" />
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
@@ -48,21 +57,20 @@
     <br />
 
     <input type="hidden" name="disbId" id="@disb.IdDisbursement" value="@disb.IdDisbursement" />
-    <input type="submit" class="btn btn-default" value="Refresh" id="refreshBtn"/>
-    <input type="submit" class="btn btn-success" formaction="@Url.Action("ConfirmDelivery")" formmethod="post" />
+    @*<input type="submit" class="btn btn-default" value="Refresh" id="refreshBtn"/>*@
+    if(disb.IdStatus == 11)
+    {
+        @*<input type="submit" class="btn btn-success" formaction="@Url.Action("ConfirmDelivery")" formmethod="post" />*@
+        <input type="submit" id="confirmDel" class="hidden" formaction="@Url.Action("ClerkSign")" formmethod="post" />
+    } else if(disb.IdStatus == 10)
+    {
+        <button type="button" id="confirmDel" class="hidden" onclick="alert('Awaiting @disb.Department.Name\'s acknowledgement')"></button>
+    }
 }
 
 <script>
-    $(document).ready(function (e) {
-        //$("#refreshBtn").click(function () {
-        //    var disbId = $("#disbId").val();
-        //    $("#modalBodyDivDisbursement").load("/StoreClerk/DisbursementDetails?disbId=" + disbId, function () {
-        //        $("#modalDisb").modal("show");
-        //    })
-        //})
-        //$('form').submit(function () {
-
-        // Posts the refresh data using ajax but doesn't refresh the values
+    @*$(document).ready(function () {
+        // Posts the refresh data using ajax and refreshes the values too!
         $("#refreshBtn").click(function () {
             @foreach (DisbursementItem i in disbursementItems)
             {
@@ -74,9 +82,10 @@
                 data: $('form').serialize(),
                 success: function (result) {
                     alert("Quantity updated and @disb.Department.Name notified");
+
                 }
             });
             return false;
         });
-    });
+    });*@
 </script>
