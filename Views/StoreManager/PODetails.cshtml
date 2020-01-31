@@ -1,0 +1,31 @@
+﻿@model Team8ADProjectSSIS.Models.PurchaseOrderDetail
+@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "PODetails";
+    List<PurchaseOrderDetail> DetailPO = (List<PurchaseOrderDetail>)ViewData["DetailPO"];
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+}
+
+<h2>Purchase Order Details</h2>
+<div>
+    <h5>Purchase Order Id</h5>
+    <h5>@Html.LabelFor(x => x.IdPurchaseOrder)</h5>
+</div>
+<table>
+    <tr>
+        <th>IdItem</th>
+        <th>Order Unit</th>
+        <th>Delivered Unit</th>
+        <th>Delivery Remark</th>
+    </tr>
+    @foreach (PurchaseOrderDetail i in DetailPO)
+    {
+        <tr>
+            <td>@i.IdItem</td>
+            <td>@i.OrderUnit</td>
+            <td>@i.DeliveredUnit</td>
+            <td>@i.DeliveryRemark</td>
+        </tr>
+    }
+</table>
+

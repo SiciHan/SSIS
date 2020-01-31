@@ -448,6 +448,8 @@
     <Content Include="Views\DepartmentRepresentative\Home.cshtml" />
     <Content Include="Views\StoreClerk\FormRetrieve.cshtml" />
     <Content Include="Views\StoreClerk\MakePurchaseOrder.cshtml" />
+    <Content Include="Views\StoreManager\POHistory.cshtml" />
+    <Content Include="Views\StoreManager\PODetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

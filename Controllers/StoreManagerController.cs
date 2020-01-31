@@ -13,11 +13,15 @@ namespace Team8ADProjectSSIS.Controllers
     {
         ItemDAO _itemDAO;
         SupplierItemDAO _supplieritemDAO;
+        PurchaseOrderDAO _purchaseOrderDAO;
+        PurchaseOrderDetailsDAO _purchaseOrderDetailsDAO;
 
         public StoreManagerController()
         {
             _itemDAO = new ItemDAO();
             _supplieritemDAO = new SupplierItemDAO();
+            _purchaseOrderDAO = new PurchaseOrderDAO();
+            _purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
         }
 
         // GET: StoreManager
@@ -50,6 +54,20 @@ namespace Team8ADProjectSSIS.Controllers
                 suppliers.Add(temp);
             }
             ViewBag.suppliers = suppliers;
+            return View();
+        }
+
+        public ActionResult POHistory()
+        {
+            List<PurchaseOrder> AllPO = _purchaseOrderDAO.FindAllPO();
+            ViewData["AllPO"] = AllPO;
+            return View();
+        }
+
+        public ActionResult PODetails(int IdPurchaseOrder)
+        {
+            List<PurchaseOrderDetail> DetailPO = _purchaseOrderDetailsDAO.FindDetailPO(IdPurchaseOrder);
+            ViewData["DetailPO"] = DetailPO;
             return View();
         }
     }
