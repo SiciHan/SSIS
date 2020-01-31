@@ -37,20 +37,21 @@ namespace Team8ADProjectSSIS.Controllers
             // Assume ClerkID
             int IdStoreClerk = 3;
 
+            // Get Department that seleceted same collection point as store clerk
+            List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
 
             bool NoDisbursement = false;
             DateTime Today = DateTime.Now;
-            DateTime LastThu = DateTime.Now.AddDays(-1);
+            DateTime LastThu = Today.AddDays(-3);
             while (LastThu.DayOfWeek != DayOfWeek.Thursday)
                 LastThu = LastThu.AddDays(-1);
+
             // If Disbursement contain status "preparing" from last thurseday to today
-            if (_disbursementDAO.CheckExistDisbursement(IdStoreClerk, Today, LastThu))
+            if (_disbursementDAO.CheckExistDisbursement(DClerk, Today, LastThu))
             {
                 // Search Disbursement with status set as "preparing"
-                // Search Disbursement with status set as "preparing"
-                List<int> SelectedRequisition = _requisitionDAO
-                                                .SearchRequisitionForRetrival(Today, LastThu);
-                
+                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
+                ViewData["RetrievalForm"] = RetrievalForm;
                 NoDisbursement = false;
                 ViewData["NoDisbursement"] = NoDisbursement;
 
@@ -60,8 +61,6 @@ namespace Team8ADProjectSSIS.Controllers
             {
                 NoDisbursement = true;
                 ViewData["NoDisbursement"] = NoDisbursement;
-                ViewBag.StartDate = "";
-                ViewBag.EndDate = "";
                 ViewBag.Today = Today.ToString("dd-MM-yyyy");
                 ViewBag.LastThu = LastThu.ToString("dd-MM-yyyy");
             }
@@ -76,44 +75,59 @@ namespace Team8ADProjectSSIS.Controllers
             // Assume ClerkID
             int IdStoreClerk = 3;
 
-            ViewData["NoDisbursement"] = true;
-            ViewBag.StartDate = StartDate;
-            ViewBag.EndDate = EndDate;
+            // Get Department that seleceted same collection point as store clerk
+            List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
+
+            if (StartDate.Equals("") || EndDate.Equals(""))
+            {
+                return RedirectToAction("FormRetrieve", "StoreClerk");
+            }
             DateTime SDate = DateTime.ParseExact(StartDate, "dd-MM-yyyy", 
                             System.Globalization.CultureInfo.InvariantCulture);
             DateTime EDate = DateTime.ParseExact(EndDate, "dd-MM-yyyy",
                             System.Globalization.CultureInfo.InvariantCulture);
             // Search and retrieve Requisition & Requisition Item
             List<Retrieval> RetrievalItem = _requisitionDAO
-                                            .RetrieveRequisition(IdStoreClerk, SDate, EDate);
-            List<Retrieval> RetrievalForm = _requisitionItemDAO
-                                            .RetrieveRequisitionItem(RetrievalItem);
-            ViewData["RetrievalForm"] = RetrievalForm;
-            ViewData["RetrievalItem"] = RetrievalItem;
+                                            .RetrieveRequisition(DClerk, SDate, EDate);
+            // Check if the the RetrievalForm has been created
+            List<Retrieval> NewRetrievalItem = _disbursementDAO.CheckRetrievalFormExist(RetrievalItem);
+
             // Create Disbursement and set status to "preparing"
-            _disbursementDAO.CreateDisbursement(RetrievalItem);
+            List<int> PKDisbursement = _disbursementDAO.CreateDisbursement(NewRetrievalItem);
             // Create DisbursementItem and set status to "preparing"
-            _disbursementItemDAO.CreateDisbursementItem();
-            
+            List<int> PKDisbursementItem = _disbursementItemDAO
+                                           .CreateDisbursementItem(PKDisbursement, NewRetrievalItem);
+            // Search Disbursement with status set as "preparing"
+            List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
+            ViewData["RetrievalForm"] = RetrievalForm;
+            ViewData["NoDisbursement"] = false;
+
             return View();
         }
 
         
         [HttpPost]
-        public ActionResult SaveDisbursement(int[] IdItemRetrieved, int[] StockUnit, int[] RequestUnit) 
+        public ActionResult SaveDisbursement(int[] IdItemRetrieved) 
         {
-            bool ItemRetrieved = false;
+            // Assume ClerkID
+            int IdStoreClerk = 3;
+
+            // Get Department that seleceted same collection point as store clerk
+            List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
+
             if (IdItemRetrieved.Any())
             {
-                //update disbursement
+                // update disbursementitem and set status to "prepared"
+                // return IdDisbursement with at lease one items have been set as "prepared"
+                List<int> IdDisbursement = _disbursementItemDAO.UpdateDisbursementItem(DClerk, IdItemRetrieved);
+                // update disbursement and set status to "prepared"
+                _disbursementDAO.UpdateDisbursement(IdDisbursement);
+                // update item stock unit
 
-                //update stockrecord
-                
+                // raise alert
 
-                //raise alert
-                ItemRetrieved = false;
             }
-            if (ItemRetrieved)
+            else
             {
                 return RedirectToAction("FormRetrieve", "StoreClerk");
             }
