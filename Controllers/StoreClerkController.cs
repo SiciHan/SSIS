@@ -12,11 +12,13 @@ namespace Team8ADProjectSSIS.Controllers
     {
         private readonly DisbursementDAO _disbursementDAO;
         private readonly DisbursementItemDAO _disbursementItemDAO;
+        private readonly CollectionPointDAO _collectionPointDAO;
 
         public StoreClerkController()
         {
             _disbursementDAO = new DisbursementDAO();
             _disbursementItemDAO = new DisbursementItemDAO();
+            _collectionPointDAO = new CollectionPointDAO();
         }
 
         // GET: StoreClerk
@@ -58,23 +60,6 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom)
         {
-            //Debugging and PoC
-            /*System.Diagnostics.Debug.WriteLine(disbId);
-            disbId.ToList().ForEach(x => System.Diagnostics.Debug.WriteLine(x));
-            System.Diagnostics.Debug.WriteLine($"disbItemId Count: {disbItemId.Count}, transferQtyNum Count: {transferQtyNum.Count}");
-            foreach (int i in disbItemId)
-                System.Diagnostics.Debug.WriteLine("disbItemId: " + i);
-
-            foreach (int i in transferQtyNum)
-                System.Diagnostics.Debug.WriteLine("transferQtyNum: " + i);
-
-            for (int i = 0; i < disbItemId.Count; i++)
-            {
-                System.Diagnostics.Debug.WriteLine("disbItemId: " + disbItemId[i]);
-            }
-            foreach (int i in disbItemIdDeptFrom)
-                System.Diagnostics.Debug.WriteLine("disbItemIdDeptFrom: " + i);*/
-
             _disbursementItemDAO.GiveAndTake(disbItemId, transferQtyNum, disbItemIdDeptFrom);
             _disbursementDAO.UpdateStatus(disbId);
             // add in notification here upon updating status and notify on shortfall (if any)
@@ -91,6 +76,23 @@ namespace Team8ADProjectSSIS.Controllers
             ViewBag.dropdownDisbursementItems = _disbursementItemDAO.FindCorrespondingDisbursementItems(targetDisbursement.DisbursementItems);
 
             return PartialView("Redistribute", targetDisbursement);
+        }
+
+        //James: Opens page to handle disbursement with Dep Rep
+        public ActionResult DisbursementDetails(int disbId)
+        {
+            Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
+            ViewBag.disb = targetDisbursement;
+
+            return PartialView("DisbursementDetails");
+        }
+
+        //James: Refresh Disbursement page and updates the unitIssued to the QtyDisbursed
+        [HttpPost]
+        public ActionResult RefreshDisbursement(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
+        {
+
+            return PartialView("DisbursementDetails");
         }
     }
 }

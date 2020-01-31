@@ -9,8 +9,8 @@ namespace Team8ADProjectSSIS.Models
 {
     public class CollectionPoint
     {
-        
 
+        public CollectionPoint() { }
         public CollectionPoint(CollectionPoint cp)
         {
             this.Location = cp.Location;

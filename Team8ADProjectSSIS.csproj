@@ -322,6 +322,7 @@
     <Content Include="Scripts\vendor\jquery\jquery.min.js" />
     <Content Include="Scripts\vendor\jquery\jquery.slim.js" />
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.js" />
+    <Content Include="Styles\css\number-input.css" />
     <Content Include="Styles\css\simple-sidebar.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -359,9 +360,9 @@
     <Content Include="Views\StoreManager\Suppliers.cshtml" />
     <Content Include="Views\StoreClerk\Disbursement.cshtml" />
     <Content Include="Views\StoreClerk\Redistribute.cshtml" />
-    <Content Include="Views\Shared\_ClerkLayout.cshtml" />
     <Content Include="Views\Home\LogIn.cshtml" />
     <Content Include="Views\StoreClerk\PurchaseOrderList.cshtml" />
+    <Content Include="Views\StoreClerk\DisbursementDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -369,8 +370,6 @@
     <Folder Include="Views\DepartmentHead\" />
     <Folder Include="Views\DepartmentRepresentative\" />
     <Folder Include="Views\Employee\" />
-    <Folder Include="Views\StoreSupervisor\" />
-    <Folder Include="Views\StoreClerk\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

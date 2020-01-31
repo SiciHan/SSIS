@@ -1,0 +1,50 @@
+﻿@using Team8ADProjectSSIS.Models
+
+@{
+    ViewBag.Title = "DisbursementDetails";
+    Disbursement disb = ViewBag.disb;
+    List<DisbursementItem> disbursementItems = disb.DisbursementItems.ToList();
+}
+
+<link href="~/Styles/css/number-input.css" rel="stylesheet" />
+
+<h5>Department: <b>@disb.Department.Name</b></h5>
+@*<h5>CP: <b>@cp.Location</b></h5>*@
+<h5>CP: <b>@disb.Department.CollectionPt.Location (@disb.Department.CollectionPt.Time)</b></h5>
+
+@using (Html.BeginForm("RefreshDisbursement", "StoreClerk", FormMethod.Post))
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Description</th>
+                <th scope="col">Qty Requested</th>
+                <th scope="col">Qty from Store</th>
+                <th scope="col">Qty Disbursed</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DisbursementItem i in disbursementItems)
+            {
+                <tr>
+                    <td>@i.Item.Description<input type="hidden" name="disbItemId" value="@i.IdDisbursementItem" /></td>
+                    <td>@i.UnitRequested</td>
+                    <td>@i.UnitIssued</td>
+                    <td>
+                        <div class="number-input">
+                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                            <input class="qtyDisbursed" type="number" name="qtyDisbursed" id="qtyDisbursed@(i.IdDisbursementItem)" value="@i.UnitIssued" min="0" oninput='qtyDisbursed@(i.IdDisbursementItem).value = qtyDisbursed@(i.IdDisbursementItem).value' disabled />
+                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br />
+
+    <input type="submit" class="btn btn-default" value="Refresh"/>
+    <input type="submit" class="btn btn-success" formaction="@Url.Action("ConfirmDelivery")" formmethod="post" />
+}
+

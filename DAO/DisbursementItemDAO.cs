@@ -18,7 +18,21 @@ namespace Team8ADProjectSSIS.DAO
         //James
         internal void GiveAndTake(IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom)
         {
-            System.Diagnostics.Debug.WriteLine($"disbItemId Count: {disbItemId.Count}, transferQtyNum Count: {transferQtyNum.Count}, disbItemIdDeptFrom Count: {disbItemIdDeptFrom.Count}");
+            //Debugging and PoC
+            /*System.Diagnostics.Debug.WriteLine($"disbItemId Count: {disbItemId.Count}, transferQtyNum Count: {transferQtyNum.Count}");
+            foreach (int i in disbItemId)
+                System.Diagnostics.Debug.WriteLine("disbItemId: " + i);
+
+            foreach (int i in transferQtyNum)
+                System.Diagnostics.Debug.WriteLine("transferQtyNum: " + i);
+
+            for (int i = 0; i < disbItemId.Count; i++)
+            {
+                System.Diagnostics.Debug.WriteLine("disbItemId: " + disbItemId[i]);
+            }
+            foreach (int i in disbItemIdDeptFrom)
+                System.Diagnostics.Debug.WriteLine("disbItemIdDeptFrom: " + i);
+            System.Diagnostics.Debug.WriteLine($"disbItemId Count: {disbItemId.Count}, transferQtyNum Count: {transferQtyNum.Count}, disbItemIdDeptFrom Count: {disbItemIdDeptFrom.Count}");*/
             DisbursementItem DItoReceive;
             DisbursementItem DItoGive;
             int DIid;
