@@ -44,11 +44,11 @@
     var rejectedList = ViewData["Rejected"] as IList<PurchaseOrder>;
     var cancelledList = ViewData["Cancelled"] as IList<PurchaseOrder>;
     var deliveredList = ViewData["Delivered"] as IList<PurchaseOrder>;
-    var isStockLow = (bool)ViewData["IsStockLow"];
+    var LowStock = ViewData["LowStock"] as IList<Item>;
 }
 
 <div>
-    @if (isStockLow)
+    @if (LowStock.Any<Item>())
     {
         <p class="text-warning">Alert:</p> <br />
         <p class="text-warning">Some Stock is Low. You need to make a purchase order.</p>
@@ -57,7 +57,7 @@
     else
     {
         <p>Current Stock level is sufficient. You don't have to make a purchase order.</p>
-        <a href="@Url.Action("MakePurchaseOrder","StoreClerk")" class="btn btn-primary"> I Still Want to Raise Purchase Order Manually</a>
+        <<a href="@Url.Action("MakePurchaseOrder","StoreClerk")" class="btn btn-primary"> I Still Want to Raise Purchase Order Manually</a>
     }
 </div>
 <div>

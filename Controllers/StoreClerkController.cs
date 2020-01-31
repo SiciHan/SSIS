@@ -132,11 +132,17 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["Approved"]=_purchaseOrderDAO.FindApprovedPO();
             ViewData["Delivered"]=_purchaseOrderDAO.FindDeliveredPO();
             ViewData["Cancelled"]=_purchaseOrderDAO.FindCancelledPO();
-            ViewData["IsStockLow"] = _itemDAO.IsStockLow();
+            ViewData["LowStock"] = _itemDAO.FindLowStockItems();
             return View();
         }
-        public ActionResult MakePurchaseOrder()
+        public ActionResult MakePurchaseOrder(string searchStr)
         {
+            if (!string.IsNullOrEmpty(searchStr))
+            {
+                ViewData["SearchResult"]= _itemDAO.FindItemsByKeyword(searchStr);
+                ViewData["SearchStr"] = searchStr;
+            }
+            ViewData["LowStock"] = _itemDAO.FindLowStockItems();
             return View();
         }
     }

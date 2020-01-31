@@ -24,10 +24,24 @@ namespace Team8ADProjectSSIS.DAO
             return items;
         }
 
-        public bool IsStockLow()
+        public List<Item> FindLowStockItems()
         {    
-            Item item = context.Items.OfType<Item>().Where(x => x.AvailableUnit <= x.ReorderLevel).FirstOrDefault();
-            return item != null;
+            List<Item> items = context.Items.OfType<Item>().Where(x => x.AvailableUnit <= x.ReorderLevel).ToList<Item>();
+            return items;
         }
+        public List<Item> FindItemsByKeyword(string searchStr)
+        {
+            string[] keywords = searchStr.Split(' ');
+            List<Item> items = new List<Item>();
+            foreach(string str in keywords)
+            {
+                items.AddRange(context.Items.OfType<Item>()
+                .Where(x => x.Description.ToLower().Contains(str.ToLower())
+                || x.Category.Label.ToLower().Contains(str.ToLower()))
+                .ToList<Item>());
+            }
+            return items;
+        }
+
     }
 }
