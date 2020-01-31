@@ -18,7 +18,7 @@ namespace Team8ADProjectSSIS
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             //data seeding
-            new SSISContext().Database.Initialize(force: true);
+            //new SSISContext().Database.Initialize(force: true);
 
         }
     }

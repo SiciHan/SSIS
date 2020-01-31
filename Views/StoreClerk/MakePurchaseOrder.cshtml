@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewBag.Title = "MakePurchaseOrder";
+}
+
+<h2>Make Purchase Order</h2>
+<!--Display the Low stock items-->
+@using Team8ADProjectSSIS.Models
+@{
+    var lowstock = ViewData["LowStock"] as IList<Item>;
+    var searchResult = ViewData["SearchResult"] as IList<Item>;
+    var searchStr = (string)ViewData["SearchStr"];
+}
+
+
+@{ if (lowstock.Any<Item>())
+    {
+        <h3> Low Stock!</h3>
+
+        //display all the items
+        <div>
+
+        </div>
+    }
+    else
+    {
+        <h3>There is no Low Stock items.</h3>
+        <input id="searchStr" type="text" placeholder="e.g. Clip" value="@searchStr" />
+        <button onclick="findItems()" class="btn btn-info">Find Items</button>
+
+
+        <div>
+            @{
+                if (searchResult != null && searchResult.Any<Item>())
+                {
+                    <p>Search Results:</p>
+                    ////display all searched results and add to cart button
+                }
+                else if (searchResult != null && !searchResult.Any<Item>())
+                {
+                    <p>Sorry. No Result found.</p>
+                }
+                else
+                {
+                }
+            }
+        </div>
+
+    }
+}
+
+<div>
+    <h3>Purchase Order Cart</h3>
+</div>
+
+
+<script>
+    function findItems() {
+        var searchStr = document.getElementById("searchStr").value;
+        window.location.href = window.location.href.split('?')[0] + "?searchStr=" + searchStr;
+    }
+</script>
+
+

@@ -15,6 +15,9 @@ namespace Team8ADProjectSSIS.DAO
             this.context = new SSISContext();
         }
 
+        public void CreateDisbursementItem()
+        { 
+        }
         //James
         internal void GiveAndTake(IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom)
         {
