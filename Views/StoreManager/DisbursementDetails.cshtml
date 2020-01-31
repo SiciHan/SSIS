@@ -1,0 +1,29 @@
+﻿@model Team8ADProjectSSIS.Models.JoinDandDI
+@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "DisbursementDetails";
+    List<JoinDandDI> DetailDisbursement = (List<JoinDandDI>)ViewData["DetailDisbursement"];
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+}
+
+    <h2>Disbursement Details</h2>
+<table>
+    <tr>
+        <th>IdItem</th>
+        <th>Unit Requested</th>
+        <th>Unit Issued</th>
+        <th>Status</th>
+    </tr>
+    @foreach (JoinDandDI i in DetailDisbursement)
+    {
+        <tr>
+            <td>@i.disbursementItem.IdItem</td>
+            <td>@i.disbursementItem.UnitRequested</td>
+            <td>@i.disbursementItem.UnitIssued</td>
+            <td>@i.disbursementItem.Status.Label</td>
+        </tr>
+    }
+</table>
+
+
+

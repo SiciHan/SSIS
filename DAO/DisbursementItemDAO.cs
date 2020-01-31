@@ -132,5 +132,27 @@ namespace Team8ADProjectSSIS.DAO
             }
             return IdDisbursement;
         }
+
+        public List<JoinDandDI> FindDetailDisbursement(int IdDisbursement)
+        {
+            var DetailDisbursement = context.Disbursements
+                                        .Join(context.DisbursementItems,
+                                        d => d.IdDisbursement, di => di.IdDisbursement,
+                                        (d, di) => new { d, di })
+                                        .Join(context.Departments,
+                                        ddi => ddi.d.CodeDepartment, dpt => dpt.CodeDepartment,
+                                        (ddi, dpt) => new { ddi, dpt })
+                                        .Join(context.Status,
+                                        ddidpt => ddidpt.ddi.d.IdStatus, s => s.IdStatus,
+                                        (ddidpt, s) => new JoinDandDI
+                                        {
+                                            disbursement = ddidpt.ddi.d,
+                                            disbursementItem = ddidpt.ddi.di,
+                                            department = ddidpt.dpt,
+                                            status = s
+                                        }).Where(x => x.disbursement.IdDisbursement == IdDisbursement)
+                                        .ToList();
+            return DetailDisbursement;
+        }
     }
 }

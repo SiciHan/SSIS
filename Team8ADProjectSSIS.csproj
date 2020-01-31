@@ -256,6 +256,7 @@
     <Compile Include="Models\Delegation.cs" />
     <Compile Include="Models\Disbursement.cs" />
     <Compile Include="Models\DisbursementItem.cs" />
+    <Compile Include="Models\JoinDandDI.cs" />
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\NotificationChannel.cs" />
     <Compile Include="Models\Operation.cs" />
@@ -450,6 +451,8 @@
     <Content Include="Views\StoreClerk\MakePurchaseOrder.cshtml" />
     <Content Include="Views\StoreManager\POHistory.cshtml" />
     <Content Include="Views\StoreManager\PODetails.cshtml" />
+    <Content Include="Views\StoreManager\DisbursementHistory.cshtml" />
+    <Content Include="Views\StoreManager\DisbursementDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
