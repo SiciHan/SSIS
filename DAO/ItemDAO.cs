@@ -9,16 +9,25 @@ namespace Team8ADProjectSSIS.DAO
 {
     public class ItemDAO
     {
-        public static List<Item> GetAllItems()
+        private readonly SSISContext context;
+
+        public ItemDAO()
         {
-            List<Item> items = new List<Item>();
-            using(SSISContext db = new SSISContext())
-            {
-                items = db.Items
+            this.context = new SSISContext();
+        }
+
+        public List<Item> GetAllItems()
+        {
+            List<Item> items = context.Items
                     .Include("Category")
                     .ToList();
-            }
             return items;
+        }
+
+        public bool IsStockLow()
+        {    
+            Item item = context.Items.OfType<Item>().Where(x => x.AvailableUnit <= x.ReorderLevel).FirstOrDefault();
+            return item != null;
         }
     }
 }

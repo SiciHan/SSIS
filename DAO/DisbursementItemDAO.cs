@@ -7,5 +7,15 @@ namespace Team8ADProjectSSIS.DAO
 {
     public class DisbursementItemDAO
     {
+        private readonly SSISContext context;
+
+        public DisbursementItemDAO()
+        {
+            this.context = new SSISContext();
+        }
+
+        public void CreateDisbursementItem()
+        { 
+        }
     }
 }

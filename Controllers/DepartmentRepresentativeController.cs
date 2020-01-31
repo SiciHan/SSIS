@@ -9,7 +9,7 @@ namespace Team8ADProjectSSIS.Controllers
     public class DepartmentRepresentativeController : Controller
     {
         // GET: DepartmentRepresentative
-        public ActionResult Index()
+        public ActionResult Home()
         {
             return View();
         }

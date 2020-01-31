@@ -4,7 +4,7 @@
 }
 
 
-
+<!--Please copy paste this div-->
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
 
@@ -34,3 +34,96 @@
 </div>
 
 <h2>Purchase Order</h2>
+
+@using Team8ADProjectSSIS.Models;
+@{
+
+    var incompleteList = ViewData["Incomplete"] as IList<PurchaseOrder>;
+    var pendingList = ViewData["Pending"] as IList<PurchaseOrder>;
+    var approvedList = ViewData["Approved"] as IList<PurchaseOrder>;
+    var rejectedList = ViewData["Rejected"] as IList<PurchaseOrder>;
+    var cancelledList = ViewData["Cancelled"] as IList<PurchaseOrder>;
+    var deliveredList = ViewData["Delivered"] as IList<PurchaseOrder>;
+    var isStockLow = (bool)ViewData["IsStockLow"];
+}
+
+<div>
+    @if (isStockLow)
+    {
+        <p class="text-warning">Alert:</p> <br />
+        <p class="text-warning">Some Stock is Low. You need to make a purchase order.</p>
+        <a href="@Url.Action("MakePurchaseOrder","StoreClerk")" class="btn btn-danger"> Raise Purchase Order</a>
+    }
+    else
+    {
+        <p>Current Stock level is sufficient. You don't have to make a purchase order.</p>
+        <a href="@Url.Action("MakePurchaseOrder","StoreClerk")" class="btn btn-primary"> I Still Want to Raise Purchase Order Manually</a>
+    }
+</div>
+<div>
+    <h3>Incomplete Purchase Orders</h3>
+    @if (!incompleteList.Any<PurchaseOrder>())
+    {
+        <p> Currently No Incomplete Purchase order.</p>
+    }
+    else
+    {
+        //display them
+    }
+</div>
+
+<div>
+    <h3>Pending Purchase Orders</h3>
+    @if (!pendingList.Any<PurchaseOrder>())
+    {
+        <p> Currently No Pending Purchase order.</p>
+    }
+    else
+    {
+
+    }
+</div>
+<div>
+    <h3>Approved Purchase Orders</h3>
+    @if (!approvedList.Any<PurchaseOrder>())
+    {
+        <p> Currently No Approved Purchase order.</p>
+    }
+    else
+    {
+
+    }
+</div>
+<div>
+    <h3>Rejected Purchase Orders</h3>
+    @if (!rejectedList.Any<PurchaseOrder>())
+    {
+        <p> Currently No Rejected Purchase order.</p>
+    }
+    else
+    {
+
+    }
+</div>
+<div>
+    <h3>Cancelled Purchase Orders</h3>
+    @if (!cancelledList.Any<PurchaseOrder>())
+    {
+        <p> Currently No Cancelled Purchase order.</p>
+    }
+    else
+    {
+
+    }
+</div>
+<div>
+    <h3>Delivered Purchase Orders</h3>
+    @if (!deliveredList.Any<PurchaseOrder>())
+    {
+        <p> Currently No Delivered Purchase order.</p>
+    }
+    else
+    {
+
+    }
+</div>

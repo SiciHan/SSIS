@@ -62,5 +62,6 @@ namespace Team8ADProjectSSIS.DAO
         public DbSet<SupplierItem> SupplierItems { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<CPClerk> CPClerks { get; set; }
+        public DbSet<Status> Status { get; set; }
     }
 }
