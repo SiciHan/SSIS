@@ -16,8 +16,8 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly RequisitionItemDAO _requisitionItemDAO;
         private readonly StockRecordDAO _stockRecordDAO;
         private readonly DisbursementItemDAO _disbursementItemDAO;
-        
-
+        private readonly PurchaseOrderDAO _purchaseOrderDAO;
+        private readonly ItemDAO _itemDAO;
         public StoreClerkController()
         {
             this._disbursementDAO = new DisbursementDAO();
@@ -25,7 +25,11 @@ namespace Team8ADProjectSSIS.Controllers
             this._requisitionItemDAO = new RequisitionItemDAO();
             this._stockRecordDAO = new StockRecordDAO();
             this._disbursementItemDAO = new DisbursementItemDAO();
+            this._purchaseOrderDAO = new PurchaseOrderDAO();
+            this._itemDAO = new ItemDAO();
         }
+        
+
         // GET: StoreClerk
         public ActionResult Index()
         {
@@ -136,7 +140,23 @@ namespace Team8ADProjectSSIS.Controllers
         } 
         public ActionResult PurchaseOrderList()
         {
-
+            ViewData["Incomplete"]=_purchaseOrderDAO.FindIncompletePO();
+            ViewData["Pending"]=_purchaseOrderDAO.FindPendingPO();
+            ViewData["Rejected"]=_purchaseOrderDAO.FindRejectedPO();
+            ViewData["Approved"]=_purchaseOrderDAO.FindApprovedPO();
+            ViewData["Delivered"]=_purchaseOrderDAO.FindDeliveredPO();
+            ViewData["Cancelled"]=_purchaseOrderDAO.FindCancelledPO();
+            ViewData["LowStock"] = _itemDAO.FindLowStockItems();
+            return View();
+        }
+        public ActionResult MakePurchaseOrder(string searchStr)
+        {
+            if (!string.IsNullOrEmpty(searchStr))
+            {
+                ViewData["SearchResult"]= _itemDAO.FindItemsByKeyword(searchStr);
+                ViewData["SearchStr"] = searchStr;
+            }
+            ViewData["LowStock"] = _itemDAO.FindLowStockItems();
             return View();
         }
     }

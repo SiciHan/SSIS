@@ -11,6 +11,14 @@ namespace Team8ADProjectSSIS.Controllers
 {
     public class StoreManagerController : Controller
     {
+        ItemDAO _itemDAO;
+        SupplierItemDAO _supplieritemDAO;
+
+        public StoreManagerController()
+        {
+            _itemDAO = new ItemDAO();
+            _supplieritemDAO = new SupplierItemDAO();
+        }
 
         // GET: StoreManager
         public ActionResult Home()
@@ -26,14 +34,22 @@ namespace Team8ADProjectSSIS.Controllers
 
         public ActionResult ItemsForSuppliers()
         {
-            List<Item> items = ItemDAO.GetAllItems();
+            List<Item> items = _itemDAO.GetAllItems();
             ViewBag.items = items;
             return View();
         }
 
+        [HttpPost]
         public ActionResult Suppliers(int itemId)
         {
-            ViewBag.id = itemId;
+            List<SupplierItem> supplierItems = _supplieritemDAO.GetSuppliersById(itemId);
+            List<Supplier> suppliers = new List<Supplier>();
+            foreach(SupplierItem item in supplierItems)
+            {
+                Supplier temp = item.Supplier;
+                suppliers.Add(temp);
+            }
+            ViewBag.suppliers = suppliers;
             return View();
         }
     }
