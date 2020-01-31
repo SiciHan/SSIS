@@ -91,6 +91,10 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult RefreshDisbursement(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
         {
+            Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
+            ViewBag.disb = targetDisbursement;
+
+            _disbursementItemDAO.UpdateUnitIssued(disbItemId, qtyDisbursed);
 
             return PartialView("DisbursementDetails");
         }

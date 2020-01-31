@@ -29,11 +29,14 @@
                 <tr>
                     <td>@i.Item.Description<input type="hidden" name="disbItemId" value="@i.IdDisbursementItem" /></td>
                     <td>@i.UnitRequested</td>
-                    <td>@i.UnitIssued</td>
+                    <td>
+                        @*<input type="number" id="unitIssued@(i.IdDisbursementItem)" class="form-check-input" value="@i.UnitIssued" disabled/>*@
+                        <span id="qtyFromStore@(i.IdDisbursementItem)">@i.UnitIssued</span>
+                    </td>
                     <td>
                         <div class="number-input">
                             <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
-                            <input class="qtyDisbursed" type="number" name="qtyDisbursed" id="qtyDisbursed@(i.IdDisbursementItem)" value="@i.UnitIssued" min="0" oninput='qtyDisbursed@(i.IdDisbursementItem).value = qtyDisbursed@(i.IdDisbursementItem).value' disabled />
+                            <input class="qtyDisbursed" type="number" name="qtyDisbursed" id="qtyDisbursed@(i.IdDisbursementItem)" value="@i.UnitIssued" min="0" max="@i.UnitRequested" readonly/>
                             <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
                         </div>
                     </td>
@@ -44,7 +47,36 @@
 
     <br />
 
-    <input type="submit" class="btn btn-default" value="Refresh"/>
+    <input type="hidden" name="disbId" id="@disb.IdDisbursement" value="@disb.IdDisbursement" />
+    <input type="submit" class="btn btn-default" value="Refresh" id="refreshBtn"/>
     <input type="submit" class="btn btn-success" formaction="@Url.Action("ConfirmDelivery")" formmethod="post" />
 }
 
+<script>
+    $(document).ready(function (e) {
+        //$("#refreshBtn").click(function () {
+        //    var disbId = $("#disbId").val();
+        //    $("#modalBodyDivDisbursement").load("/StoreClerk/DisbursementDetails?disbId=" + disbId, function () {
+        //        $("#modalDisb").modal("show");
+        //    })
+        //})
+        //$('form').submit(function () {
+
+        // Posts the refresh data using ajax but doesn't refresh the values
+        $("#refreshBtn").click(function () {
+            @foreach (DisbursementItem i in disbursementItems)
+            {
+                @:$("#qtyFromStore@(i.IdDisbursementItem)").text($("#qtyDisbursed@(i.IdDisbursementItem)").val());
+            }
+            $.ajax({
+            url: "/StoreClerk/RefreshDisbursement",
+                type: "POST",
+                data: $('form').serialize(),
+                success: function (result) {
+                    alert("Quantity updated and @disb.Department.Name notified");
+                }
+            });
+            return false;
+        });
+    });
+</script>

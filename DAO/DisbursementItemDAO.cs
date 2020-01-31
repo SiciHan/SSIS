@@ -40,7 +40,7 @@ namespace Team8ADProjectSSIS.DAO
 
             for (int i = 0; i < disbItemId.Count; i++)
             {
-                System.Diagnostics.Debug.WriteLine("disbItemId: " + disbItemId[i]);
+                //System.Diagnostics.Debug.WriteLine("disbItemId: " + disbItemId[i]);
                 if(disbItemIdDeptFrom[i] != 0)
                 {
                     DIid = disbItemId[i];
@@ -76,6 +76,20 @@ namespace Team8ADProjectSSIS.DAO
             }
 
             return di;
+        }
+
+        internal void UpdateUnitIssued(IList<int> disbItemId, IList<int> qtyDisbursed)
+        {
+            DisbursementItem disbItem;
+            int DIiD;
+            for (int i = 0; i < disbItemId.Count; i++)
+            {
+                DIiD = disbItemId[i];
+                disbItem = context.DisbursementItems.Single(di => di.IdDisbursementItem == DIiD); ;
+                disbItem.UnitIssued = qtyDisbursed[i];
+            }
+
+            context.SaveChanges();
         }
     }
 }
