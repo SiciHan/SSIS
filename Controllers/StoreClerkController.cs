@@ -18,7 +18,6 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly DisbursementItemDAO _disbursementItemDAO;
         private readonly PurchaseOrderDAO _purchaseOrderDAO;
         private readonly ItemDAO _itemDAO;
-        private readonly DisbursementItemDAO _disbursementItemDAO;
         private readonly CollectionPointDAO _collectionPointDAO;
 
         public StoreClerkController()
@@ -30,7 +29,6 @@ namespace Team8ADProjectSSIS.Controllers
             this._disbursementItemDAO = new DisbursementItemDAO();
             this._purchaseOrderDAO = new PurchaseOrderDAO();
             this._itemDAO = new ItemDAO();
-            this._disbursementItemDAO = new DisbursementItemDAO();
             this._collectionPointDAO = new CollectionPointDAO();
 
         }
@@ -157,6 +155,8 @@ namespace Team8ADProjectSSIS.Controllers
         {
             // retrieve 2 lists of Disbursement Lists which are "Prepared" and "Scheduled" under the same Coll Point
             // find by Status and Clerk's Collection Points
+            // assume clerkId is 2
+            //int clerkId = 2;
             //List<Disbursement> prepList= _disbursementDAO.FindByStatus("Prepared", clerkId);
             //List<Disbursement> scheList= _disbursementDAO.FindByStatus("Scheduled", clerkId);
             //scheList.AddRange(_disbursementDAO.FindByStatus("Received", clerkId));
@@ -233,6 +233,8 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult ClerkSign(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
         {
+            // assume clerkId is 2
+            int clerkId = 2;
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
             List<DisbursementItem> targetDisbItems = targetDisbursement.DisbursementItems.ToList();
             // updates the disb's status to "Disbursed" or 7

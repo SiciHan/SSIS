@@ -99,8 +99,6 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
-    }
-
         //James
         public List<Disbursement> FindByStatus(String status)
         {
@@ -125,6 +123,7 @@ namespace Team8ADProjectSSIS.DAO
             }
         }
 
+        //James
         public Disbursement FindById(int disbId)
         {
             return context.Disbursements.Where(x => x.IdDisbursement == disbId).FirstOrDefault();
