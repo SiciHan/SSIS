@@ -1,4 +1,4 @@
-﻿
+﻿@model Team8ADProjectSSIS.Models.Item
 @{
     ViewBag.Title = "Purchase Order";
 }
@@ -50,7 +50,7 @@
 <div>
     @if (LowStock.Any<Item>())
     {
-        <p class="text-warning">Alert:</p> <br />
+        <p class="text-warning">Alert:</p>
         <p class="text-warning">Some Stock is Low. You need to make a purchase order.</p>
         <a href="@Url.Action("MakePurchaseOrder","StoreClerk")" class="btn btn-danger"> Raise Purchase Order</a>
     }
@@ -69,6 +69,8 @@
     else
     {
         //display them
+        
+
     }
 </div>
 
