@@ -43,5 +43,10 @@ namespace Team8ADProjectSSIS.DAO
         {
             return context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.Status.Label.Equals("Cancelled")).ToList<PurchaseOrder>();
         }
+
+        public List<PurchaseOrder> FindAllPO()
+        {
+            return context.PurchaseOrders.OfType<PurchaseOrder>().ToList<PurchaseOrder>();
+        }
     }
 }

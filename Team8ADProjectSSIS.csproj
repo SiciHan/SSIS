@@ -250,12 +250,17 @@
     <Compile Include="Migrations\202001300838426_snapshot13.designer.cs">
       <DependentUpon>202001300838426_snapshot13.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002010759576_snapshot14.cs" />
+    <Compile Include="Migrations\202002010759576_snapshot14.designer.cs">
+      <DependentUpon>202002010759576_snapshot14.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CPClerk.cs" />
     <Compile Include="Models\Delegation.cs" />
     <Compile Include="Models\Disbursement.cs" />
     <Compile Include="Models\DisbursementItem.cs" />
+    <Compile Include="Models\JoinDandDI.cs" />
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\NotificationChannel.cs" />
     <Compile Include="Models\Operation.cs" />
@@ -451,6 +456,10 @@
     <Content Include="Views\DepartmentRepresentative\Home.cshtml" />
     <Content Include="Views\StoreClerk\FormRetrieve.cshtml" />
     <Content Include="Views\StoreClerk\MakePurchaseOrder.cshtml" />
+    <Content Include="Views\StoreManager\POHistory.cshtml" />
+    <Content Include="Views\StoreManager\PODetails.cshtml" />
+    <Content Include="Views\StoreManager\DisbursementHistory.cshtml" />
+    <Content Include="Views\StoreManager\DisbursementDetails.cshtml" />
     <Content Include="Views\StoreClerk\DisbursementDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -511,6 +520,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001300838426_snapshot13.resx">
       <DependentUpon>202001300838426_snapshot13.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002010759576_snapshot14.resx">
+      <DependentUpon>202002010759576_snapshot14.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
