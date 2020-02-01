@@ -13,11 +13,19 @@ namespace Team8ADProjectSSIS.Controllers
     {
         ItemDAO _itemDAO;
         SupplierItemDAO _supplieritemDAO;
+        PurchaseOrderDAO _purchaseOrderDAO;
+        PurchaseOrderDetailsDAO _purchaseOrderDetailsDAO;
+        DisbursementDAO _disbursementDAO;
+        DisbursementItemDAO _disbursementItemDAO;
 
         public StoreManagerController()
         {
             _itemDAO = new ItemDAO();
             _supplieritemDAO = new SupplierItemDAO();
+            _purchaseOrderDAO = new PurchaseOrderDAO();
+            _purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
+            _disbursementDAO = new DisbursementDAO();
+            _disbursementItemDAO = new DisbursementItemDAO();
         }
 
         // GET: StoreManager
@@ -49,6 +57,36 @@ namespace Team8ADProjectSSIS.Controllers
                 suppliers.Add(temp);
             }
             ViewBag.suppliers = suppliers;
+            return View();
+        }
+
+        public ActionResult POHistory()
+        {
+            List<PurchaseOrder> AllPO = _purchaseOrderDAO.FindAllPO();
+            ViewData["AllPO"] = AllPO;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult PODetails(int IdPurchaseOrder)
+        {
+            List<PurchaseOrderDetail> DetailPO = _purchaseOrderDetailsDAO.FindDetailPO(IdPurchaseOrder);
+            ViewData["DetailPO"] = DetailPO;
+            return View();
+        }
+
+        public ActionResult DisbursementHistory()
+        {
+            List<JoinDandDI> AllDisbursement = _disbursementDAO.FindAllDisbursement();
+            ViewData["AllDisbursement"] = AllDisbursement;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult DisbursementDetails(int IdDisbursement)
+        {
+            List<JoinDandDI> DetailDisbursement = _disbursementItemDAO.FindDetailDisbursement(IdDisbursement);
+            ViewData["DetailDisbursement"] = DetailDisbursement;
             return View();
         }
     }

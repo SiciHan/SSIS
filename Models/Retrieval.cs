@@ -13,5 +13,6 @@ namespace Team8ADProjectSSIS.Models
         public String CodeDepartment { get; set; }
         public int IdRequisition { get; set; }
         public int Unit { get; set; }
+        public int IdStatus { get; set; }
     }
 }
