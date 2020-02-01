@@ -160,16 +160,6 @@ namespace Team8ADProjectSSIS.Controllers
                 ViewBag.Today = EndDate;
                 ViewBag.LastThu = StartDate;
             }
-            
-            // Create Disbursement and set status to "preparing"
-            List<int> PKDisbursement = _disbursementDAO.CreateDisbursement(NewRetrievalItem);
-            // Create DisbursementItem and set status to "preparing"
-            List<int> PKDisbursementItem = _disbursementItemDAO
-                                           .CreateDisbursementItem(PKDisbursement, NewRetrievalItem);
-            // Search Disbursement with status set as "preparing"
-            List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
-            ViewData["RetrievalForm"] = RetrievalForm;
-            ViewData["NoDisbursement"] = false;
             ViewBag.LastThu = StartDate;
             ViewBag.Today = EndDate;
             return View();
