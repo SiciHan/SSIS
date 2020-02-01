@@ -360,6 +360,10 @@
     <Content Include="Views\Home\LogIn.cshtml" />
     <Content Include="Views\StoreClerk\PurchaseOrderList.cshtml" />
     <Content Include="Views\DepartmentRepresentative\Home.cshtml" />
+    <Content Include="Views\DepartmentRepresentative\History.cshtml" />
+    <Content Include="Views\DepartmentRepresentative\Details.cshtml" />
+    <Content Include="Views\DepartmentRepresentative\CollectionPoints.cshtml" />
+    <Content Include="Views\DepartmentRepresentative\LocationMap.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

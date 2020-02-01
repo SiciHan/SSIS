@@ -34,11 +34,29 @@ namespace Team8ADProjectSSIS.DAO
                 .WithOptional(d=>d.CollectionPt)
                 .HasForeignKey(k=>k.IdCollectionPt)
                 .WillCascadeOnDelete(false);
-           /* modelBuilder.Entity<Employee>()
-             .HasRequired<Department>(c => c.Department)
-             .WithMany(d=>d.Employees)
-             .HasForeignKey(s=>s.CodeDepartment)
-             .WillCascadeOnDelete();*/
+
+       modelBuilder.Entity<CollectionPoint>()
+      .HasMany(c => c.Disbursements)
+      .WithOptional(d => d.CollectionPoint)
+      .HasForeignKey(k => k.IdCollectionPt)
+      .WillCascadeOnDelete(false);
+
+
+            modelBuilder.Entity<Employee>()
+                        .HasMany(c => c.CollectedDisbursements)
+                        .WithOptional(c => c.CollectedBy)
+                        .HasForeignKey(c => c.IdCollectedBy)
+                        .WillCascadeOnDelete(false);
+            modelBuilder.Entity<Employee>()
+            .HasMany(c => c.DisbursedDisbursements)
+            .WithOptional(c => c.DisbursedBy)
+            .HasForeignKey(c => c.IdDisbursedBy)
+            .WillCascadeOnDelete(false);
+            /* modelBuilder.Entity<Employee>()
+              .HasRequired<Department>(c => c.Department)
+              .WithMany(d=>d.Employees)
+              .HasForeignKey(s=>s.CodeDepartment)
+              .WillCascadeOnDelete();*/
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
         }
         //public DbSet Categories { get; set; }
@@ -62,5 +80,6 @@ namespace Team8ADProjectSSIS.DAO
         public DbSet<SupplierItem> SupplierItems { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<CPClerk> CPClerks { get; set; }
+        public DbSet<Status> Status { get; set; }
     }
 }

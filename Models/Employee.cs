@@ -57,5 +57,12 @@ namespace Team8ADProjectSSIS.Models
         public virtual ICollection<NotificationChannel> NotificationChannelsFromMe{ get; set; }
         [InverseProperty("To")]
         public virtual ICollection<NotificationChannel> NotificationChannelsToMe { get; set; }
+
+        [InverseProperty("CollectedBy")]
+        public virtual ICollection<Disbursement> CollectedDisbursements { get; set; }
+        [InverseProperty("DisbursedBy")]
+        public virtual ICollection<Disbursement> DisbursedDisbursements { get; set; }
+
+        
     }
 }
