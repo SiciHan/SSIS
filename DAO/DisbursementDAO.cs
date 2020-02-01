@@ -169,38 +169,43 @@ namespace Team8ADProjectSSIS.DAO
             foreach (var id in IdDisbursementItem)
             {
                 var existing = context.RequisitionItems
-                            .Join(context.Requisitions,
-                            ri => ri.IdRequisiton, r => r.IdRequisition,
-                            (ri, r) => new { ri, r })
-                            .Join(context.Items,
-                            i => i.ri.IdItem, ir => ir.IdItem,
-                            (i, ir) => new { i, ir })
-                            .Join(context.DisbursementItems,
-                            d => d.ir.IdItem, dir => dir.IdItem,
-                            (d, dir) => new { d, dir })
-                            .Where(x => x.dir.IdDisbursementItem == id)
-                            .Select(x => x.d.i.r.IdRequisition);
+                                    .Join(context.Requisitions,
+                                    ri => ri.IdRequisiton, r => r.IdRequisition,
+                                    (ri, r) => new { ri, r })
+                                    .Join(context.Items,
+                                    rir => rir.ri.IdItem, i => i.IdItem,
+                                    (rir, i) => new { rir, i })
+                                    .Join(context.DisbursementItems,
+                                    riri => riri.rir.ri.IdItem, di => di.IdItem,
+                                    (riri, di) => new { riri, di })
+                                    .Where(x => x.di.IdDisbursementItem == id)
+                                    .Select(x => x.riri.rir.r.IdRequisition);
 
                 if (existing != null)
                 {
                     foreach (var e in existing)
-                        ExistingIdRequisition.Add(e);
+                    { 
+                        if (!ExistingIdRequisition.Any())
+                            ExistingIdRequisition.Add(e);
+                        else if (!ExistingIdRequisition.Contains(e))
+                            ExistingIdRequisition.Add(e);
+                    }
                 }
-                
             }
             List<Retrieval> NewRetrievalItem = new List<Retrieval>();
-
-            if (ExistingIdRequisition != null)
+            List<Retrieval> ExtraRetrievalItem = new List<Retrieval>();
+            if (ExistingIdRequisition.Any())
             {
                 foreach (int eir in ExistingIdRequisition)
                 {
-                    var newreqitem = RetrievalItem.Where(x => x.IdRequisition != eir);
+                    var extra = RetrievalItem.Where(x => x.IdRequisition == eir);
 
-                    foreach (var newri in newreqitem)
+                    foreach (var newri in extra)
                     {
-                        NewRetrievalItem.Add(newri);
+                        ExtraRetrievalItem.Add(newri);
                     }
                 }
+                NewRetrievalItem = RetrievalItem.Except(ExtraRetrievalItem).ToList();
                 return NewRetrievalItem;
             }
             

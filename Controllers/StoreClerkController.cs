@@ -44,7 +44,6 @@ namespace Team8ADProjectSSIS.Controllers
             // Get Department that seleceted same collection point as store clerk
             List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
 
-            bool NoDisbursement = false;
             DateTime Today = DateTime.Now;
             DateTime LastThu = Today.AddDays(-3);
             while (LastThu.DayOfWeek != DayOfWeek.Thursday)
@@ -56,15 +55,15 @@ namespace Team8ADProjectSSIS.Controllers
                 // Search Disbursement with status set as "preparing"
                 List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
                 ViewData["RetrievalForm"] = RetrievalForm;
-                NoDisbursement = false;
-                ViewData["NoDisbursement"] = NoDisbursement;
+                ViewData["NoDisbursement"] = false;
+                ViewData["NoNewRequisition"] = false;
 
             }
             // If Disbursement contain no status "preparing" from last thursday to today
             else
             {
-                NoDisbursement = true;
-                ViewData["NoDisbursement"] = NoDisbursement;
+                ViewData["NoDisbursement"] = true;
+                ViewData["NoNewRequisition"] = false;
                 ViewBag.Today = Today.ToString("dd-MM-yyyy");
                 ViewBag.LastThu = LastThu.ToString("dd-MM-yyyy");
             }
@@ -93,19 +92,32 @@ namespace Team8ADProjectSSIS.Controllers
             // Search and retrieve Requisition & Requisition Item
             List<Retrieval> RetrievalItem = _requisitionDAO
                                             .RetrieveRequisition(DClerk, SDate, EDate);
-            // Check if the the RetrievalForm has been created
+            // Check if the the RetrievalForm has been created 
+            // return retrieval item that have not created to disbursement and disbursementitem  
             List<Retrieval> NewRetrievalItem = _disbursementDAO.CheckRetrievalFormExist(RetrievalItem);
 
-            // Create Disbursement and set status to "preparing"
-            List<int> PKDisbursement = _disbursementDAO.CreateDisbursement(NewRetrievalItem);
-            // Create DisbursementItem and set status to "preparing"
-            List<int> PKDisbursementItem = _disbursementItemDAO
-                                           .CreateDisbursementItem(PKDisbursement, NewRetrievalItem);
-            // Search Disbursement with status set as "preparing"
-            List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
-            ViewData["RetrievalForm"] = RetrievalForm;
-            ViewData["NoDisbursement"] = false;
-
+            // New Retrieval Item is null when all IdRequisition is disbursed
+            if (NewRetrievalItem.Any())
+            {
+                // Create Disbursement and set status to "preparing"
+                List<int> PKDisbursement = _disbursementDAO.CreateDisbursement(NewRetrievalItem);
+                // Create DisbursementItem and set status to "preparing"
+                List<int> PKDisbursementItem = _disbursementItemDAO
+                                               .CreateDisbursementItem(PKDisbursement, NewRetrievalItem);
+                // Search Disbursement with status set as "preparing"
+                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
+                ViewData["RetrievalForm"] = RetrievalForm;
+                ViewData["NoDisbursement"] = false;
+                ViewData["NoNewRequisition"] = false;
+            }
+            else
+            {
+                ViewData["NoDisbursement"] = true;
+                ViewData["NoNewRequisition"] = true;
+                ViewBag.Today = EndDate;
+                ViewBag.LastThu = StartDate;
+            }
+            
             return View();
         }
 
