@@ -39,7 +39,6 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
-        [HttpPost]
         public ActionResult Suppliers(int itemId)
         {
             List<SupplierItem> supplierItems = _supplieritemDAO.GetSuppliersById(itemId);
