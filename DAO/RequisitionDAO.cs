@@ -16,41 +16,8 @@ namespace Team8ADProjectSSIS.DAO
             this.context = new SSISContext();
         }
 
-        public List<int> SearchRequisitionForRetrival(DateTime Yesterday, DateTime LastThu)
+        public List<Retrieval> RetrieveRequisition(List<string> DClerk, DateTime StartDate, DateTime EndDate)
         {
-            List<int> SelectedRequisition = new List<int>();
-            var requisition = from r in context.Requisitions
-                                    where r.IdStatusCurrent == 3
-                                    where r.ApprovedDate <= Yesterday
-                                    where r.ApprovedDate >= LastThu
-                                    select r.IdRequisition;
-
-            foreach (var id in requisition)
-                SelectedRequisition.Add(id);
-            return SelectedRequisition;             
-        }
-
-        public List<Retrieval> RetrieveRequisition(int IdStoreClerk, DateTime StartDate, DateTime EndDate)
-        {
-            // Check IdStoreClerk selected collection point
-            List<int> CPClerk = new List<int>();
-            CPClerk = context.CPClerks
-                      .Where(x => x.IdStoreClerk == IdStoreClerk)
-                      .Select(x => x.IdCollectionPt).ToList();
-
-            // Check Department that have selected the same collection point as the storeclerk
-            List<String> DClerk = new List<String>();
-            foreach (int CollectionPt in CPClerk)
-            {
-                var CodeDepartment = context.Departments
-                                    .Where(x => x.IdCollectionPt == CollectionPt)
-                                    .Select(x => x.CodeDepartment);
-                foreach (var cd in CodeDepartment)
-                {
-                    DClerk.Add(cd);
-                }
-            }
-
             // Get Employee That is working in Department from DClerk
             List<int> IdEmployee = new List<int>();
             foreach (string CodeDpt in DClerk)
@@ -58,8 +25,11 @@ namespace Team8ADProjectSSIS.DAO
                 var IdEmp = context.Employees
                                     .Where(x => x.CodeDepartment.Equals(CodeDpt))
                                     .Select(x => x.IdEmployee);
-                foreach (var ie in IdEmp)
-                    IdEmployee.Add(ie);
+                if (IdEmp != null)
+                {
+                    foreach (var ie in IdEmp)
+                        IdEmployee.Add(ie);
+                }
             }
 
             // Get approved requisition between startdate and enddate
@@ -73,8 +43,12 @@ namespace Team8ADProjectSSIS.DAO
                                     .Where(x => x.ApprovedDate >= StartDate)
                                     .Where(x => x.IdEmployee == ie)
                                     .Select(x => x.IdRequisition);
-                foreach (var iri in IdReqItem)
-                    IdRequestedItem.Add(iri);
+                if (IdReqItem != null)
+                {
+                    foreach (var iri in IdReqItem)
+                        IdRequestedItem.Add(iri);
+                }
+                
             }
             Debug.WriteLine(IdRequestedItem);
 
@@ -85,27 +59,30 @@ namespace Team8ADProjectSSIS.DAO
             foreach (var sr in IdRequestedItem)
             {
                 var retrieval = context.Items
-                        .Join(context.RequisitionItems,
-                        items => items.IdItem, ri => ri.IdItem,
-                        (items, ri) => new { items, ri })
-                        .Join(context.Requisitions,
-                        r => r.ri.IdRequisiton, re => re.IdRequisition,
-                        (r, re) => new { r, re })
-                        .Join(context.Employees,
-                        e => e.re.IdEmployee, emp => emp.IdEmployee,
-                        (e, emp) => new Retrieval
-                        {
-                            Description = e.r.items.Description,
-                            IdItem = e.r.items.IdItem,
-                            StockUnit = e.r.items.StockUnit,
-                            Unit = e.r.ri.Unit,
-                            CodeDepartment = emp.CodeDepartment,
-                            IdRequisition = e.re.IdRequisition
-                        }).Where(x => x.IdRequisition == sr);
-                foreach (var r in retrieval)
-                    RetrievalItem.Add(r);
+                                        .Join(context.RequisitionItems,
+                                        items => items.IdItem, ri => ri.IdItem,
+                                        (items, ri) => new { items, ri })
+                                        .Join(context.Requisitions,
+                                        r => r.ri.IdRequisiton, re => re.IdRequisition,
+                                        (r, re) => new { r, re })
+                                        .Join(context.Employees,
+                                        e => e.re.IdEmployee, emp => emp.IdEmployee,
+                                        (e, emp) => new Retrieval
+                                        {
+                                            Description = e.r.items.Description,
+                                            IdItem = e.r.items.IdItem,
+                                            StockUnit = e.r.items.StockUnit,
+                                            Unit = e.r.ri.Unit,
+                                            CodeDepartment = emp.CodeDepartment,
+                                            IdRequisition = e.re.IdRequisition
+                                        }).Where(x => x.IdRequisition == sr);
+                if (retrieval != null)
+                {
+                    foreach (var r in retrieval)
+                        RetrievalItem.Add(r);
+                }
+                
             }
-            Debug.WriteLine(RetrievalItem);
 
             return RetrievalItem;
 
