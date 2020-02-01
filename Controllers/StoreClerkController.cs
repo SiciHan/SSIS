@@ -156,49 +156,74 @@ namespace Team8ADProjectSSIS.Controllers
             // retrieve 2 lists of Disbursement Lists which are "Prepared" and "Scheduled" under the same Coll Point
             // find by Status and Clerk's Collection Points
             // assume clerkId is 2
-            //int clerkId = 2;
-            //List<Disbursement> prepList= _disbursementDAO.FindByStatus("Prepared", clerkId);
-            //List<Disbursement> scheList= _disbursementDAO.FindByStatus("Scheduled", clerkId);
-            //scheList.AddRange(_disbursementDAO.FindByStatus("Received", clerkId));
-            //scheList.AddRange(_disbursementDAO.FindByStatus("Disbursed", clerkId));
-            List<Disbursement> prepList= _disbursementDAO.FindByStatus("Prepared");
-            List<Disbursement> scheList= _disbursementDAO.FindByStatus("Scheduled");
-            scheList.AddRange(_disbursementDAO.FindByStatus("Received"));
+            int clerkId = 2;
+            List<Disbursement> prepList = _disbursementDAO.FindByStatus("Prepared", clerkId);
+            List<Disbursement> scheList = _disbursementDAO.FindByStatus("Scheduled", clerkId);
+            scheList.AddRange(_disbursementDAO.FindByStatus("Received", clerkId));
 
             ViewBag.prepList = prepList;
             ViewBag.scheList = scheList;
+
+            // Finds Next Monday
+            DateTime NextMon = DateTime.Now;
+            while (NextMon.DayOfWeek != DayOfWeek.Monday)
+                NextMon = NextMon.AddDays(1);
+
+            ViewBag.NextMon = NextMon.ToString("yyyy-MM-dd");
 
             return View();
         }
 
         // James: Selecting multiple disbursements to schedule for collection
         [HttpPost]
-        public ActionResult Schedule(IEnumerable<int> disbIdsToSchedule)
+        public ActionResult Schedule(IEnumerable<int> disbIdsToSchedule, String pickDate)
         {
-            _disbursementDAO.UpdateStatus(disbIdsToSchedule, 10);
-            // add in notification here upon updating status
+            if(disbIdsToSchedule != null)
+            {
+                // schedule for selected date by setting the date from the form
+                DateTime SDate = DateTime.ParseExact(pickDate, "yyyy-MM-dd",
+                                System.Globalization.CultureInfo.InvariantCulture);
+
+                // add in notification here upon updating status
+
+                _disbursementDAO.UpdateStatus(disbIdsToSchedule, 10, SDate);
+            } 
 
             return RedirectToAction("Disbursement");
         }
 
         // James: Scheduling a single disbursement with redistribution if necessary
         [HttpPost]
-        public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom)
+        public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, String pickDate)
         {
             _disbursementItemDAO.GiveAndTake(disbItemId, transferQtyNum, disbItemIdDeptFrom);
-            _disbursementDAO.UpdateStatus(disbId, 10);
+
+            // schedule for selected date by setting the date from the form
+            DateTime SDate = DateTime.ParseExact(pickDate, "yyyy-MM-dd",
+                System.Globalization.CultureInfo.InvariantCulture);
+
             // add in notification here upon updating status and notify on shortfall (if any)
 
+            _disbursementDAO.UpdateStatus(disbId, 10, SDate);
             return RedirectToAction("Disbursement");
         }
 
         // James: Opens page to redistribute qty from other disbursements
         public ActionResult Redistribute(int disbId)
         {
+            // assume clerkId is 2
+            int IdStoreClerk = 2;
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
             ViewBag.disb = targetDisbursement;
 
-            ViewBag.dropdownDisbursementItems = _disbursementItemDAO.FindCorrespondingDisbursementItems(targetDisbursement.DisbursementItems);
+            ViewBag.dropdownDisbursementItems = _disbursementItemDAO.FindCorrespondingDisbursementItems(targetDisbursement.DisbursementItems, IdStoreClerk);
+
+            // Finds Next Monday
+            DateTime NextMon = DateTime.Now;
+            while (NextMon.DayOfWeek != DayOfWeek.Monday)
+                NextMon = NextMon.AddDays(1);
+
+            ViewBag.NextMon = NextMon.ToString("yyyy-MM-dd");
 
             return PartialView("Redistribute", targetDisbursement);
         }
@@ -219,7 +244,7 @@ namespace Team8ADProjectSSIS.Controllers
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
             ViewBag.disb = targetDisbursement;
 
-            // if qtyDisbursed < disbItem.UnitIssued then raise a SA-missing/broken
+            // if qtyDisbursed < disbItem.UnitIssued then raise a SA-broken
 
             // updates the disbitemId's unitissued to the qtyDisbursed
             _disbursementItemDAO.UpdateUnitIssued(disbItemId, qtyDisbursed);
@@ -229,7 +254,7 @@ namespace Team8ADProjectSSIS.Controllers
             return PartialView("DisbursementDetails");
         }
 
-        //James: For clerk to sign, post the transactions to stock record and email out a copy of the disbursement details
+        //James: For clerk to sign, raises SA in case of discrepancy and email out a copy of the disbursement details
         [HttpPost]
         public ActionResult ClerkSign(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
         {
@@ -238,11 +263,11 @@ namespace Team8ADProjectSSIS.Controllers
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
             List<DisbursementItem> targetDisbItems = targetDisbursement.DisbursementItems.ToList();
             // updates the disb's status to "Disbursed" or 7
-            _disbursementDAO.UpdateStatus(disbId, 7);
+            _disbursementDAO.UpdateStatus(disbId, 7, DateTime.Now);
 
             // creates stockrecords for each disbItemId passing in the itemId, departmentId and qtyDisbursed
-            for (int i = 0; i < disbItemId.Count; i++)
-                _stockRecordDAO.CreateDisbursementTransaction(targetDisbItems[i].IdItem, targetDisbursement.CodeDepartment, qtyDisbursed[i], clerkId);
+            //for (int i = 0; i < disbItemId.Count; i++)
+            //    _stockRecordDAO.CreateDisbursementTransaction(targetDisbItems[i].IdItem, targetDisbursement.CodeDepartment, qtyDisbursed[i], clerkId);
 
             // emails a copy / sends notification to DR and Clerk
 

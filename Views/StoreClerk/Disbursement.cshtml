@@ -5,12 +5,12 @@
     List<Disbursement> prepList = ViewBag.prepList;
     List<Disbursement> scheList = ViewBag.scheList;
 }
+
 <script src="~/Scripts/jquery-3.3.1.min.js"></script>
 <script src="~/Scripts/bootstrap.min.js"></script>
-
+<link href="~/Styles/css/number-input.css" rel="stylesheet" />
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
-
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="icon-bar"></span>
@@ -40,7 +40,6 @@
 
 @using (Html.BeginForm("Schedule", "StoreClerk", FormMethod.Post))
 {
-
     <table class="table table-hover redistribute_table">
         <thead>
             <tr>
@@ -52,34 +51,52 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (Disbursement d in prepList)
+            @if (prepList.Count > 0)
             {
-            <tr>
-            @if (d.DisbursementItems.ToList().All(di => di.UnitIssued == di.UnitRequested)){
-                @:<tr class="label-success">              
-            } else
+                foreach (Disbursement d in prepList)
+                {
+                    <tr>
+                        @if (d.DisbursementItems.ToList().All(di => di.UnitIssued == di.UnitRequested))
+                        {
+                            @:<tr class="label-success">
+                        }
+                        else
+                        {
+                            @:<tr class="label-danger">
+                        }
+                        <td><input type="checkbox" name="disbIdsToSchedule" id="disbIdsToSchedule" value="@d.IdDisbursement" /></td>
+                        <td>@d.Department.Name</td>
+                        <td>@d.Date</td>
+                        <td>@d.Status.Label</td>
+                        <td><button type="button" class="btn btn-info" onclick="Redistribute(@d.IdDisbursement)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+                    </tr>
+                }
+            }
+            else
             {
-                @:<tr class="label-danger">
-            } 
-                <td><input type="checkbox" name="disbIdsToSchedule" id="disbIdsToSchedule" value="@d.IdDisbursement" /></td>
-                <td>@d.Department.Name</td>
-                <td>@d.Date</td>
-                <td>@d.Status.Label</td>
-                <td><button type="button" class="btn btn-info" onclick="Redistribute(@d.IdDisbursement)"><i class="glyphicon glyphicon-pencil"></i></button></td>
-            </tr>
+                <tr class="info">
+                    <td colspan="5" align="center">No more retrievals!</td>
+                </tr>
             }
         </tbody>
     </table>
-    <input type="submit" value="Schedule" class="btn btn-primary"/>
+    if (prepList.Count > 0)
+    {
+        <div class="form-group">
+            <input type="date" class="form-control" id="pickDate" name="pickDate" value="@ViewBag.NextMon" min="@ViewBag.NextMon" />
+            <br />
+            <input type="submit" value="Schedule" class="btn btn-primary" />
+        </div>
+    }
 }
 
-<br />
+<hr />
 
 <table class="table table-hover">
     <thead>
         <tr>
             <th scope="col">Department</th>
-            <th scope="col">Retrieval Date</th>
+            <th scope="col">Disbursement Date</th>
             <th scope="col">Status</th>
             <th scope="col"></th>
         </tr>
@@ -150,15 +167,15 @@
     var RefreshDisb = function () {
         $.ajax({
             url: "/StoreClerk/RefreshDisbursement",
-                type: "POST",
-                data: $("#refreshDisbForm").serialize(),
-                success: function () {
-                    var url = "/StoreClerk/DisbursementDetails?disbId=" + d;
-                    $("#modalBodyDivDisbursement").load(url, function () {
-                        $("#modalDisb").modal("show");
-                    });
-                    alert("Quantity updated and Dep Rep notified");
-                }
+            type: "POST",
+            data: $("#refreshDisbForm").serialize(),
+            success: function () {
+                var url = "/StoreClerk/DisbursementDetails?disbId=" + d;
+                $("#modalBodyDivDisbursement").load(url, function () {
+                    $("#modalDisb").modal("show");
+                });
+                alert("Quantity updated and Dep Rep notified");
+            }
         });
     }
 

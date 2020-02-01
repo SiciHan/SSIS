@@ -6,8 +6,6 @@
     List<DisbursementItem> disbursementItems = disb.DisbursementItems.ToList();
 }
 
-<link href="~/Styles/css/number-input.css" rel="stylesheet" />
-
 <h5>Department: <b>@disb.Department.Name</b></h5>
 <h5>CP: <b>@disb.Department.CollectionPt.Location (@disb.Department.CollectionPt.Time)</b></h5>
 
@@ -33,6 +31,7 @@
                     <td>@i.UnitRequested</td>
                     <td>
                         <span id="qtyFromStore@(i.IdDisbursementItem)">@i.UnitIssued</span>
+                        <span id="oriQtyFromStore@(i.IdDisbursementItem)">@i.UnitIssued</span>
                     </td>
                     @if(disb.IdStatus == 10)
                     {

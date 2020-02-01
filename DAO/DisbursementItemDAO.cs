@@ -66,15 +66,24 @@ namespace Team8ADProjectSSIS.DAO
         }
         
         //James
-        internal List<DisbursementItem> FindCorrespondingDisbursementItems(ICollection<DisbursementItem> disbursementItems)
+        internal List<DisbursementItem> FindCorrespondingDisbursementItems(ICollection<DisbursementItem> disbursementItems, int IdStoreClerk)
         {
             List<DisbursementItem> di = new List<DisbursementItem>();
+            // Check IdStoreClerk selected collection point
+            List<int> CPClerk = new List<int>();
+            CPClerk = context.CPClerks
+                      .Where(x => x.IdStoreClerk == IdStoreClerk)
+                      .Select(x => x.IdCollectionPt).ToList();
+
             // for every disbItem, this will send along the list of other departments' items which are only "Prepared"
             // this would be for the dynamic dropdownlist used in selecting which dept to take items from
             foreach (DisbursementItem i in disbursementItems)
             {
                 di.AddRange(context.DisbursementItems
-                    .Where(x => x.Disbursement.IdStatus == 9 && x.IdDisbursement != i.IdDisbursement && x.IdItem == i.IdItem)
+                    .Where(x => x.Disbursement.IdStatus == 9 && 
+                    x.IdDisbursement != i.IdDisbursement && 
+                    x.IdItem == i.IdItem &&
+                    CPClerk.Contains((int)x.Disbursement.Department.IdCollectionPt))
                     .ToList());
             }
 

@@ -100,22 +100,32 @@ namespace Team8ADProjectSSIS.DAO
         }
 
         //James
-        public List<Disbursement> FindByStatus(String status)
+        public List<Disbursement> FindByStatus(String status, int IdStoreClerk)
         {
-            var list = context.Disbursements.Where(x => x.Status.Label == status)
+            // Check IdStoreClerk selected collection point
+            List<int> CPClerk = new List<int>();
+            CPClerk = context.CPClerks
+                      .Where(x => x.IdStoreClerk == IdStoreClerk)
+                      .Select(x => x.IdCollectionPt).ToList();
+
+            var list = context.Disbursements
+                .Where(x => x.Status.Label == status && CPClerk.Contains((int)x.Department.IdCollectionPt))
                 .ToList();
 
             return list;
         }
 
         //James
-        public void UpdateStatus(IEnumerable<int> disbIdsToSchedule, int idStatus)
+        public void UpdateStatus(IEnumerable<int> disbIdsToSchedule, int idStatus, DateTime SDate)
         {
             try
             {
                 context.Disbursements.Where(x => disbIdsToSchedule.Contains(x.IdDisbursement))
                     .ToList()
-                    .ForEach(x => x.IdStatus = idStatus);
+                    .ForEach(x => {
+                        x.IdStatus = idStatus;
+                        x.Date = SDate;
+                        });
                 context.SaveChanges();
             } catch (Exception e)
             {
