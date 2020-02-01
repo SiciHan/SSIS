@@ -18,6 +18,8 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly DisbursementItemDAO _disbursementItemDAO;
         private readonly PurchaseOrderDAO _purchaseOrderDAO;
         private readonly ItemDAO _itemDAO;
+        private readonly CollectionPointDAO _collectionpointDAO;
+        private readonly EmployeeDAO _employeeDAO;
         public StoreClerkController()
         {
             this._disbursementDAO = new DisbursementDAO();
@@ -27,6 +29,8 @@ namespace Team8ADProjectSSIS.Controllers
             this._disbursementItemDAO = new DisbursementItemDAO();
             this._purchaseOrderDAO = new PurchaseOrderDAO();
             this._itemDAO = new ItemDAO();
+            this._collectionpointDAO = new CollectionPointDAO();
+            this._employeeDAO = new EmployeeDAO();
         }
         
 
@@ -68,17 +72,55 @@ namespace Team8ADProjectSSIS.Controllers
                 ViewBag.Today = Today.ToString("dd-MM-yyyy");
                 ViewBag.LastThu = LastThu.ToString("dd-MM-yyyy");
             }
-
-
+            List<int> CPs = _collectionpointDAO.FindByClerkId(IdStoreClerk);
+            ViewData["CPs"] = CPs;
             return View();
         }
         // Post Method
         [HttpPost]
-        public ActionResult FormRetrieve(string StartDate, string EndDate)
+        public ActionResult FormRetrieve(int[] idCPs, string StartDate, string EndDate)
         {
             // Assume ClerkID
             int IdStoreClerk = 3;
-
+            if (idCPs != null)
+            {
+                foreach(int id in idCPs)
+                {
+                    int tempClerkId = _employeeDAO.FindClerkIdByCPId(id);
+                    if(tempClerkId == IdStoreClerk)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        List<int> CPIdOfTempClerkId = _collectionpointDAO.FindByClerkId(tempClerkId);
+                        List<int> CPIdOfClerkId = _collectionpointDAO.FindByClerkId(IdStoreClerk);
+                        for(int i=0; i<CPIdOfClerkId.Count; i++)
+                        {
+                            bool noNeedChange = false;
+                            foreach(int id2 in idCPs)
+                            {
+                                if(CPIdOfClerkId[i] == id2)
+                                {
+                                    noNeedChange = true;
+                                }
+                            }
+                            if(noNeedChange == false)
+                            {
+                                //swap the collection point between two clerks
+                                int temp = CPIdOfClerkId[i];
+                                CPIdOfClerkId[i] = id;
+                                CPIdOfTempClerkId[CPIdOfTempClerkId.IndexOf(id)] = temp;
+                                _collectionpointDAO.ChangeCPTo(IdStoreClerk, CPIdOfClerkId);
+                                _collectionpointDAO.ChangeCPTo(tempClerkId, CPIdOfTempClerkId);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            List<int> CPs = _collectionpointDAO.FindByClerkId(IdStoreClerk);
+            ViewData["CPs"] = CPs;
             // Get Department that seleceted same collection point as store clerk
             List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
 
@@ -105,7 +147,8 @@ namespace Team8ADProjectSSIS.Controllers
             List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
             ViewData["RetrievalForm"] = RetrievalForm;
             ViewData["NoDisbursement"] = false;
-
+            ViewBag.LastThu = StartDate;
+            ViewBag.Today = EndDate;
             return View();
         }
 
