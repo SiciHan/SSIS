@@ -124,6 +124,8 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("FormRetrieve", "StoreClerk");
 
         } 
+        
+        //@Shutong
         public ActionResult PurchaseOrderList()
         {
             ViewData["Incomplete"]=_purchaseOrderDAO.FindIncompletePO();
@@ -135,6 +137,7 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["LowStock"] = _itemDAO.FindLowStockItems();
             return View();
         }
+        //@Shutong
         public ActionResult MakePurchaseOrder(string searchStr)
         {
             if (!string.IsNullOrEmpty(searchStr))
