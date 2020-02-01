@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -22,8 +22,22 @@ namespace Team8ADProjectSSIS.Controllers
             _employeeDAO = new EmployeeDAO();
             _roleDAO = new RoleDAO();
         }
+/*        public HomeController(CategoryDAO categoryDAO)
+        {
+            _categoryDAO = categoryDAO;
+        }*/
+
+        public ActionResult Chat()
+        {
+            return View();
+        }
 
 
+        public ActionResult Index()
+        {
+
+            return View();
+        }
         [HttpGet]
         public ActionResult LogIn()
         {
@@ -31,7 +45,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
         [HttpPost]
-        public ActionResult LogIn(string UserName,string HashedPassword)
+        public ActionResult LogIn(string UserName, string HashedPassword)
         {
             //Try to find the user from user name
             Employee user = _employeeDAO.FindEmployeeByUsername(UserName);
@@ -74,7 +88,7 @@ namespace Team8ADProjectSSIS.Controllers
                             return RedirectToAction("Dashboard", "DepartmentActingHead");
                         default:
                             return RedirectToAction("Index", "Home");
-                    }      
+                    }
                 }
             }
             //if the password does not match or user does not exist
@@ -90,11 +104,6 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult SessionExpired()
         {
             return Content("Your session is expired. Please try to log in again.");
-        }
-        public ActionResult Index()
-        {
-
-            return View();
         }
 
         public ActionResult About()
@@ -120,10 +129,5 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return View();
         }
-        public ActionResult Chat()
-        {
-            return View();
-        }
-
     }
 }

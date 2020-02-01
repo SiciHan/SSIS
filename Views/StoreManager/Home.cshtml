@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{ 
     Layout = null;
 }
 
@@ -13,88 +12,170 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Manager Home</title>
+    <title>@ViewBag.Title</title>
+    @*<link href="~/Scripts/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">*@
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
 
-    <link href="~/Scripts/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/Styles/css/simple-sidebar.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
 </head>
 
 <body>
-    <div id="navbar" class="navbar navbar-expand-sm navbar-light bg-light border-bottom">
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="navbar-brand">
-                Logic University
+    <!--Page Content-->
+    <div id="page-content-wrapper">
+
+        <!--Nav Bar-->
+        <div class="navbar navbar-default navbar-fixed-top">
+            @*<button class="btn btn-primary" id="menu-toggle">&#9776; Menu</button>*@
+
+            @*<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>*@
+            <div class="navbar-header">
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
 
-            <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <div class="navbar-collapse collapse" id="navbarSupportedContent">
+                <ul class="nav navbar-nav navbar-right" style="margin-right:8px">
 
-                <li class="navbar-brand">
-                    Hi, Manager &nbsp; <img src="~/Images/logo.jpg" class="logo" /> &nbsp;&nbsp;&nbsp;
-                </li>
+                    <li class="navbar-brand" style="padding-right:0px; padding-top:18px">
+                        Hi, Manager &nbsp;
+                    </li>
+                    <li style="padding-right:12px">
+                        <img src="~/Images/logo.jpg" class="logo" style="margin-top:9px" />
+                    </li>
 
-                <li class="nav-item">
-                    @Html.ActionLink("Logout", "Home", "StoreManager", null, new { @class = "nav-link" })
-                </li>
+                    <li style="padding-right:8px">
+                        <a href="@Url.Action("Index","StoreManager")" style="padding-right:0px">
+                            <span class="glyphicon glyphicon-bell" style="top:4px"></span>
+                            <span class="badge badge-danger">8</span>
+                        </a>
+                    </li>
 
-
-            </ul>
-        </div>
-    </div>
-    <div class="container-fluid" style="margin-top:30px">
-        <div class="row" style="height:450px">
-            <div class="col-3" style="margin-left:6%">
-                <div class="card text-center" style="height:100%">
-                    <img class="card-img-top" src="~/Images/Stationery.jpg" alt="Card image" style="width:100%; height:60%">
-                    <div class="card-body">
-                        <h3 class="card-title">Stationery Store</h3>
-                        <hr/>
-                        @Html.ActionLink("GO DASHBOARD", "Dashboard", "StoreManager", null, new { @class = "btn btn-primary stretched-link" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-3" style="margin-left:6%">
-                <div class="card text-center" style="height:100%">
-                    <img class="card-img-" src="~/Images/Book2.jpg" alt="Card image" style="width:100%; height:60%">
-                    <div class="card-body">
-                        <h3 class="card-title">Book Store</h3>
-                        <hr />
-                        <a href="#" class="btn btn-primary stretched-link">GO DASHBOARD</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3" style="margin-left:6%">
-                <div class="card text-center" style="height:100%">
-                    <img class="card-img-top" src="~/Images/Furniture.jpg" alt="Card image" style="width:100%; height:60%">
-                    <div class="card-body">
-                        <h3 class="card-title">Furniture Store</h3>
-                        <hr />
-                        <a href="#" class="btn btn-primary stretched-link">GO DASHBOARD</a>
-                    </div>
-                </div>
+                    <li>
+                        <a href="@Url.Action("Home","StoreManager")" style="padding-top:18px">
+                            <span class="glyphicon glyphicon-log-out"></span>
+                            Logout
+                        </a>
+                        @*@Html.ActionLink("Home", "Home", "StoreManager", null, new { @class = "nav-link" })*@
+                        @*<button class="btn btn-primary h-100">Home</button>*@
+                    </li>
+                </ul>
             </div>
         </div>
 
+        <!--Content-->
+        <div class="container-fluid">
+            <div class="row" style="height:400px; margin-top:60px">
+                <div class="col-sm-3" style="margin-left:6%">
+                    <div class="card text-center" style="height:100%">
+                        <img class="card-img-top" src="~/Images/Stationery.jpg" alt="Card image" style="width:100%; height:60%">
+                        <div class="card-body">
+                            <h3 class="card-title">Stationery Store</h3>
+                            <hr />
+                            @Html.ActionLink("GO DASHBOARD", "Dashboard", "StoreManager", null, new { @class = "btn btn-primary stretched-link" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3" style="margin-left:6%">
+                    <div class="card text-center" style="height:100%">
+                        <img class="card-img-" src="~/Images/Book2.jpg" alt="Card image" style="width:100%; height:60%">
+                        <div class="card-body">
+                            <h3 class="card-title">Book Store</h3>
+                            <hr />
+                            <a href="#" class="btn btn-primary stretched-link">GO DASHBOARD</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3" style="margin-left:6%">
+                    <div class="card text-center" style="height:100%">
+                        <img class="card-img-top" src="~/Images/Furniture.jpg" alt="Card image" style="width:100%; height:60%">
+                        <div class="card-body">
+                            <h3 class="card-title">Furniture Store</h3>
+                            <hr />
+                            <a href="#" class="btn btn-primary stretched-link">GO DASHBOARD</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year - Stationery Store Inventory System, Logic University</p>
+            </footer>
+        </div>
     </div>
 
-    <footer style="text-align:center; bottom: 0px; width:100%;">
-        <hr />
-        <p>&copy; @DateTime.Now.Year -Stationery Inventory System | NUS-ISS | SA49 | Team 8</p>
-    </footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @*<script src="~/Scripts/vendor/jquery/jquery.min.js"></script>
+        <script src="~/Scripts/vendor/bootstrap/js/bootstrap.bundle.js"></script>*@
 
-    <script src="~/Scripts/vendor/jquery/jquery.min.js"></script>
-    <script src="~/Scripts/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+    <script>
+        $(function () {
+            $(".faq-tabbable").find("li").each(function () {
+                var a = $(this).find("a:first")[0];
+                if ($(a).attr("href") === location.pathname) {
+                    $(this).addClass("active");
+                } else {
+                    $(this).removeClass("active");
+                }
+            });
+        })
+    </script>
+
+    <style>
+        .logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 36px;
+        }
+
+        .content {
+            padding: 16px;
+        }
+
+        .sticky {
+            position: fixed;
+            top: 0;
+            width: 100%;
+        }
+
+        .navbar-nav > li > a {
+            padding-top: 16px;
+            padding-bottom: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            min-width: 10px;
+            padding: 3px 7px;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            background-color: #e60c0c;
+            border-radius: 10px;
+        }
+
+        .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+            color: #555;
+            background-color: #e7e7e7;
+            height: 54px;
+        }
+    </style>
+
 </body>
 </html>
 
-<style>
-    .logo {
-        width: 36px;
-        height: 36px;
-        border-radius: 36px;
-    }
-</style>
+
+
+
+
+
+
