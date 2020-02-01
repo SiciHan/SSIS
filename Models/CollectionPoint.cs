@@ -38,5 +38,6 @@ namespace Team8ADProjectSSIS.Models
         //OneToMany
         public virtual ICollection<Department> Departments { get; set; }
         public virtual ICollection<CPClerk> CPClerks { get; set; }
+        public virtual ICollection<Disbursement> Disbursements { get; set; }
     }
 }

@@ -60,21 +60,22 @@ namespace Team8ADProjectSSIS.DAO
             {
                 var retrieval = context.Items
                                         .Join(context.RequisitionItems,
-                                        items => items.IdItem, ri => ri.IdItem,
-                                        (items, ri) => new { items, ri })
+                                        i => i.IdItem, ri => ri.IdItem,
+                                        (i, ri) => new { i, ri })
                                         .Join(context.Requisitions,
-                                        r => r.ri.IdRequisiton, re => re.IdRequisition,
-                                        (r, re) => new { r, re })
+                                        iri => iri.ri.IdRequisiton, r => r.IdRequisition,
+                                        (iri, r) => new { iri, r })
                                         .Join(context.Employees,
-                                        e => e.re.IdEmployee, emp => emp.IdEmployee,
-                                        (e, emp) => new Retrieval
+                                        riri => riri.r.IdEmployee, e => e.IdEmployee,
+                                        (riri, e) => new Retrieval
                                         {
-                                            Description = e.r.items.Description,
-                                            IdItem = e.r.items.IdItem,
-                                            StockUnit = e.r.items.StockUnit,
-                                            Unit = e.r.ri.Unit,
-                                            CodeDepartment = emp.CodeDepartment,
-                                            IdRequisition = e.re.IdRequisition
+                                            Description = riri.iri.i.Description,
+                                            IdItem = riri.iri.i.IdItem,
+                                            StockUnit = riri.iri.i.StockUnit,
+                                            Unit = riri.iri.ri.Unit,
+                                            CodeDepartment = e.CodeDepartment,
+                                            IdRequisition = riri.r.IdRequisition,
+                                            ApprovedDate = riri.r.ApprovedDate
                                         }).Where(x => x.IdRequisition == sr);
                 if (retrieval != null)
                 {
