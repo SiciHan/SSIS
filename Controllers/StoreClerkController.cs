@@ -203,7 +203,8 @@ namespace Team8ADProjectSSIS.Controllers
 
                 // add in notification here upon updating status
 
-                _disbursementDAO.UpdateStatus(disbIdsToSchedule, 10, SDate);
+
+                _disbursementDAO.UpdateStatus(disbIdsToSchedule, 10, SDate, null);
             } 
 
             return RedirectToAction("Disbursement");
@@ -213,7 +214,11 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, String pickDate)
         {
-            _disbursementItemDAO.GiveAndTake(disbItemId, transferQtyNum, disbItemIdDeptFrom);
+            // assume clerkId is 2
+            int IdStoreClerk = 2;
+
+            // give and take from disbursement Item and creates the reversal entry and new entry for stock records
+            _disbursementItemDAO.GiveAndTake(disbItemId, transferQtyNum, disbItemIdDeptFrom, IdStoreClerk);
 
             // schedule for selected date by setting the date from the form
             DateTime SDate = DateTime.ParseExact(pickDate, "yyyy-MM-dd",
@@ -221,7 +226,8 @@ namespace Team8ADProjectSSIS.Controllers
 
             // add in notification here upon updating status and notify on shortfall (if any)
 
-            _disbursementDAO.UpdateStatus(disbId, 10, SDate);
+
+            _disbursementDAO.UpdateStatus(disbId, 10, SDate, null);
             return RedirectToAction("Disbursement");
         }
 
@@ -258,35 +264,43 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult RefreshDisbursement(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
         {
+            // assume clerkId is 2
+            int IdStoreClerk = 2;
+
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
             ViewBag.disb = targetDisbursement;
+            List<DisbursementItem> targetList = targetDisbursement.DisbursementItems.ToList();
 
-            // if qtyDisbursed < disbItem.UnitIssued then raise a SA-broken
+            // if qtyDisbursed < disbItem.UnitIssued then raise a SA-broken and a reversal entry to qtyDisbursed
+            for (int i = 0; i < targetList.Count; i++)
+            {
+                if (qtyDisbursed[i] < targetList[i].UnitIssued)
+                {
+                    _stockRecordDAO.StockAdjustmentDuringDisbursement(qtyDisbursed[i], targetList[i], IdStoreClerk);
+                }
+            }
 
             // updates the disbitemId's unitissued to the qtyDisbursed
             _disbursementItemDAO.UpdateUnitIssued(disbItemId, qtyDisbursed);
 
             // add notification below to DR
 
+
             return PartialView("DisbursementDetails");
         }
 
         //James: For clerk to sign, raises SA in case of discrepancy and email out a copy of the disbursement details
         [HttpPost]
-        public ActionResult ClerkSign(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
+        public ActionResult ClerkSign(IEnumerable<int> disbId)
         {
             // assume clerkId is 2
             int clerkId = 2;
-            Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
-            List<DisbursementItem> targetDisbItems = targetDisbursement.DisbursementItems.ToList();
-            // updates the disb's status to "Disbursed" or 7
-            _disbursementDAO.UpdateStatus(disbId, 7, DateTime.Now);
 
-            // creates stockrecords for each disbItemId passing in the itemId, departmentId and qtyDisbursed
-            //for (int i = 0; i < disbItemId.Count; i++)
-            //    _stockRecordDAO.CreateDisbursementTransaction(targetDisbItems[i].IdItem, targetDisbursement.CodeDepartment, qtyDisbursed[i], clerkId);
+            // updates the disb's status to "Disbursed" or 7
+            _disbursementDAO.UpdateStatus(disbId, 7, DateTime.Now, clerkId);
 
             // emails a copy / sends notification to DR and Clerk
+
 
             return RedirectToAction("Disbursement");
         }

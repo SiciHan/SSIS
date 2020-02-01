@@ -238,14 +238,14 @@ namespace Team8ADProjectSSIS.DAO
                       .Select(x => x.IdCollectionPt).ToList();
 
             var list = context.Disbursements
-                .Where(x => x.Status.Label == status && CPClerk.Contains((int)x.Department.IdCollectionPt))
+                .Where(x => x.Status.Label == status && CPClerk.Contains((int)x.IdCollectionPt))
                 .ToList();
 
             return list;
         }
 
         //James
-        public void UpdateStatus(IEnumerable<int> disbIdsToSchedule, int idStatus, DateTime SDate)
+        public void UpdateStatus(IEnumerable<int> disbIdsToSchedule, int idStatus, DateTime SDate, int? IdStoreClerk)
         {
             try
             {
@@ -254,6 +254,7 @@ namespace Team8ADProjectSSIS.DAO
                     .ForEach(x => {
                         x.IdStatus = idStatus;
                         x.Date = SDate;
+                        x.IdDisbursedBy = IdStoreClerk;
                         });
                 context.SaveChanges();
             } catch (Exception e)

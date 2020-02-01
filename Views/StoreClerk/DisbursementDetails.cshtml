@@ -31,7 +31,6 @@
                     <td>@i.UnitRequested</td>
                     <td>
                         <span id="qtyFromStore@(i.IdDisbursementItem)">@i.UnitIssued</span>
-                        <span id="oriQtyFromStore@(i.IdDisbursementItem)">@i.UnitIssued</span>
                     </td>
                     @if(disb.IdStatus == 10)
                     {
@@ -56,35 +55,11 @@
     <br />
 
     <input type="hidden" name="disbId" id="@disb.IdDisbursement" value="@disb.IdDisbursement" />
-    @*<input type="submit" class="btn btn-default" value="Refresh" id="refreshBtn"/>*@
     if(disb.IdStatus == 11)
     {
-        @*<input type="submit" class="btn btn-success" formaction="@Url.Action("ConfirmDelivery")" formmethod="post" />*@
-        <input type="submit" id="confirmDel" class="hidden" formaction="@Url.Action("ClerkSign")" formmethod="post" />
+        <input type="submit" id="confirmDel" class="hidden" formaction="@Url.Action("ClerkSign")" formmethod="post" onclick="alert('Successfully disbursed! A confirmation has been sent to you and @disb.Department.Name!')"/>
     } else if(disb.IdStatus == 10)
     {
         <button type="button" id="confirmDel" class="hidden" onclick="alert('Awaiting @disb.Department.Name\'s acknowledgement')"></button>
     }
 }
-
-<script>
-    @*$(document).ready(function () {
-        // Posts the refresh data using ajax and refreshes the values too!
-        $("#refreshBtn").click(function () {
-            @foreach (DisbursementItem i in disbursementItems)
-            {
-                @:$("#qtyFromStore@(i.IdDisbursementItem)").text($("#qtyDisbursed@(i.IdDisbursementItem)").val());
-            }
-            $.ajax({
-            url: "/StoreClerk/RefreshDisbursement",
-                type: "POST",
-                data: $('form').serialize(),
-                success: function (result) {
-                    alert("Quantity updated and @disb.Department.Name notified");
-
-                }
-            });
-            return false;
-        });
-    });*@
-</script>

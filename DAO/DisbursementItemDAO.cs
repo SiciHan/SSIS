@@ -155,7 +155,7 @@ namespace Team8ADProjectSSIS.DAO
             return DetailDisbursement;
         }
         //James
-        internal void GiveAndTake(IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom)
+        internal void GiveAndTake(IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, int IdStoreClerk)
         {
             //Debugging and PoC
             /*System.Diagnostics.Debug.WriteLine($"disbItemId Count: {disbItemId.Count}, transferQtyNum Count: {transferQtyNum.Count}");
@@ -191,8 +191,32 @@ namespace Team8ADProjectSSIS.DAO
                     // 2. DItoGive.UnitIssued -= transferQtyNum[i]
                     DItoGive.UnitIssued -= transferQtyNum[i];
 
+                    // 2a. Create reversal entry for StockRecord for the ItemId
+                    StockRecord reverseSr = new StockRecord
+                    {
+                        Date = DateTime.Now,
+                        IdOperation = 1,
+                        IdDepartment = DItoGive.Disbursement.CodeDepartment,
+                        IdStoreClerk = IdStoreClerk,
+                        IdItem = DItoGive.IdItem,
+                        Unit = transferQtyNum[i] // positive for the reversal entry as we are taking back the units from that dept
+                    };
+                    context.StockRecords.Add(reverseSr);
+
                     // 3. DItoReceive.UnitIssued += transferQtyNum[i]
                     DItoReceive.UnitIssued += transferQtyNum[i];
+
+                    // 3a. Create new entry for StockRecord for the ItemId
+                    StockRecord newSr = new StockRecord
+                    {
+                        Date = DateTime.Now,
+                        IdOperation = 1,
+                        IdDepartment = DItoReceive.Disbursement.CodeDepartment,
+                        IdStoreClerk = IdStoreClerk,
+                        IdItem = DItoReceive.IdItem,
+                        Unit = transferQtyNum[i] * -1 // negative for the new entry as we are disbursing more units to that dept
+                    };
+                    context.StockRecords.Add(newSr);
 
                     // wrap this in a transaction or db.SaveChanges()
                     context.SaveChanges();
@@ -219,7 +243,7 @@ namespace Team8ADProjectSSIS.DAO
                     .Where(x => x.Disbursement.IdStatus == 9 && 
                     x.IdDisbursement != i.IdDisbursement && 
                     x.IdItem == i.IdItem &&
-                    CPClerk.Contains((int)x.Disbursement.Department.IdCollectionPt))
+                    CPClerk.Contains((int)x.Disbursement.IdCollectionPt))
                     .ToList());
             }
 

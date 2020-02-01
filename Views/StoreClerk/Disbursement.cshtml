@@ -56,7 +56,7 @@
                 foreach (Disbursement d in prepList)
                 {
                     <tr>
-                        @if (d.DisbursementItems.ToList().All(di => di.UnitIssued == di.UnitRequested))
+                        @if (d.DisbursementItems.ToList().All(di => di.UnitIssued >= di.UnitRequested))
                         {
                             @:<tr class="label-success">
                         }
@@ -66,7 +66,7 @@
                         }
                         <td><input type="checkbox" name="disbIdsToSchedule" id="disbIdsToSchedule" value="@d.IdDisbursement" /></td>
                         <td>@d.Department.Name</td>
-                        <td>@d.Date</td>
+                        <td>@d.Date.ToString("dd-MM-yyyy")</td>
                         <td>@d.Status.Label</td>
                         <td><button type="button" class="btn btn-info" onclick="Redistribute(@d.IdDisbursement)"><i class="glyphicon glyphicon-pencil"></i></button></td>
                     </tr>
@@ -105,7 +105,7 @@
     {
         <tr>
             <td>@d.Department.Name</td>
-            <td>@d.Date</td>
+            <td>@d.Date.ToString("dd-MM-yyyy")</td>
             <td>@d.Status.Label</td>
             <td><button type="button" class="btn btn-info" onclick="Disbursement(@d.IdDisbursement)" id="disb@(d.IdDisbursement)"><i class="glyphicon glyphicon-list"></i></button></td>
         </tr>
@@ -149,7 +149,11 @@
         var url = "/StoreClerk/Redistribute?disbId=" + disbId;
 
         $("#modalBodyDivRedistribute").load(url, function () {
-            $("#modalRedis").modal("show");
+            //$("#modalRedis").modal("show");
+            $("#modalRedis").modal({
+                backdrop: "static",
+                keyboard: false
+            });
         })
     }
 
@@ -159,7 +163,11 @@
         var url = "/StoreClerk/DisbursementDetails?disbId=" + disbId;
         d = disbId;
         $("#modalBodyDivDisbursement").load(url, function () {
-            $("#modalDisb").modal("show");
+            //$("#modalDisb").modal("show");
+            $("#modalDisb").modal({
+                backdrop: "static",
+                keyboard: false
+            });
         })
     }
 
