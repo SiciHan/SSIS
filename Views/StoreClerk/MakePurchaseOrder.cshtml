@@ -7,17 +7,32 @@
 <!--Display the Low stock items-->
 @using Team8ADProjectSSIS.Models
 @{
-    var lowstock = ViewData["LowStock"] as IList<Item>;
+    var lowStock = ViewData["LowStock"] as IList<Item>;
     var searchResult = ViewData["SearchResult"] as IList<Item>;
     var searchStr = (string)ViewData["SearchStr"];
 }
 
 
-@{ if (lowstock.Any<Item>())
+@{ if (lowStock.Any<Item>())
     {
         <h3> Low Stock!</h3>
 
         //display all the items
+
+
+        using (Html.BeginForm("MakePurchaseOrder", "StockClerk", FormMethod.Post))
+        {
+            foreach (Item item in lowStock)
+            {
+                Html.CheckBox(item.IdItem.ToString());
+                //Html.Display(item.Category.Label);
+                Html.Display(item.Description);
+            }
+
+            <div class="form-group text-center">
+                <input type="submit" class="btn btn-primary" value="Add to Cart" />
+            </div>
+        }
         <div>
 
         </div>

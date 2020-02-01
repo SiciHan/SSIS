@@ -22,6 +22,18 @@ namespace Team8ADProjectSSIS.Models
         [ForeignKey("IdStatus")]
         public virtual Status Status { get; set; }
 
+        public int? IdCollectionPt { get; set; }
+        [ForeignKey("IdCollectionPt")]
+        public virtual CollectionPoint CollectionPoint { get; set; }
+
+        public int? IdCollectedBy { get; set; }
+        [ForeignKey("IdCollectedBy")]
+        public virtual Employee CollectedBy { get; set; }
+
+        public int? IdDisbursedBy { get; set; }
+        [ForeignKey("IdDisbursedBy")]
+        public virtual Employee DisbursedBy { get; set; }
+
         public virtual ICollection<DisbursementItem> DisbursementItems{ get; set; }
     }
 }
