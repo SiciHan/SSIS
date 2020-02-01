@@ -16,7 +16,7 @@ namespace Team8ADProjectSSIS.DAO
             this.context = new SSISContext();
         }
 
-        public List<int> CreateDisbursementItem(List<int> PKDisbursement, List<Retrieval> RetrievalItem)
+        public List<int> CreateDisbursementItem(List<int> IdDisbursement, List<Retrieval> RetrievalItem)
         {
             // RetrievalItem Group by CodeDepartment, IdItem
             var Retrieval = RetrievalItem.GroupBy(x => new { x.IdItem, x.CodeDepartment })
@@ -28,18 +28,18 @@ namespace Team8ADProjectSSIS.DAO
                                 Unit = y.Sum(z => z.Unit)
                             }).ToList();
 
-            List<int> PKDisbursementItem = new List<int>();
+            List<int> IdDisbursementItem = new List<int>();
             // Get Disbursement with IdDisbursement 
-            foreach (int id in PKDisbursement)
+            foreach (int id in IdDisbursement)
             {
                 Disbursement disbursement = context.Disbursements
                                             .Where(x => x.IdDisbursement == id)
                                             .FirstOrDefault();
 
                 string DptCode = disbursement.CodeDepartment;
-                Debug.WriteLine(DptCode);
                 // Create DisbursementItem List using Retrieval with CodeDepartment equals DptCode
                 var RequestedItemByDept = Retrieval.Where(ri => ri.CodeDepartment.Equals(DptCode))
+                                                    .OrderBy(ri => ri.ApprovedDate)
                                                     .ToList();
 
                 // Status of "preparing"
@@ -76,11 +76,11 @@ namespace Team8ADProjectSSIS.DAO
 
                     // Get Id of Created DisbursementItem
                     int pk = NewDisbursementItem.IdDisbursementItem;
-                    PKDisbursementItem.Add(pk);
+                    IdDisbursementItem.Add(pk);
                 }
             }
 
-            return PKDisbursementItem;
+            return IdDisbursementItem;
         }
 
         public List<int> UpdateDisbursementItem(List<string> DClerk, int[] IdItemRetrieved)

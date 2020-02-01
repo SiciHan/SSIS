@@ -9,8 +9,7 @@ namespace Team8ADProjectSSIS
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-{version}.js",
-                        "~/Scripts/moment.js"));   //Added for bootstrap date time picker
+                        "~/Scripts/jquery-{version}.js"));   
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -21,13 +20,11 @@ namespace Team8ADProjectSSIS
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                      "~/Scripts/bootstrap.js",
-                      "~/Scripts/bootstrap-datetimepicker.js"));    //Added for bootstrap date time picker
+                      "~/Scripts/bootstrap.js"));    
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css",
-                      "~/Content/bootstrap-datetimepicker.css"));   //Added for bootstrap date time picker
+                      "~/Content/site.css"));      
         }
     }
 }
