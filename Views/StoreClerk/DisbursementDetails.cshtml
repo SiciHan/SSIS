@@ -4,10 +4,22 @@
     ViewBag.Title = "DisbursementDetails";
     Disbursement disb = ViewBag.disb;
     List<DisbursementItem> disbursementItems = disb.DisbursementItems.ToList();
+    Employee depRep = ViewBag.depRep;
 }
 
-<h5>Department: <b>@disb.Department.Name</b></h5>
-<h5>CP: <b>@disb.Department.CollectionPt.Location (@disb.Department.CollectionPt.Time)</b></h5>
+
+<div class="row">
+    <div class="col-md-6">
+        <p>Department: <b>@disb.Department.Name</b></p>
+        <p>CP: <b>@disb.Department.CollectionPt.Location (@disb.Department.CollectionPt.Time)</b></p>
+    </div>
+    <div class="col-md-6">
+        <p>Representative: @depRep.Title  <b>@depRep.Name</b></p>
+        <p>Telephone: @depRep.Tel</p>
+    </div>
+</div>
+
+<hr />
 
 @using (Html.BeginForm("RefreshDisbursement", "StoreClerk", FormMethod.Post, new { id="refreshDisbForm"}))
 {

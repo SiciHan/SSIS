@@ -5,10 +5,23 @@
     Disbursement disb = ViewBag.disb;
     List<DisbursementItem> disbursementItems = disb.DisbursementItems.ToList();
     List<DisbursementItem> dropdownDisbursementItems = (List<DisbursementItem>)ViewBag.dropdownDisbursementItems;
+    Employee depRep = ViewBag.depRep;
 }
 <link href="~/Styles/css/number-input.css" rel="stylesheet" />
 
-<h5>Department: <b>@Model.Department.Name</b></h5>
+<div class="row">
+    <div class="col-md-6">
+        <p>Department: <b>@disb.Department.Name</b></p>
+        <p>CP: <b>@disb.Department.CollectionPt.Location (@disb.Department.CollectionPt.Time)</b></p>
+    </div>
+    <div class="col-md-6">
+        <p>Representative: @depRep.Title  <b>@depRep.Name</b></p>
+        <p>Telephone: @depRep.Tel</p>
+    </div>
+</div>
+
+<hr />
+
 @using (Html.BeginForm("ScheduleSingle", "StoreClerk", FormMethod.Post))
 {
     <table class="table table-hover">
@@ -25,6 +38,10 @@
             @foreach (DisbursementItem i in disbursementItems)
             {
                 <tr>
+                @if(i.UnitIssued < i.UnitRequested)
+                {
+                    @:<tr class="label-warning">
+                }
                     <td>@i.Item.Description<input type="hidden" name="disbItemId" value="@i.IdDisbursementItem" /></td>
                     <td>@i.UnitRequested</td>
                     <td>@i.UnitIssued</td>

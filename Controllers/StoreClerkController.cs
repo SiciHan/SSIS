@@ -260,6 +260,14 @@ namespace Team8ADProjectSSIS.Controllers
 
             ViewBag.NextMon = NextMon.ToString("yyyy-MM-dd");
 
+            // Get Dep Rep
+            Employee depRep = targetDisbursement.Department.Employees
+                .ToList()
+                .Where(emp => emp.IdRole == 3)
+                .FirstOrDefault();
+
+            ViewBag.depRep = depRep;
+
             return PartialView("Redistribute", targetDisbursement);
         }
 
@@ -268,6 +276,14 @@ namespace Team8ADProjectSSIS.Controllers
         {
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
             ViewBag.disb = targetDisbursement;
+
+            // Get Dep Rep
+            Employee depRep = targetDisbursement.Department.Employees
+                .ToList()
+                .Where(emp => emp.IdRole == 3)
+                .FirstOrDefault();
+
+            ViewBag.depRep = depRep;
 
             return PartialView("DisbursementDetails");
         }
