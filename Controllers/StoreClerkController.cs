@@ -332,5 +332,39 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("Disbursement");
         }
+
+        //James: Stocktake overview
+        public ActionResult Stocktake()
+        {
+            ViewBag.allItems = _itemDAO.GetAllItems();
+            return View();
+        }
+
+        //James: Create stocktake as at DateTime.Now
+        public ActionResult NewStocktake()
+        {
+
+            return PartialView("NewStocktake");
+        }
+
+        //James: Save the created stocktake into individual stockrecords
+        [HttpPost]
+        public ActionResult SaveStocktake(IList<int> actualQty, IList<int> missingQty, IList<int> wrongQty, IList<int> brokenQty, IList<int> giftQty)
+        {
+            Debug.WriteLine($"actual: {actualQty.Count}, missing: {missingQty.Count}, wrong: {wrongQty.Count}, broken: {brokenQty.Count}, gift: {giftQty.Count}");
+            Debug.WriteLine($"actual: {actualQty[0]}, missing: {missingQty[0]}, wrong: {wrongQty[0]}, broken: {brokenQty[0]}, gift: {giftQty[0]}");
+            
+            //update the Item's stock and available unit as well as create stock records
+            
+            //return PartialView("ViewStocktake");
+            return RedirectToAction("Stocktake");
+        }
+
+        //James: View past stocktake based on time
+        public ActionResult ViewStocktake(DateTime targetDate)
+        {
+
+            return PartialView("ViewStocktake");
+        }
     }
 }

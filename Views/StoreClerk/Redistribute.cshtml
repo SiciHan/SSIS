@@ -24,6 +24,7 @@
 
 @using (Html.BeginForm("ScheduleSingle", "StoreClerk", FormMethod.Post))
 {
+<div style="overflow-x:auto">
     <table class="table table-hover">
         <thead>
             <tr>
@@ -84,6 +85,8 @@
             }
         </tbody>
     </table>
+</div>
+
     <input type="hidden" name="disbId" value="@Model.IdDisbursement" />
     <input type="date" class="form-control" id="pickDate" name="pickDate" value="@ViewBag.NextMon" min="@ViewBag.NextMon" />
     <br />

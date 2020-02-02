@@ -23,6 +23,7 @@
 
 @using (Html.BeginForm("RefreshDisbursement", "StoreClerk", FormMethod.Post, new { id="refreshDisbForm"}))
 {
+    <div style="overflow-x:auto">
     <table class="table table-hover">
         <thead>
             <tr>
@@ -63,6 +64,7 @@
             }
         </tbody>
     </table>
+    </div>
 
     <br />
 

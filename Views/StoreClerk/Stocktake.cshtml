@@ -1,0 +1,157 @@
+﻿@using Team8ADProjectSSIS.Models
+
+@{
+    ViewBag.Title = "Stocktake";
+    List<Item> allItems = ViewBag.allItems;
+}
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Styles/css/number-input.css" rel="stylesheet" />
+
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Retrieval", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Disbursement", "Disbursement", "StoreClerk")</li>
+                <li>@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
+                <li class="active">@Html.ActionLink("Stock Take", "Stocktake", "StoreClerk")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h2>Stocktake</h2>
+
+<button type="button" class="btn btn-info" onclick="NewStocktake()">New Stocktake</button>
+
+<hr />
+
+<br />
+
+<input type="date" id="targetDate"/>
+<button type="button" class="btn btn-outline-success" onclick="ViewStocktake(targetDate.value)">Fetch</button>
+
+<br />
+<br />
+
+<button type="button" class="btn btn-outline-success" onclick="ViewStocktake(@ViewBag.LastMonth)">Last month</button>
+
+@using (Html.BeginForm("SaveStocktake","StoreClerk", FormMethod.Post)) { 
+<div class="modal fade" id="modalStocktake">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Stock Take</h4>
+            </div>
+            <div class="modal-body" id="modalBodyDivStocktake">
+                <div style="">
+                    <table class="table table-hover fix-head">
+                        <thead>
+                            <tr>
+                                <th colspan="4"></th>
+                                <th colspan="4" style="text-align:center;">Stock Adjustments</th>
+                            </tr>
+                            <tr>
+                                <th style="width:160px">Description</th>
+                                <th style="width:43px">Location</th>
+                                <th style="width:59px">UoM</th>
+                                <th style="width:152px">Quantity</th>
+                                <th style="width:102px">Missing</th>
+                                <th style="width:102px">Wrong allocation</th>
+                                <th style="width:102px">Broken</th>
+                                <th style="width:102px">Gifts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Item i in allItems)
+                            {
+                                <tr>
+                                    <td style="width:188px">@i.Description</td>
+                                    <td style="width:43px">@i.Location</td>
+                                    <td style="width:59px">@i.unitOfMeasure</td>
+                                    <td style="width:152px">
+                                        @*Comparison with recorded quantity will be done in the controller*@
+                                        <input type="number" class="form-control" name="actualQty" id="actualQty@(i.IdItem)" min="0" value="@i.IdItem"required/>
+                                    </td>
+                                    <td style="border-left:1px solid grey; width:103px">
+                                        <div class="number-input">
+                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                            <input type="number" class="form-control" name="missingQty" id="missingQty@(i.IdItem)" min="0" />
+                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                                        </div>
+                                    </td>
+                                    <td style="width:102px">
+                                        <div class="number-input">
+                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                            <input type="number" class="form-control" name="wrongQty" id="wrongQty@(i.IdItem)" min="0" />
+                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                                        </div>
+                                    </td>
+                                    <td style="width:102px">
+                                        <div class="number-input">
+                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                            <input type="number" class="form-control" name="brokenQty" id="brokenQty@(i.IdItem)" min="0" />
+                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                                        </div>
+                                    </td>
+                                    <td style="width:102px">
+                                        <div class="number-input">
+                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                            <input type="number" class="form-control" name="giftQty" id="giftQty@(i.IdItem)" min="0" />
+                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" id="modalFootDivStocktake">
+                <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<script>
+    var NewStocktake = function () {
+        $("#modalStocktake").modal({
+            backdrop: "static",
+            keyboard: false
+        });
+    }
+</script>
+
+<style>
+    table.fix-head>tbody, table{
+        display:block;
+    }
+
+    table.fix-head>tbody{
+        overflow-y:auto;
+        height:300px;
+    }
+
+    .modal-body{
+        overflow-y:auto;
+        height:450px;
+    }
+</style>
