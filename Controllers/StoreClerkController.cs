@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
+using Team8ADProjectSSIS.Report;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -45,7 +46,7 @@ namespace Team8ADProjectSSIS.Controllers
             List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
 
             DateTime Today = DateTime.Now;
-            DateTime LastThu = Today.AddDays(-3);
+            DateTime LastThu = Today.AddDays(-4);
             while (LastThu.DayOfWeek != DayOfWeek.Thursday)
                 LastThu = LastThu.AddDays(-1);
 
@@ -53,10 +54,12 @@ namespace Team8ADProjectSSIS.Controllers
             if (_disbursementDAO.CheckExistDisbursement(DClerk, Today, LastThu))
             {
                 // Search Disbursement with status set as "preparing"
-                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
+                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, Today, LastThu);
                 ViewData["RetrievalForm"] = RetrievalForm;
                 ViewData["NoDisbursement"] = false;
                 ViewData["NoNewRequisition"] = false;
+                ViewBag.Today = Today.ToString("dd-MM-yyyy");
+                ViewBag.LastThu = LastThu.ToString("dd-MM-yyyy");
 
             }
             // If Disbursement contain no status "preparing" from last thursday to today
@@ -88,7 +91,7 @@ namespace Team8ADProjectSSIS.Controllers
             DateTime SDate = DateTime.ParseExact(StartDate, "dd-MM-yyyy", 
                             System.Globalization.CultureInfo.InvariantCulture);
             DateTime EDate = DateTime.ParseExact(EndDate, "dd-MM-yyyy",
-                            System.Globalization.CultureInfo.InvariantCulture);
+                            System.Globalization.CultureInfo.InvariantCulture).AddDays(1);
             // Search and retrieve Requisition & Requisition Item
             List<Retrieval> RetrievalItem = _requisitionDAO
                                             .RetrieveRequisition(DClerk, SDate, EDate);
@@ -105,10 +108,12 @@ namespace Team8ADProjectSSIS.Controllers
                 List<int> PKDisbursementItem = _disbursementItemDAO
                                                .CreateDisbursementItem(PKDisbursement, NewRetrievalItem);
                 // Search Disbursement with status set as "preparing"
-                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
+                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, EDate, SDate);
                 ViewData["RetrievalForm"] = RetrievalForm;
                 ViewData["NoDisbursement"] = false;
                 ViewData["NoNewRequisition"] = false;
+                ViewBag.Today = EndDate;
+                ViewBag.LastThu = StartDate;
             }
             else
             {
@@ -149,7 +154,27 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return RedirectToAction("FormRetrieve", "StoreClerk");
 
-        } 
+        }
+        [HttpPost]
+        public ActionResult PrintPdf(string StartDate, string EndDate)
+        {
+            // Assume ClerkID
+            int IdStoreClerk = 3;
+
+            List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
+            DateTime SDate = DateTime.ParseExact(StartDate, "dd-MM-yyyy",
+                            System.Globalization.CultureInfo.InvariantCulture);
+            DateTime EDate = DateTime.ParseExact(EndDate, "dd-MM-yyyy",
+                            System.Globalization.CultureInfo.InvariantCulture).AddDays(1);
+
+            List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, EDate, SDate);
+
+            RetrievalFormReport retrievalFromReport = new RetrievalFormReport();
+            byte[] abytes = retrievalFromReport.PrepareReport(RetrievalForm);
+            return File(abytes,"application/pdf", "Retrieve Form.pdf");
+
+            //return RedirectToAction("FormRetrieve", "StoreClerk");
+        }
         
         //@Shutong
         public ActionResult PurchaseOrderList()

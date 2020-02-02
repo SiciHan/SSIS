@@ -123,7 +123,7 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
-        public List<Retrieval> RetrievePreparingItem(List<string> DClerk)
+        public List<Retrieval> RetrievePreparingItem(List<string> DClerk, DateTime Today, DateTime LastThu)
         {
             // Join DisbursementItem and Item Entity return status "preparing"
             List<Retrieval> PItem = context.Items
@@ -131,16 +131,20 @@ namespace Team8ADProjectSSIS.DAO
                                             i => i.IdItem, di => di.IdItem,
                                             (i, di) => new { i, di })
                                             .Join(context.Disbursements,
-                                            d => d.di.IdDisbursement, dd => dd.IdDisbursement,
-                                            (d, dd) => new Retrieval
-                                            {
-                                                Description = d.i.Description,
-                                                IdItem = d.i.IdItem,
-                                                StockUnit = d.i.StockUnit,
-                                                Unit = d.di.UnitRequested,
-                                                CodeDepartment = dd.CodeDepartment,
-                                                IdStatus = d.di.IdStatus
-                                            }).Where(x => x.IdStatus == 8).ToList();
+                                            idi => idi.di.IdDisbursement, d => d.IdDisbursement,
+                                            (idi, d) => new {idi,d })
+                                            .Where(x => x.d.Date <= Today)
+                                            .Where(x => x.d.Date >= LastThu)
+                                            .Where(x => x.idi.di.IdStatus == 8)
+                                            .Select(x => new Retrieval {
+                                                Description = x.idi.i.Description,
+                                                IdItem = x.idi.i.IdItem,
+                                                StockUnit = x.idi.i.StockUnit,
+                                                Unit = x.idi.di.UnitRequested,
+                                                CodeDepartment = x.d.CodeDepartment,
+                                                IdStatus = x.idi.di.IdStatus,
+                                                Location = x.idi.i.Location
+                                            }).ToList();
             List<Retrieval> Preparingitem = new List<Retrieval>(); 
             foreach (string CodeDpt in DClerk)
             {
@@ -155,7 +159,8 @@ namespace Team8ADProjectSSIS.DAO
                                                 Description = y.First().Description,
                                                 IdItem = y.First().IdItem,
                                                 StockUnit = y.First().StockUnit,
-                                                Unit = y.Sum(z => z.Unit)
+                                                Unit = y.Sum(z => z.Unit),
+                                                Location = y.First().Location
                                             }).ToList();
 
             return RetrievalForm;
@@ -193,19 +198,19 @@ namespace Team8ADProjectSSIS.DAO
                 }
             }
             List<Retrieval> NewRetrievalItem = new List<Retrieval>();
-            List<Retrieval> ExtraRetrievalItem = new List<Retrieval>();
+            List<Retrieval> ExistingRetrievalItem = new List<Retrieval>();
             if (ExistingIdRequisition.Any())
             {
                 foreach (int eir in ExistingIdRequisition)
                 {
-                    var extra = RetrievalItem.Where(x => x.IdRequisition == eir);
+                    var existing = RetrievalItem.Where(x => x.IdRequisition == eir);
 
-                    foreach (var newri in extra)
+                    foreach (var newri in existing)
                     {
-                        ExtraRetrievalItem.Add(newri);
+                        ExistingRetrievalItem.Add(newri);
                     }
                 }
-                NewRetrievalItem = RetrievalItem.Except(ExtraRetrievalItem).ToList();
+                NewRetrievalItem = RetrievalItem.Except(ExistingRetrievalItem).ToList();
                 return NewRetrievalItem;
             }
             

@@ -75,7 +75,8 @@ namespace Team8ADProjectSSIS.DAO
                                             Unit = riri.iri.ri.Unit,
                                             CodeDepartment = e.CodeDepartment,
                                             IdRequisition = riri.r.IdRequisition,
-                                            ApprovedDate = riri.r.ApprovedDate
+                                            ApprovedDate = riri.r.ApprovedDate,
+                                            Location = riri.iri.i.Location
                                         }).Where(x => x.IdRequisition == sr);
                 if (retrieval != null)
                 {

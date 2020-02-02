@@ -47,8 +47,8 @@
                     <th class="col-1"></th>
                     <th class="col-2">Description</th>
                     <th class="col-3">Total Needed</th>
-                    <th class="col-4">Total Collect</th>
-                    <th class="col-5">Total Available</th>
+                    <th class="col-4">Total Available</th>
+                    <th class="col-5">Location</th>
                 </tr>
             </thead>
             @foreach (var retrievalform in RetrievalForm)
@@ -60,16 +60,25 @@
                         </td>
                         <td class="col-2">@retrievalform.Description </td>
                         <td class="col-3">@retrievalform.Unit</td>
-                        <td class="col-4">0</td>
-                        <td class="col-5">@retrievalform.StockUnit</td>
+                        <td class="col-4">@retrievalform.StockUnit</td>
+                        <td class="col-5">@retrievalform.Location</td>
                     </tr>
                 </tbody>
             }
         </table>
-        <div>
-            <input type="submit" value="Retrieve" />
+        <div style="display: inline" float="right">
+            <input type="submit" value="Retrieve" style="padding: 10px 15px; cursor:pointer; background-color:cornflowerblue" />
         </div>
     }
+    using (Html.BeginForm("PrintPdf", "StoreClerk", FormMethod.Post))
+    {
+        <div style="display: inline" float="right">
+            <input type="submit" value="Print" style="padding: 10px 15px; cursor:pointer; background-color:aquamarine" />
+            <input type="hidden" name="StartDate" value="@(ViewBag.LastThu ?? String.Empty)"/>
+            <input type="hidden" name="EndDate" value="@(ViewBag.Today ?? String.Empty)" />
+        </div>
+    }
+
 }
 else
 {
@@ -84,7 +93,7 @@ else
             {
                 @Html.Editor("StartDate", new { htmlAttributes = new { @class = "startdate", @readonly = "readonly", placeholder = "Start Date..." } })
                 @Html.Editor("EndDate", new { htmlAttributes = new { @class = "enddate", @readonly = "readonly", placeholder = "End Date..." } })
-                <input type="submit" name="FormRetrieve" value="Get Retrieval Form"/>
+                <input type="submit" name="FormRetrieve" value="Get Retrieval Form" />
             }
         </div>
     }
