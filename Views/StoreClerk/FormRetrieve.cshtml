@@ -6,6 +6,7 @@
     Boolean NoNewRequisition = (Boolean)ViewData["NoNewRequisition"];
     List<Retrieval> RetrievalForm = (List<Retrieval>)ViewData["RetrievalForm"];
     List<int> PKDisbursementItem = (List<int>)ViewData["PKDisbursementItem"];
+    List<int> CPs = (List<int>)ViewData["CPs"];
 }
 
 <div class="navbar navbar-default navbar-fixed-top">
@@ -36,9 +37,23 @@
     </div>
 </div>
 <h2>Form Retrieve</h2>
-
 @if (!NoDisbursement)
 {
+    using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
+    {
+        <div width="513" onclick="choicetest();">
+            <input type="checkbox" name="idCPs" id="CPs" value="1" />Management School
+            <input type="checkbox" name="idCPs" id="CPs" value="2" />Stationery Store
+            <input type="checkbox" name="idCPs" id="CPs" value="3" />Medical School
+            <p></p>
+            <input type="checkbox" name="idCPs" id="CPs" value="4" />Engineering School
+            <input type="checkbox" name="idCPs" id="CPs" value="5" />Science School
+            <input type="checkbox" name="idCPs" id="CPs" value="6" />University Hospital
+        </div>
+        <input type="hidden" name="StartDate" value=@ViewBag.LastThu />
+        <input type="hidden" name="EndDate" value=@ViewBag.Today />
+        <input type="submit" value="Change" />
+    }
     using (Html.BeginForm("SaveDisbursement", "StoreClerk", FormMethod.Post))
     {
         <table>
@@ -97,7 +112,6 @@ else
             }
         </div>
     }
-
 }
 
 <link rel="stylesheet" href="~/Content/themes/base/jquery-ui.min.css" />
@@ -129,6 +143,41 @@ else
                 buttonText: "<i class='fa fa-calendar'></i>",
             });
         });
+
+        function choicetest() {
+            var choicearr = document.getElementsByName("idCPs");
+            var a = 0;
+            for (var i = 0; i < choicearr.length; i++)
+                if (choicearr[i].checked) {
+                    a = a + 1;
+                }
+            if (a >= 2) {
+                for (var i = 0; i < choicearr.length; i++)
+                    if (!choicearr[i].checked)
+                        choicearr[i].disabled = 'disabled';
+            } else {
+                for (var i = 0; i < choicearr.length; i++)
+                    choicearr[i].removeAttribute('disabled');
+            }
+        }
+
+        window.onload = function () {
+            var choicearr = document.getElementsByName("idCPs");
+            for (var i = 0; i < choicearr.length; i++) {
+                @foreach(int c in CPs)
+                {
+                <text>
+                if (choicearr[i].value == @c)
+                    choicearr[i].checked = 1;
+                </text>
+                }
+            }
+
+            for (var i = 0; i < choicearr.length; i++)
+                if (!choicearr[i].checked) {
+                    choicearr[i].disabled = 'disabled';
+                }
+        }
     </script>
 }
 <style>
