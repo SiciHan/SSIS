@@ -21,68 +21,24 @@ namespace Team8ADProjectSSIS.Controllers
 
         public ActionResult Index(string cmd, int? id, string searchStr = " ")
         {
-            // if (Session["username"] == null)
-            //  return RedirectToAction("Login", "Home");
+         //   if (Session["IdEmployee"] == null)
+         //       return RedirectToAction("Login", "Home");
 
-            //string username = (string)Session["username"];
-
-            /* string username = "Sam Worthington";
-
-
-
-             if (cmd == "create")
-             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                 {
-                     conn.Open();
-
-                     Random rand = new Random();
-                     int orderNum = rand.Next(10000000, 100000000);
-
-                     string sql = @"INSERT INTO Requisitions(IdStatusCurrent,RaiseDate,HeadRemark,ApprovedDate,WithdrawlDate,Employee_IdEmployee)
-                                     VALUES(1,GETDATE(),null,null,null,(SELECT IdEmployee from Employees WHERE Name = '" + username + "'))";
-
-                     SqlCommand cmdd = new SqlCommand(sql, conn);
-
-                     cmdd.ExecuteNonQuery();
-                 }
-                 */
-            //  string itN = "Eraser (hard)";
-
-            /*  using (SqlConnection conn = new SqlConnection(connectionString))
-              {
-                  conn.Open();
-
-                  Random rand = new Random();
-                  int orderNum = rand.Next(10000000, 100000000);
-
-                  string details = @"INSERT INTO RequisitionItems(IdRequisiton,IdItem,Unit)
-                  VALUES( (SELECT MAX([IdRequisition]) from Requisitions ),
-                  (SELECT IdItem from Items WHERE Description='" + itN + "'),20)";
-
-                  SqlCommand cmddd = new SqlCommand(details, conn);
-
-                  cmddd.ExecuteNonQuery();
-              }*/
-
-
-
-
-            //   }
-
+         //   int idEmployee = (int)Session["IdEmployee"];
 
             ViewBag.items = ListProducts(searchStr);
             ViewBag.searchStr = searchStr;
-
-
-
-            // Session["cartCount"] = cartCount;
 
             return View();
         }
 
         public ActionResult Catalog(string cmd, int? id, string searchStr = " ")
         {
+            //   if (Session["IdEmployee"] == null)
+            //       return RedirectToAction("Login", "Home");
+
+            //   int idEmployee = (int)Session["IdEmployee"];
+
             ViewBag.items = ListProducts(searchStr);
             ViewBag.searchStr = searchStr;
 
@@ -91,6 +47,12 @@ namespace Team8ADProjectSSIS.Controllers
 
         public ActionResult PopUp(string cmd, int? id, string searchStr = " ")
         {
+
+            //   if (Session["IdEmployee"] == null)
+            //       return RedirectToAction("Login", "Home");
+
+            //   int idEmployee = (int)Session["IdEmployee"];
+
             ViewBag.items = ListProducts(searchStr);
             ViewBag.searchStr = searchStr;
 
@@ -99,6 +61,16 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult reqId(string username)
         {
+
+            //   if (Session["IdEmployee"] == null)
+            //       return RedirectToAction("Login", "Home");
+
+            //   int idEmployee = (int)Session["IdEmployee"];
+
+            int idEmployee = 2;
+
+
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -107,7 +79,7 @@ namespace Team8ADProjectSSIS.Controllers
                 int orderNum = rand.Next(10000000, 100000000);
 
                 string sql = @"INSERT INTO Requisitions(IdStatusCurrent,RaiseDate,HeadRemark,ApprovedDate,WithdrawlDate,IdEmployee)
-                                    VALUES(1,GETDATE(),null,GETDATE(),GETDATE(),(SELECT IdEmployee from Employees WHERE Name = '" + username + "'))";
+                                    VALUES(1,GETDATE(),null,GETDATE(),GETDATE()," + idEmployee + ")";
 
                 SqlCommand cmdd = new SqlCommand(sql, conn);
 
@@ -124,22 +96,7 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult OnJSON(string username, string itemName, int quantity)
         {
-            /*  string username = "Sam Worthington";
-              using (SqlConnection conn = new SqlConnection(connectionString))
-              {
-                  conn.Open();
-
-                  Random rand = new Random();
-                  int orderNum = rand.Next(10000000, 100000000);
-
-                  string sql = @"INSERT INTO Requisitions(IdStatusCurrent,RaiseDate,HeadRemark,ApprovedDate,WithdrawlDate,Employee_IdEmployee)
-                                      VALUES(1,GETDATE(),null,null,null,(SELECT IdEmployee from Employees WHERE Name = '" + username + "'))";
-
-                  SqlCommand cmdd = new SqlCommand(sql, conn);
-
-                  cmdd.ExecuteNonQuery();
-              }*/
-
+           
             int length = itemName.Length;
 
             if (itemName.EndsWith("\""))
@@ -400,7 +357,7 @@ namespace Team8ADProjectSSIS.Controllers
 
 
 
-        public Requisition GetRequisition(int ReqID)
+        public Requisition GetRequisition(int idEmployee)
         {
             Requisition requi = new Requisition();
 
@@ -410,7 +367,7 @@ namespace Team8ADProjectSSIS.Controllers
                 conn.Open();
 
 
-                string ch = @"SELECT * from Requisitions WHERE IdRequisition = " + ReqID + "";
+                string ch = @"SELECT * from Requisitions WHERE IdEmployee = " + idEmployee + "";
 
                 SqlCommand chh = new SqlCommand(ch, conn);
 
@@ -431,13 +388,6 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return requi;
         }
-
-
-
-
-
-
-
 
 
 
@@ -462,23 +412,26 @@ namespace Team8ADProjectSSIS.Controllers
             return items;
         }
 
-
-
-
-
         public JsonResult UpdatereqId(int? reqID)
         {
+            //   if (Session["IdEmployee"] == null)
+            //       return RedirectToAction("Login", "Home");
+
+            //   int idEmployee = (int)Session["IdEmployee"];
+
+            int idEmployee = 2;
+
             int req = reqID.GetValueOrDefault();
             string status = "";
             List<String> des = new List<String>();
             Requisition requi = new Requisition();
-            requi = GetRequisition(req);
+            requi = GetRequisition(idEmployee);
             //  ViewBag.ReqItems = ListReqItems(reqID);
             string username = "Sam Worthington";
 
             status = GetIdStatus(req);
             des = GetDescription(req);
-            List<Requisition> reqs = ListReqID(username);
+            List<Requisition> reqs = ListReqID(idEmployee);
             List<RequisitionItem> reqq = ListReqItems(req);
          
 
@@ -493,26 +446,25 @@ namespace Team8ADProjectSSIS.Controllers
             //  return View();
         }
 
-
-
-        public void AddToCart(string cmd, int? id)
-        {
-
-        }
-
-        public ActionResult store()
-        {
-            return View();
-        }
+ 
 
 
 
         public ActionResult Update(string username, string cmd, int? reqID)
         {
+
+            //   if (Session["IdEmployee"] == null)
+            //       return RedirectToAction("Login", "Home");
+
+            //   int idEmployee = (int)Session["IdEmployee"];
+
+            int idEmployee = 2;
+
+
             int req = reqID.GetValueOrDefault();
             username = "Sam Worthington";
 
-            List<Requisition> reqs = ListReqID(username);
+            List<Requisition> reqs = ListReqID(idEmployee);
             List<RequisitionItem> reqq = ListReqItems(req);
 
             ViewBag.ReqItems = ListReqItems(req);
@@ -552,9 +504,9 @@ namespace Team8ADProjectSSIS.Controllers
                 return View();
         }
 
-        public List<Requisition> ListReqID(string username)
+        public List<Requisition> ListReqID(int idEmployee)
         {
-            username = "Sam Worthington";
+          
             List<Requisition> reqs = new List<Requisition>();
 
 
@@ -563,8 +515,8 @@ namespace Team8ADProjectSSIS.Controllers
 
                 conn.Open();
 
-                string ch = @"SELECT * From Requisitions Where IdEmployee =
-                               (SELECT IdEmployee from Employees Where Name = '" + username + "')";
+                string ch = @"SELECT * From Requisitions Where IdEmployee = " + idEmployee;
+                               
 
                 SqlCommand chh = new SqlCommand(ch, conn);
 
