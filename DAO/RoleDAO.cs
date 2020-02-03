@@ -16,8 +16,9 @@ namespace Team8ADProjectSSIS.DAO
 
         public string FindRoleLabelById(int id)
         {
-            return context.Roles.OfType<Role>().Where(r => r.IdRole == id).Select(r => new { r.Label }).OfType<string>().FirstOrDefault();
-        }
+            Role role=context.Roles.OfType<Role>().Where(r => r.IdRole == id).FirstOrDefault();
+            return role.Label;
+        }   
 
     }
 }

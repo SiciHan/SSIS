@@ -18,9 +18,12 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly StockRecordDAO _stockRecordDAO;
         private readonly DisbursementItemDAO _disbursementItemDAO;
         private readonly PurchaseOrderDAO _purchaseOrderDAO;
+        private readonly PurchaseOrderDetailsDAO _purchaseOrderDetailsDAO;
         private readonly ItemDAO _itemDAO;
         private readonly CollectionPointDAO _collectionpointDAO;
         private readonly EmployeeDAO _employeeDAO;
+        private readonly StatusDAO _statusDAO;
+        //private readonly EmployeeDAO _employeeDAO;
         public StoreClerkController()
         {
             this._disbursementDAO = new DisbursementDAO();
@@ -30,8 +33,11 @@ namespace Team8ADProjectSSIS.Controllers
             this._disbursementItemDAO = new DisbursementItemDAO();
             this._purchaseOrderDAO = new PurchaseOrderDAO();
             this._itemDAO = new ItemDAO();
-            this._collectionpointDAO = new CollectionPointDAO();
+            this._statusDAO = new StatusDAO();
+            this._purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
             this._employeeDAO = new EmployeeDAO();
+            this._collectionpointDAO = new CollectionPointDAO();
+            //this._employeeDAO = new EmployeeDAO();
         }
         
 
@@ -255,7 +261,148 @@ namespace Team8ADProjectSSIS.Controllers
                 ViewData["SearchStr"] = searchStr;
             }
             ViewData["LowStock"] = _itemDAO.FindLowStockItems();
+           
+            //ViewData["PODCart"] = _purchaseOrderDetailsDAO.FindAllIncompletePODetails(_purchaseOrderDAO.FindIncompletePO());
             return View();
+        }
+
+        //@Shutong
+        [HttpPost]
+        public ActionResult AddToCart(FormCollection form)
+        {
+            foreach(Item i in _itemDAO.FindLowStockItems())
+            {
+                var isChecked = form["checkbox-" + i.IdItem];
+                string codeSupplier = form["orderFor-" + i.IdItem];//here got problem
+                if (isChecked != null)
+                {
+                    PurchaseOrder po;
+                    //check if there is any exisitng incomplete PO that is for this current supplier
+                    if (!_purchaseOrderDAO.IsIncompletePOExist(codeSupplier))
+                    {
+                        po = _purchaseOrderDAO.Create(codeSupplier,1);
+                    }
+                    else
+                    {
+                        po= _purchaseOrderDAO.FindIncompletePOWithSupplier(codeSupplier);
+                    }
+                    //if the purchaseorderdetail already exist, add the ammount to it.
+                    //else create a new one
+                    _purchaseOrderDetailsDAO.CreateOrAddAmount(i,po);
+                }
+            }
+            return RedirectToAction("MakePurchaseOrder", "StoreClerk");
+        }
+
+        //@Shutong
+        public ActionResult PurchaseOrderCart()
+        {
+            ViewData["SuppliersInPOCart"] = _purchaseOrderDAO.FindSuppliersFromIncompletePOCart();
+            //ViewData["POCart"] = _purchaseOrderDAO.FindIncompletePO();
+            return View();
+        }
+        //@Shutong
+        public ActionResult DeletePODFromCart(int id)
+        {
+            _purchaseOrderDetailsDAO.DeletePOD(id);
+            //ViewData["SuppliersInPOCart"] = _purchaseOrderDAO.FindSuppliersFromIncompletePOCart();
+            //return Content("You have deleted your Purchase Order details"+id);
+            return RedirectToAction("PurchaseOrderCart", "StoreClerk");
+        }
+        //@Shutong
+        public ActionResult UpdateOrderUnit(int orderUnit, int idPOD)
+        {
+            _purchaseOrderDetailsDAO.UpdateOrderUnitById(orderUnit, idPOD);
+            return RedirectToAction("PurchaseOrderCart", "StoreClerk");
+        }
+        //@Shutong
+        [HttpPost]
+        public ActionResult SubmitPurchaseOrder(FormCollection form)
+        {
+
+            foreach (int id in _purchaseOrderDAO.FindIdOfAllIncompletePO())
+            {
+                var purchaseOrderID = form["purchaseOrderId_" + id];
+                if (purchaseOrderID != null)
+                {
+                    _purchaseOrderDAO.UpdateStatusToPending(id);
+                }
+            }
+            return RedirectToAction("PurchaseOrderCart", "StoreClerk");
+        }
+        //@Shutong
+        [HttpPost]
+        public ActionResult CancelAllPurchaseOrder(FormCollection form)
+        {
+
+            foreach (int id in _purchaseOrderDAO.FindIdOfAllIncompletePO())
+            {
+                var purchaseOrderID = form["purchaseOrderId_" + id];
+                if (purchaseOrderID != null)
+                {
+                    _purchaseOrderDAO.UpdateStatusToCancelled(id);
+                }
+            }
+
+            return RedirectToAction("PurchaseOrderList", "StoreClerk");
+        }
+        //@Shutong
+        public ActionResult CancelPO(int id)
+        {
+
+            _purchaseOrderDAO.UpdateStatusToCancelled(id);
+                
+            return RedirectToAction("PurchaseOrderList", "StoreClerk");
+        }
+        //@Shutong
+        public ActionResult WithdrawPO(int id)
+        {
+
+            _purchaseOrderDAO.UpdateStatusToIncomplete(id);
+
+            return RedirectToAction("PurchaseOrderCart", "StoreClerk");
+        }
+
+        //@Shutong
+        public ActionResult UpdatePO(int id)
+        {
+            //not only update the status 
+            //but also need to merge with existing PO.... and delete remarks
+            _purchaseOrderDAO.UpdateRejectedToIncomplete(id);
+            return RedirectToAction("PurchaseOrderCart", "StoreClerk");
+        }
+
+        //@Shutong
+        [HttpGet]
+        public ActionResult CollectPO(int id)
+        {
+
+            ViewData["PurchaseOrder"] = _purchaseOrderDAO.FindPOById(id);
+            ViewData["pod"] = _purchaseOrderDetailsDAO.FindPODetailsByPOId(id);
+            return View();
+        }
+
+        //@Shutong
+        [HttpPost]
+        public ActionResult CollectPO(FormCollection form)
+        {
+            var IdPO = form["IdPO"];
+            int id = Int32.Parse(IdPO);
+            foreach (PurchaseOrderDetail pod in _purchaseOrderDetailsDAO.FindPODetailsByPOId(id))
+            {
+                var deliveredUnit = form["deliveredUnit_" + pod.IdPOD];
+                var deliveryRemark = form["deliveryRemarks_" + pod.IdPOD];
+                _purchaseOrderDetailsDAO.UpdateDeliveredUnitAndRemarksById(pod.IdPOD, Int32.Parse(deliveredUnit), deliveryRemark);
+            }
+            _purchaseOrderDAO.UpdateStatusToDelivered(id);
+            return RedirectToAction("PurchaseOrderList", "StoreClerk");
+        }
+        public ActionResult Schedule(int IdPO, string deliverDate)
+        {
+            //2222 - 02 - 01T00: 12
+            _purchaseOrderDAO.UpdateSchedule(IdPO, deliverDate);
+            return RedirectToAction("PurchaseOrderList", "StoreClerk");
+
         }
     }
 }

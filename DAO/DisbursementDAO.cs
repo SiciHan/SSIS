@@ -237,6 +237,153 @@ namespace Team8ADProjectSSIS.DAO
             return JoinDanDi;
         }
 
-    }
+        public List<Disbursement> GetAllDisbursements()
+        {
+            List<Disbursement> models = new List<Disbursement>();
+            using (SSISContext db = new SSISContext())
+            {
+                models = db.Disbursements
+                    .Include("DisbursementItems.Item")
+                    .Include("Department")
+                    .Include("CollectedBy")
+                    .Include("DisbursedBy")
+                    .Include("CollectionPoint")
+                    .Include("Status")
+                    .ToList();
+            }
+            return models;
+        }
 
+        public Disbursement GetDisbursement(int id)
+        {
+            Disbursement model = new Disbursement();
+            using (SSISContext db = new SSISContext())
+            {
+                model = db.Disbursements
+                    .Include("DisbursementItems.Item")
+                    .Include("Department")
+                    .Include("CollectedBy")
+                    .Include("DisbursedBy")
+                    .Include("CollectionPoint")
+                    .Include("Status")
+                    .Where(x=>x.IdDisbursement == id)
+                    .FirstOrDefault();
+            }
+            return model;
+        }
+
+        public List<Disbursement> GetDeptDisbursements(string codeDepartment)
+        {
+            List<Disbursement> models = new List<Disbursement>();
+            using (SSISContext db = new SSISContext())
+            {
+                models = db.Disbursements
+                    .Include("DisbursementItems.Item")
+                    .Include("Department")
+                    .Include("CollectedBy")
+                    .Include("DisbursedBy")
+                    .Include("CollectionPoint")
+                    .Include("Status")
+                    .Where(x => x.CodeDepartment == codeDepartment)
+                    .ToList();
+            }
+            return models;
+        }
+
+        public Disbursement GetScheduledDisbursement(string codeDepartment)
+        {
+            Disbursement model = new Disbursement();
+            using (SSISContext db = new SSISContext())
+            {
+                model = db.Disbursements
+                    .Include("DisbursementItems.Item")
+                    .Include("Department")
+                    .Include("CollectedBy")
+                    .Include("DisbursedBy")
+                    .Include("CollectionPoint")                    
+                    .Include("Status")
+                    .Where(x => x.IdStatus == 10 && x.CodeDepartment == codeDepartment)
+                    .FirstOrDefault();
+            }
+            return model;
+        }
+
+        public List<Disbursement> GetReceivedDisbursements(string codeDepartment, string searchContext = "")
+        {
+            List<Disbursement> model = new List<Disbursement>();
+            using (SSISContext db = new SSISContext())
+            {
+                if (string.IsNullOrEmpty(searchContext))
+                {
+                    model = db.Disbursements
+                        .Include("DisbursementItems.Item")
+                        .Include("Department")
+                        .Include("CollectedBy")
+                        .Include("DisbursedBy")
+                        .Include("CollectionPoint")
+                        .Include("Status")
+                        .Where(x => x.IdStatus == 11 && x.CodeDepartment == codeDepartment)
+                        .ToList();
+                }
+                else
+                {
+                    model = db.Disbursements
+                        .Include("DisbursementItems.Item")
+                        .Include("Department")
+                        .Include("CollectedBy")
+                        .Include("DisbursedBy")
+                        .Include("CollectionPoint")
+                        .Include("Status")
+                        .Where(x => x.IdStatus == 11 && x.CodeDepartment == codeDepartment && 
+                        (x.Date.ToString().Contains(searchContext) || x.CollectionPoint.Location.ToString().Contains(searchContext) || x.DisbursedBy.Name.ToString().Contains(searchContext) || x.CollectedBy.Name.ToString().Contains(searchContext)))
+                        .ToList();
+                }
+
+            }
+            return model;
+        }
+
+        public bool AcknowledgeCollection(int idDisbursement, int IdCollectedBy)
+        {
+            using (SSISContext db = new SSISContext())
+            {
+                Disbursement disbursement = db.Disbursements.OfType<Disbursement>()
+                    .Where(x => x.IdDisbursement == idDisbursement)
+                    .FirstOrDefault();
+                if (disbursement == null) return false;
+                List<DisbursementItem> disbursementItems = db.DisbursementItems.OfType<DisbursementItem>()
+                   .Where(x => x.IdDisbursement == idDisbursement)
+                   .ToList();
+                disbursement.IdStatus = 11;
+                disbursement.IdCollectedBy = IdCollectedBy;
+                foreach (DisbursementItem di in disbursementItems)
+                    di.IdStatus = 11;
+                db.SaveChanges();
+            }
+            return true;
+        }
+
+        public bool UpdateCollectionPt(int idDisbursement, int idCollectionPt)
+        {
+            Disbursement model = null;
+            using (SSISContext db = new SSISContext())
+            {
+                model = db.Disbursements.OfType<Disbursement>()
+                    .Where(x => x.IdDisbursement == idDisbursement)
+                    .FirstOrDefault();
+                if (model == null) return false;
+                CollectionPoint collectionPt = db.CollectionPoints
+                   .Include("CPClerks")
+                   .OfType<CollectionPoint>()
+                   .Where(x => x.IdCollectionPt == idCollectionPt)
+                   .FirstOrDefault();
+                if (collectionPt == null) return false;
+                model.IdCollectionPt = idCollectionPt;
+                model.IdDisbursedBy = collectionPt.CPClerks.FirstOrDefault().IdStoreClerk;
+                db.SaveChanges();
+            }
+            return true;
+        }
+
+    }
 }

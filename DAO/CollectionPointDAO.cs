@@ -40,6 +40,14 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
+        public CollectionPoint Find(int id)
+        {
+            using (SSISContext context = new SSISContext())
+            {
+                return context.CollectionPoints.OfType<CollectionPoint>().Where(x=>x.IdCollectionPt == id).FirstOrDefault();
+            }
+        }
+
         public void Delete(CollectionPoint cp)
         {
 

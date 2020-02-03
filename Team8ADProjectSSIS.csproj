@@ -257,6 +257,10 @@
     <Compile Include="Migrations\202002010759576_snapshot14.designer.cs">
       <DependentUpon>202002010759576_snapshot14.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002031211153_snapshot15.cs" />
+    <Compile Include="Migrations\202002031211153_snapshot15.designer.cs">
+      <DependentUpon>202002031211153_snapshot15.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CPClerk.cs" />
@@ -498,12 +502,27 @@
     <Content Include="Views\StoreManager\PODetails.cshtml" />
     <Content Include="Views\StoreManager\DisbursementHistory.cshtml" />
     <Content Include="Views\StoreManager\DisbursementDetails.cshtml" />
+    <Content Include="Views\StoreClerk\PurchaseOrderCart.cshtml" />
+    <Content Include="Views\Employee\Catalog.cshtml" />
+    <Content Include="Views\Employee\CheckOut.cshtml" />
+    <Content Include="Views\Employee\CheckStatus.cshtml" />
+    <Content Include="Views\Employee\Create.cshtml" />
+    <Content Include="Views\Employee\History.cshtml" />
+    <Content Include="Views\Employee\Index.cshtml" />
+    <Content Include="Views\Employee\PopUp.cshtml" />
+    <Content Include="Views\Employee\store.cshtml" />
+    <Content Include="Views\Employee\Update.cshtml" />
+    <Content Include="Views\Employee\UpdatereqId.cshtml" />
+    <Content Include="Views\StoreClerk\CollectPO.cshtml" />
+    <Content Include="Views\DepartmentRepresentative\History.cshtml" />
+    <Content Include="Views\DepartmentRepresentative\Details.cshtml" />
+    <Content Include="Views\DepartmentRepresentative\CollectionPoints.cshtml" />
+    <Content Include="Views\DepartmentRepresentative\LocationMap.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\DepartmentActingHead\" />
     <Folder Include="Views\DepartmentHead\" />
-    <Folder Include="Views\Employee\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -560,6 +579,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002010759576_snapshot14.resx">
       <DependentUpon>202002010759576_snapshot14.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002031211153_snapshot15.resx">
+      <DependentUpon>202002031211153_snapshot15.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
