@@ -43,93 +43,116 @@
 
 <br />
 
-<input type="date" id="targetDate"/>
-<button type="button" class="btn btn-outline-success" onclick="ViewStocktake(targetDate.value)">Fetch</button>
+<input type="month" name="targetMonth" id="targetMonth" value="@ViewBag.mth1"/>
+<button type="button" class="btn btn-outline-success" onclick="ViewStocktake(targetMonth.value)">Fetch</button>
 
 <br />
 <br />
 
-<button type="button" class="btn btn-outline-success" onclick="ViewStocktake(@ViewBag.LastMonth)">Last month</button>
+<button type="button" class="btn btn-outline-success" onclick="ViewStocktake('@ViewBag.mth2')">@ViewBag.mth2</button>
+<button type="button" class="btn btn-outline-success" onclick="ViewStocktake('@ViewBag.mth3')">@ViewBag.mth3</button>
+<button type="button" class="btn btn-outline-success" onclick="ViewStocktake('@ViewBag.mth4')">@ViewBag.mth4</button>
 
-@using (Html.BeginForm("SaveStocktake","StoreClerk", FormMethod.Post)) { 
-<div class="modal fade" id="modalStocktake">
+@using (Html.BeginForm("SaveStocktake", "StoreClerk", FormMethod.Post))
+{
+    <div class="modal fade" id="modalStocktake">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Stock Take</h4>
+                </div>
+                <div class="modal-body" id="modalBodyDivStocktake">
+                    <div style="">
+                        <table class="table table-hover fix-head">
+                            <thead>
+                                <tr>
+                                    <th colspan="4"></th>
+                                    <th colspan="4" style="text-align:center;">Stock Adjustments</th>
+                                </tr>
+                                <tr>
+                                    <th style="width:160px">Description</th>
+                                    <th style="width:43px">Location</th>
+                                    <th style="width:59px">UoM</th>
+                                    <th style="width:152px">Quantity</th>
+                                    <th style="width:102px">Missing</th>
+                                    <th style="width:102px">Wrong allocation</th>
+                                    <th style="width:102px">Broken</th>
+                                    <th style="width:102px">Gifts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Item i in allItems)
+                                {
+                                    <tr>
+                                        <td style="width:188px">@i.Description<input type="hidden" name="itemId" id="itemId@(i.IdItem)" value="@i.IdItem" /></td>
+                                        <td style="width:43px">@i.Location</td>
+                                        <td style="width:59px">@i.unitOfMeasure</td>
+                                        <td style="width:152px">
+                                            @*Comparison with recorded quantity will be done in the controller*@
+                                            <input type="number" class="form-control" name="actualQty" id="actualQty@(i.IdItem)" min="0" value="@i.StockUnit" required />
+                                        </td>
+                                        <td style="border-left:1px solid grey; width:103px">
+                                            <div class="number-input">
+                                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                                <input type="number" class="form-control" name="missingQty" id="missingQty@(i.IdItem)" min="0" />
+                                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                                            </div>
+                                        </td>
+                                        <td style="width:102px">
+                                            <div class="number-input">
+                                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                                <input type="number" class="form-control" name="wrongQty" id="wrongQty@(i.IdItem)" min="0" />
+                                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                                            </div>
+                                        </td>
+                                        <td style="width:102px">
+                                            <div class="number-input">
+                                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                                <input type="number" class="form-control" name="brokenQty" id="brokenQty@(i.IdItem)" min="0" />
+                                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                                            </div>
+                                        </td>
+                                        <td style="width:102px">
+                                            <div class="number-input">
+                                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                                <input type="number" class="form-control" name="giftQty" id="giftQty@(i.IdItem)" min="0" />
+                                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer" id="modalFootDivStocktake">
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="modal fade" id="modalStock">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Stock Take</h4>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 class="modal-title">Disbursement Report</h4>
             </div>
-            <div class="modal-body" id="modalBodyDivStocktake">
-                <div style="">
-                    <table class="table table-hover fix-head">
-                        <thead>
-                            <tr>
-                                <th colspan="4"></th>
-                                <th colspan="4" style="text-align:center;">Stock Adjustments</th>
-                            </tr>
-                            <tr>
-                                <th style="width:160px">Description</th>
-                                <th style="width:43px">Location</th>
-                                <th style="width:59px">UoM</th>
-                                <th style="width:152px">Quantity</th>
-                                <th style="width:102px">Missing</th>
-                                <th style="width:102px">Wrong allocation</th>
-                                <th style="width:102px">Broken</th>
-                                <th style="width:102px">Gifts</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (Item i in allItems)
-                            {
-                                <tr>
-                                    <td style="width:188px">@i.Description<input type="hidden" name="itemId" id="itemId@(i.IdItem)" value="@i.IdItem" /></td>
-                                    <td style="width:43px">@i.Location</td>
-                                    <td style="width:59px">@i.unitOfMeasure</td>
-                                    <td style="width:152px">
-                                        @*Comparison with recorded quantity will be done in the controller*@
-                                        <input type="number" class="form-control" name="actualQty" id="actualQty@(i.IdItem)" min="0" value="@i.StockUnit"required/>
-                                    </td>
-                                    <td style="border-left:1px solid grey; width:103px">
-                                        <div class="number-input">
-                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
-                                            <input type="number" class="form-control" name="missingQty" id="missingQty@(i.IdItem)" min="0" />
-                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
-                                        </div>
-                                    </td>
-                                    <td style="width:102px">
-                                        <div class="number-input">
-                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
-                                            <input type="number" class="form-control" name="wrongQty" id="wrongQty@(i.IdItem)" min="0" />
-                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
-                                        </div>
-                                    </td>
-                                    <td style="width:102px">
-                                        <div class="number-input">
-                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
-                                            <input type="number" class="form-control" name="brokenQty" id="brokenQty@(i.IdItem)" min="0" />
-                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
-                                        </div>
-                                    </td>
-                                    <td style="width:102px">
-                                        <div class="number-input">
-                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
-                                            <input type="number" class="form-control" name="giftQty" id="giftQty@(i.IdItem)" min="0" />
-                                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+            <div class="modal-body" id="modalBodyDivViewStocktake">
+
             </div>
-            <div class="modal-footer" id="modalFootDivStocktake">
-                <button type="submit" class="btn btn-default">Submit</button>
+            <div class="modal-footer" id="modalBodyDivViewStocktake">
+                <input type="month" name="targetMonth" id="newMonth" />
+                <button type="button" class="btn btn-outline-success" onclick="ViewStocktake(newMonth.value)">Fetch</button>
             </div>
         </div>
     </div>
 </div>
-}
+
 
 <script>
     var NewStocktake = function () {
@@ -138,20 +161,33 @@
             keyboard: false
         });
     }
+
+    var ViewStocktake = function (targetMonth) {
+        var url = "/StoreClerk/ViewStocktake?targetMonth=" + targetMonth;
+
+        $("#modalBodyDivViewStocktake").load(url, function () {
+            //$("#modalRedis").modal("show");
+            $("#modalStock").modal({
+                backdrop: "static",
+                keyboard: false
+            });
+        })
+    }
+
 </script>
 
 <style>
-    table.fix-head>tbody, table{
-        display:block;
+    table.fix-head > tbody, table {
+        display: block;
     }
 
-    table.fix-head>tbody{
-        overflow-y:auto;
-        height:300px;
+    table.fix-head > tbody {
+        overflow-y: auto;
+        height: 300px;
     }
 
-    .modal-body{
-        overflow-y:auto;
-        height:450px;
+    .modal-body {
+        overflow: auto;
+        height: 450px;
     }
 </style>

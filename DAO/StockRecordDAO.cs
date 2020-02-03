@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using Team8ADProjectSSIS.Models;
@@ -42,6 +43,35 @@ namespace Team8ADProjectSSIS.DAO
             context.StockRecords.Add(reverseSr);
 
             context.SaveChanges();
+        }
+
+        internal void RaiseSA(DateTime date, int idOperation, String idDepartment, String idSupplier, int idStoreClerk, int idItem, int unit)
+        {
+            StockRecord sr = new StockRecord
+            {
+                Date = date,
+                IdOperation = idOperation,
+                IdDepartment = idDepartment,
+                IdSupplier = idSupplier,
+                IdStoreClerk = idStoreClerk,
+                IdItem = idItem,
+                Unit = unit
+            };
+
+            context.StockRecords.Add(sr);
+            context.SaveChanges();
+        }
+
+        internal List<StockRecord> FindByMonthAndYear(DateTime month)
+        {
+            return context.StockRecords
+                .Where(x => x.Date.Year == month.Year && x.Date.Month == month.Month && x.IdOperation > 2)
+                .Include(x => x.Operation)
+                .Include(x => x.Department)
+                .Include(x => x.Supplier)
+                .Include(x => x.StoreClerk)
+                .Include(x => x.Item)
+                .ToList();
         }
     }
 }

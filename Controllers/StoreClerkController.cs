@@ -337,14 +337,13 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult Stocktake()
         {
             ViewBag.allItems = _itemDAO.GetAllItems();
+
+            ViewBag.mth1 = DateTime.Now.ToString("yyyy-MM");
+            ViewBag.mth2 = DateTime.Now.AddMonths(-1).ToString("yyyy-MM");
+            ViewBag.mth3 = DateTime.Now.AddMonths(-2).ToString("yyyy-MM");
+            ViewBag.mth4 = DateTime.Now.AddMonths(-3).ToString("yyyy-MM");
+
             return View();
-        }
-
-        //James: Create stocktake as at DateTime.Now
-        public ActionResult NewStocktake()
-        {
-
-            return PartialView("NewStocktake");
         }
 
         //James: Save the created stocktake into individual stockrecords
@@ -376,20 +375,44 @@ namespace Team8ADProjectSSIS.Controllers
                     diff = item.StockUnit - actualQty[i];
 
                     // apply difference to both Stock and Available units
-                    _itemDAO.UpdateUnits(item, diff);
+                    //_itemDAO.UpdateUnits(item, diff); // Clerk shouldn't be changing the units freely. Should raise SA instead
+
+                    // Raise SA instead
+                    _stockRecordDAO.RaiseSA(now, 3, null, null, IdStoreClerk, item.IdItem, -diff);
+
+                    // if < Reorder level, send low stock alert
+
+
                 }
 
                 // Create stockRecord
-                //_stockRecordDAO.RaiseSAforStocktake(item, now, actualQty[i], missingQty[i], wrongQty[i], brokenQty[i], giftQty[i], IdStoreClerk);
+                if(missingQty[i] > 0)
+                    _stockRecordDAO.RaiseSA(now, 3, null, null, IdStoreClerk, item.IdItem, -missingQty[i]);
+                if(wrongQty[i] > 0)
+                    _stockRecordDAO.RaiseSA(now, 4, null, null, IdStoreClerk, item.IdItem, -wrongQty[i]);
+                if(brokenQty[i] > 0)
+                    _stockRecordDAO.RaiseSA(now, 5, null, null, IdStoreClerk, item.IdItem, -brokenQty[i]);
+                if(giftQty[i] > 0)
+                    _stockRecordDAO.RaiseSA(now, 6, null, null, IdStoreClerk, item.IdItem, giftQty[i]);
+
+                // send notification to manager/supervisor
+
+
             }
 
-            //return PartialView("ViewStocktake");
             return RedirectToAction("Stocktake");
         }
 
         //James: View past stocktake based on time
-        public ActionResult ViewStocktake(DateTime targetDate)
+        public ActionResult ViewStocktake(String targetMonth)
         {
+            DateTime month = DateTime.ParseExact(targetMonth, "yyyy-MM",
+                System.Globalization.CultureInfo.InvariantCulture);
+            List<StockRecord> SRbyMonth = _stockRecordDAO.FindByMonthAndYear(month);
+
+            ViewBag.SRbyMonth = SRbyMonth;
+
+            ViewBag.targetMonth = month;
 
             return PartialView("ViewStocktake");
         }
