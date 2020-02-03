@@ -82,12 +82,12 @@
                             @foreach (Item i in allItems)
                             {
                                 <tr>
-                                    <td style="width:188px">@i.Description</td>
+                                    <td style="width:188px">@i.Description<input type="hidden" name="itemId" id="itemId@(i.IdItem)" value="@i.IdItem" /></td>
                                     <td style="width:43px">@i.Location</td>
                                     <td style="width:59px">@i.unitOfMeasure</td>
                                     <td style="width:152px">
                                         @*Comparison with recorded quantity will be done in the controller*@
-                                        <input type="number" class="form-control" name="actualQty" id="actualQty@(i.IdItem)" min="0" value="@i.IdItem"required/>
+                                        <input type="number" class="form-control" name="actualQty" id="actualQty@(i.IdItem)" min="0" value="@i.StockUnit"required/>
                                     </td>
                                     <td style="border-left:1px solid grey; width:103px">
                                         <div class="number-input">

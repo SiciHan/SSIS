@@ -349,13 +349,40 @@ namespace Team8ADProjectSSIS.Controllers
 
         //James: Save the created stocktake into individual stockrecords
         [HttpPost]
-        public ActionResult SaveStocktake(IList<int> actualQty, IList<int> missingQty, IList<int> wrongQty, IList<int> brokenQty, IList<int> giftQty)
+        public ActionResult SaveStocktake(IList<int> itemId, IList<int> actualQty, IList<int> missingQty, IList<int> wrongQty, IList<int> brokenQty, IList<int> giftQty)
         {
+            // assume clerkId is 2
+            int IdStoreClerk = 2;
+
             Debug.WriteLine($"actual: {actualQty.Count}, missing: {missingQty.Count}, wrong: {wrongQty.Count}, broken: {brokenQty.Count}, gift: {giftQty.Count}");
             Debug.WriteLine($"actual: {actualQty[0]}, missing: {missingQty[0]}, wrong: {wrongQty[0]}, broken: {brokenQty[0]}, gift: {giftQty[0]}");
-            
+
+            List<Item> allItems = _itemDAO.GetAllItems();
+
+            Item item;
+            int diff;
+            DateTime now = DateTime.Now;
+
             //update the Item's stock and available unit as well as create stock records
-            
+            for (int i = 0; i < actualQty.Count; i++)
+            {
+                // find Item
+                item = allItems[i];
+
+                // check if stockunit == actualQty
+                if (item.StockUnit != actualQty[i])
+                {
+                    // get difference to be applied
+                    diff = item.StockUnit - actualQty[i];
+
+                    // apply difference to both Stock and Available units
+                    _itemDAO.UpdateUnits(item, diff);
+                }
+
+                // Create stockRecord
+                //_stockRecordDAO.RaiseSAforStocktake(item, now, actualQty[i], missingQty[i], wrongQty[i], brokenQty[i], giftQty[i], IdStoreClerk);
+            }
+
             //return PartialView("ViewStocktake");
             return RedirectToAction("Stocktake");
         }

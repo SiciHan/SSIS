@@ -43,5 +43,18 @@ namespace Team8ADProjectSSIS.DAO
             return items;
         }
 
+        //James: saves the item's units
+        internal void UpdateUnits(Item i, int diff)
+        {
+            Item item = GetAllItems()
+                .Where(x => x.Equals(i))
+                .FirstOrDefault();
+
+            item.StockUnit -= diff;
+
+            item.AvailableUnit = ((item.AvailableUnit - diff) > 0) ? item.AvailableUnit - diff : 0;
+
+            context.SaveChanges();
+        }
     }
 }
