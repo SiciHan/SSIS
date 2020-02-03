@@ -18,6 +18,12 @@ namespace Team8ADProjectSSIS
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+                "Employee",                                           // Route name
+                "UpdatereqId/{reqID}",                            // URL with parameters
+                new { controller = "Student", action = "UpdatereqId" }  // Parameter defaults
+            );
         }
     }
 }

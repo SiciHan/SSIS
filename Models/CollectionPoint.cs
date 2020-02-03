@@ -20,6 +20,8 @@ namespace Team8ADProjectSSIS.Models
             this.Mapcoordinates = cp.Mapcoordinates;
         }
 
+        public CollectionPoint() { }
+
         [Key]
         public int IdCollectionPt { get; set; }
         

@@ -1,0 +1,130 @@
+﻿@model Team8ADProjectSSIS.Models.Item
+@using Team8ADProjectSSIS.Models
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title MVC Shop</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+ 
+</head>
+<body onLoad="getLoaded()">
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+ 
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script>
+        function getLoaded() {
+            var timeout = null;
+            var searchBox = document.getElementById("searchBox");
+          
+            function sendSearch() {
+                var search = { searchStr: searchBox.value };
+                doSEARCH(search);
+            }
+
+
+            searchBox.addEventListener("keyup", function (e) {
+                e.preventDefault();
+                clearTimeout(timeout);
+                timeout = setTimeout(function () { sendSearch(); }, 500);
+                var key = e.which || e.keyCode;
+                if (key === 13) {
+                    clearTimeout(timeout);
+                    sendSearch();
+                }
+            });
+
+            var buttons = document.getElementsByName("pid");
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].addEventListener('click', function () {
+                    //alert(producID)
+                    //alert(this.value);
+                    var cart = { pid: this.value, searchStr: searchBox.value };
+                    doADD(cart);
+                });
+            }
+        }
+
+
+ 
+        function doSEARCH(search) {
+            var ajax = new XMLHttpRequest();
+            ajax.onreadystatechange = function () {
+                if (ajax.readyState == 4) {
+                    document.open();
+                    document.write(ajax.response);
+                    document.close();
+                }
+            }
+
+            ajax.open("POST", "/Employee/Catalog", true);
+            ajax.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+            //alert(JSON.stringify(search));
+            ajax.send(JSON.stringify(search));
+        }
+
+        function doADD(cart) {
+            var ajax = new XMLHttpRequest();
+            ajax.onreadystatechange = function () {
+                if (ajax.readyState == 4) {
+                    document.open();
+                    document.write(ajax.response);
+                    document.close();
+                }
+            }
+
+            ajax.open("POST", "/Employee/Catalog", true);
+            ajax.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+            //alert(JSON.stringify(cart));
+            ajax.send(JSON.stringify(cart));
+        }
+
+    </script>
+</body>
+</html>
+
+<style>
+    .navbar-inverse, .navbar {
+        background-color: #668589 !important;
+        border: none;
+    }
+
+    .navbar-brand {
+        color: black !important;
+        font-weight: bold
+    }
+
+        .navbar-brand:visited {
+            color: black !important
+        }
+
+    .navbar-default-color {
+        color: black !important
+    }
+    
+    .navbar-inverse {
+        color: #FFFFFF !important
+    }
+
+        .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+            color: floralwhite;
+            background-color: transparent;
+        }
+
+        .navbar-inverse .navbar-nav > li > a {
+            color: black;
+        }
+</style>
