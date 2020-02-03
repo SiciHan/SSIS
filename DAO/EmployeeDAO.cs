@@ -21,5 +21,14 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        public int FindClerkIdByCPId(int CPId)
+        {
+            int ClerkId = context.CPClerks
+                .Where(x => x.IdCollectionPt == CPId)
+                .Select(x => x.IdStoreClerk)
+                .FirstOrDefault();
+            return ClerkId;
+        }
+
     }
 }

@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
+using Team8ADProjectSSIS.Report;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -19,8 +20,10 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly PurchaseOrderDAO _purchaseOrderDAO;
         private readonly PurchaseOrderDetailsDAO _purchaseOrderDetailsDAO;
         private readonly ItemDAO _itemDAO;
-        private readonly StatusDAO _statusDAO;
+        private readonly CollectionPointDAO _collectionpointDAO;
         private readonly EmployeeDAO _employeeDAO;
+        private readonly StatusDAO _statusDAO;
+        //private readonly EmployeeDAO _employeeDAO;
         public StoreClerkController()
         {
             this._disbursementDAO = new DisbursementDAO();
@@ -33,6 +36,8 @@ namespace Team8ADProjectSSIS.Controllers
             this._statusDAO = new StatusDAO();
             this._purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
             this._employeeDAO = new EmployeeDAO();
+            this._collectionpointDAO = new CollectionPointDAO();
+            //this._employeeDAO = new EmployeeDAO();
         }
         
 
@@ -52,7 +57,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             bool NoDisbursement = false;
             DateTime Today = DateTime.Now;
-            DateTime LastThu = Today.AddDays(-3);
+            DateTime LastThu = Today.AddDays(-4);
             while (LastThu.DayOfWeek != DayOfWeek.Thursday)
                 LastThu = LastThu.AddDays(-1);
 
@@ -60,31 +65,71 @@ namespace Team8ADProjectSSIS.Controllers
             if (_disbursementDAO.CheckExistDisbursement(DClerk, Today, LastThu))
             {
                 // Search Disbursement with status set as "preparing"
-                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
+                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, Today, LastThu);
                 ViewData["RetrievalForm"] = RetrievalForm;
-                NoDisbursement = false;
-                ViewData["NoDisbursement"] = NoDisbursement;
+                ViewData["NoDisbursement"] = false;
+                ViewData["NoNewRequisition"] = false;
+                ViewBag.Today = Today.ToString("dd-MM-yyyy");
+                ViewBag.LastThu = LastThu.ToString("dd-MM-yyyy");
 
             }
             // If Disbursement contain no status "preparing" from last thursday to today
             else
             {
-                NoDisbursement = true;
-                ViewData["NoDisbursement"] = NoDisbursement;
+                ViewData["NoDisbursement"] = true;
+                ViewData["NoNewRequisition"] = false;
                 ViewBag.Today = Today.ToString("dd-MM-yyyy");
                 ViewBag.LastThu = LastThu.ToString("dd-MM-yyyy");
             }
-
-
+            List<int> CPs = _collectionpointDAO.FindByClerkId(IdStoreClerk);
+            ViewData["CPs"] = CPs;
             return View();
         }
         // Post Method
         [HttpPost]
-        public ActionResult FormRetrieve(string StartDate, string EndDate)
+        public ActionResult FormRetrieve(int[] idCPs, string StartDate, string EndDate)
         {
             // Assume ClerkID
             int IdStoreClerk = 3;
-
+            if (idCPs != null)
+            {
+                foreach(int id in idCPs)
+                {
+                    int tempClerkId = _employeeDAO.FindClerkIdByCPId(id);
+                    if(tempClerkId == IdStoreClerk)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        List<int> CPIdOfTempClerkId = _collectionpointDAO.FindByClerkId(tempClerkId);
+                        List<int> CPIdOfClerkId = _collectionpointDAO.FindByClerkId(IdStoreClerk);
+                        for(int i=0; i<CPIdOfClerkId.Count; i++)
+                        {
+                            bool noNeedChange = false;
+                            foreach(int id2 in idCPs)
+                            {
+                                if(CPIdOfClerkId[i] == id2)
+                                {
+                                    noNeedChange = true;
+                                }
+                            }
+                            if(noNeedChange == false)
+                            {
+                                //swap the collection point between two clerks
+                                int temp = CPIdOfClerkId[i];
+                                CPIdOfClerkId[i] = id;
+                                CPIdOfTempClerkId[CPIdOfTempClerkId.IndexOf(id)] = temp;
+                                _collectionpointDAO.ChangeCPTo(IdStoreClerk, CPIdOfClerkId);
+                                _collectionpointDAO.ChangeCPTo(tempClerkId, CPIdOfTempClerkId);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            List<int> CPs = _collectionpointDAO.FindByClerkId(IdStoreClerk);
+            ViewData["CPs"] = CPs;
             // Get Department that seleceted same collection point as store clerk
             List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
 
@@ -95,23 +140,39 @@ namespace Team8ADProjectSSIS.Controllers
             DateTime SDate = DateTime.ParseExact(StartDate, "dd-MM-yyyy", 
                             System.Globalization.CultureInfo.InvariantCulture);
             DateTime EDate = DateTime.ParseExact(EndDate, "dd-MM-yyyy",
-                            System.Globalization.CultureInfo.InvariantCulture);
+                            System.Globalization.CultureInfo.InvariantCulture).AddDays(1);
             // Search and retrieve Requisition & Requisition Item
             List<Retrieval> RetrievalItem = _requisitionDAO
                                             .RetrieveRequisition(DClerk, SDate, EDate);
-            // Check if the the RetrievalForm has been created
+            // Check if the the RetrievalForm has been created 
+            // return retrieval item that have not created to disbursement and disbursementitem  
             List<Retrieval> NewRetrievalItem = _disbursementDAO.CheckRetrievalFormExist(RetrievalItem);
 
-            // Create Disbursement and set status to "preparing"
-            List<int> PKDisbursement = _disbursementDAO.CreateDisbursement(NewRetrievalItem);
-            // Create DisbursementItem and set status to "preparing"
-            List<int> PKDisbursementItem = _disbursementItemDAO
-                                           .CreateDisbursementItem(PKDisbursement, NewRetrievalItem);
-            // Search Disbursement with status set as "preparing"
-            List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk);
-            ViewData["RetrievalForm"] = RetrievalForm;
-            ViewData["NoDisbursement"] = false;
-
+            // New Retrieval Item is null when all IdRequisition is disbursed
+            if (NewRetrievalItem.Any())
+            {
+                // Create Disbursement and set status to "preparing"
+                List<int> PKDisbursement = _disbursementDAO.CreateDisbursement(NewRetrievalItem);
+                // Create DisbursementItem and set status to "preparing"
+                List<int> PKDisbursementItem = _disbursementItemDAO
+                                               .CreateDisbursementItem(PKDisbursement, NewRetrievalItem);
+                // Search Disbursement with status set as "preparing"
+                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, EDate, SDate);
+                ViewData["RetrievalForm"] = RetrievalForm;
+                ViewData["NoDisbursement"] = false;
+                ViewData["NoNewRequisition"] = false;
+                ViewBag.Today = EndDate;
+                ViewBag.LastThu = StartDate;
+            }
+            else
+            {
+                ViewData["NoDisbursement"] = true;
+                ViewData["NoNewRequisition"] = true;
+                ViewBag.Today = EndDate;
+                ViewBag.LastThu = StartDate;
+            }
+            ViewBag.LastThu = StartDate;
+            ViewBag.Today = EndDate;
             return View();
         }
 
@@ -143,7 +204,27 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return RedirectToAction("FormRetrieve", "StoreClerk");
 
-        } 
+        }
+        [HttpPost]
+        public ActionResult PrintPdf(string StartDate, string EndDate)
+        {
+            // Assume ClerkID
+            int IdStoreClerk = 3;
+
+            List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
+            DateTime SDate = DateTime.ParseExact(StartDate, "dd-MM-yyyy",
+                            System.Globalization.CultureInfo.InvariantCulture);
+            DateTime EDate = DateTime.ParseExact(EndDate, "dd-MM-yyyy",
+                            System.Globalization.CultureInfo.InvariantCulture).AddDays(1);
+
+            List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, EDate, SDate);
+
+            RetrievalFormReport retrievalFromReport = new RetrievalFormReport();
+            byte[] abytes = retrievalFromReport.PrepareReport(RetrievalForm);
+            return File(abytes,"application/pdf", "Retrieve Form.pdf");
+
+            //return RedirectToAction("FormRetrieve", "StoreClerk");
+        }
         
         //@Shutong
         public ActionResult PurchaseOrderList()
@@ -206,6 +287,7 @@ namespace Team8ADProjectSSIS.Controllers
             //ViewData["POCart"] = _purchaseOrderDAO.FindIncompletePO();
             return View();
         }
+        //@Shutong
         public ActionResult DeletePODFromCart(int id)
         {
             _purchaseOrderDetailsDAO.DeletePOD(id);
@@ -213,11 +295,13 @@ namespace Team8ADProjectSSIS.Controllers
             //return Content("You have deleted your Purchase Order details"+id);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
+        //@Shutong
         public ActionResult UpdateOrderUnit(int orderUnit, int idPOD)
         {
             _purchaseOrderDetailsDAO.UpdateOrderUnitById(orderUnit, idPOD);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
+        //@Shutong
         [HttpPost]
         public ActionResult SubmitPurchaseOrder(FormCollection form)
         {
@@ -232,6 +316,7 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
+        //@Shutong
         [HttpPost]
         public ActionResult CancelAllPurchaseOrder(FormCollection form)
         {
@@ -247,6 +332,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+        //@Shutong
         public ActionResult CancelPO(int id)
         {
 
@@ -254,6 +340,7 @@ namespace Team8ADProjectSSIS.Controllers
                 
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+        //@Shutong
         public ActionResult WithdrawPO(int id)
         {
 
