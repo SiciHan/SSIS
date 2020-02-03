@@ -17,7 +17,7 @@ namespace Team8ADProjectSSIS.DAO
 
         public Employee FindEmployeeByUsername(string username)
         {
-            return context.Employees.OfType<Employee>().Where(x => x.UserName == username).FirstOrDefault();
+            return context.Employees.OfType<Employee>().Where(x => x.UserName.Equals(username)).FirstOrDefault();
 
         }
 

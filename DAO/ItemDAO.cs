@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -25,8 +26,14 @@ namespace Team8ADProjectSSIS.DAO
         }
 
         public List<Item> FindLowStockItems()
-        {    
-            List<Item> items = context.Items.OfType<Item>().Where(x => x.AvailableUnit <= x.ReorderLevel).ToList<Item>();
+        {
+            SSISContext context = new SSISContext();
+            List<Item> items = context.Items.OfType<Item>().
+                Where(x => x.AvailableUnit <= x.ReorderLevel).
+                Include(i=>i.PurchaseOrderDetails).
+                Include(i=>i.PurchaseOrderDetails.Select(x=>x.PurchaseOrder)).
+                ToList<Item>();
+            context.Dispose();
             return items;
         }
         public List<Item> FindItemsByKeyword(string searchStr)
