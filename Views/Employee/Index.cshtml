@@ -1,91 +1,47 @@
 ﻿@using Team8ADProjectSSIS.Models
 @{
-    ViewBag.Title = "Index";
-
-}
-
-<h2>Index</h2>
-
-@{
-    var list = ViewBag.books;
+    var list = ViewBag.items;
     string searchStr = (string)ViewBag.searchStr;
     var found = false;
+
 }
 
-<p></p>
-<b>Search:</b>
-<input id="searchBox" value="@searchStr" />
-<p></p>
+@Html.Partial("Catalog")
 
-<table border=1>
-    <tr>
-        <th>Description</th>
-        <th>Unit Of Measure</th>
-        <th>Status</th>
-    </tr>
+<!DOCTYPE html>
+<html>
+
+<section class="container content-section">
+    <h2 class="section-header">Request Cart</h2>
+    <div class="cart-row">
+        <span class="cart-item cart-header cart-column">Description</span>
+        <span class="cart-price cart-header cart-column">Unit</span>
+        <span class="cart-quantity cart-header cart-column">Quantity</span>
+    </div>
+    <div class="cart-items">
+        <div class="cart-row">
+            <div class="cart-item cart-column">
+
+            </div>
 
 
-    @foreach (Item item in list)
-    {
-        var hit = false;
+        </div>
 
-        SearchResult sr = Find(item.Description, searchStr);
-        string des = sr.str;
-        if (sr.found)
-        {
-            hit = true;
-        }
+    </div>
 
-     
+</section>
 
-        if (searchStr == "" || hit)
-        {
-            <tr>
-                <td>@Html.Raw(@des)</td>
-  
-            </tr>
 
-            found = true;
-        }
-    }
+@*<button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>*@
 
-    @if (!found)
-    {
-        <tr>
-            <td colspan="3" style="text-align:center">There are no matches for your search.</td>
-        </tr>
-    }
-</table>
-
-@functions {
-    public class SearchResult
-    {
-        public bool found = false;
-        public string str = "";
-    }
-
-    public SearchResult Find(string hay, string needle)
-    {
-        string str = hay;
-        int start = hay.IndexOf(needle, StringComparison.CurrentCultureIgnoreCase);
-
-        if (start != -1)
-        {
-            str = hay.Substring(0, start) +
-                "<span class='bold_red'>" + hay.Substring(start, needle.Length) + "</span>" +
-                hay.Substring(start + needle.Length);
-        }
-
-        return new SearchResult
-        {
-            found = (start != -1),
-            str = str
-        };
-    }
+@if (list.Count == 0 || list == null)
+{
+    <button class="btn-purchase" type="submit" disabled="disabled">Create Request</button>
 }
+else
+{
+    <button class="btn-purchase" type="submit">Create Request</button>
+}
+</html>
 
 
-
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
