@@ -1,0 +1,28 @@
+﻿@model Team8ADProjectSSIS.Models.PurchaseOrder
+@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "POHistory";
+    List<PurchaseOrder> AllPO = (List<PurchaseOrder>)ViewData["AllPO"];
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+}
+
+<h2>POHistory</h2>
+
+<table>
+    <tr>
+        <th>Purchase Order Id</th>
+        <th>Approved Date</th>
+        <th>Order Date</th>
+        <th colspan="2">DeliverDate</th>
+    </tr>
+    @foreach (PurchaseOrder i in AllPO)
+    {
+        <tr>
+            <td>@i.IdPurchaseOrder</td>
+            <td>@i.ApprovedDate</td>
+            <td>@i.OrderDate</td>
+            <td>@i.DeliverDate</td>
+            <td>@Html.ActionLink("View", "PODetails", "StoreManager", new { IdPurchaseOrder = i.IdPurchaseOrder }, null)</td>
+        </tr>
+    }
+</table>

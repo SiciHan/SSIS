@@ -1,0 +1,256 @@
+﻿@model Team8ADProjectSSIS.Models.Retrieval
+@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "FormRetrieve";
+    Boolean NoDisbursement = (Boolean)ViewData["NoDisbursement"];
+    Boolean NoNewRequisition = (Boolean)ViewData["NoNewRequisition"];
+    List<Retrieval> RetrievalForm = (List<Retrieval>)ViewData["RetrievalForm"];
+    List<int> PKDisbursementItem = (List<int>)ViewData["PKDisbursementItem"];
+    List<int> CPs = (List<int>)ViewData["CPs"];
+}
+
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
+                <li class="active">@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
+                <li>@Html.ActionLink("Disbursement", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
+                <li>@Html.ActionLink("StockTake", "Index", "StoreClerk")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<h2>Form Retrieve</h2>
+@if (!NoDisbursement)
+{
+    using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
+    {
+        <div width="513" onclick="choicetest();">
+            <input type="checkbox" name="idCPs" id="CPs" value="1" />Management School
+            <input type="checkbox" name="idCPs" id="CPs" value="2" />Stationery Store
+            <input type="checkbox" name="idCPs" id="CPs" value="3" />Medical School
+            <p></p>
+            <input type="checkbox" name="idCPs" id="CPs" value="4" />Engineering School
+            <input type="checkbox" name="idCPs" id="CPs" value="5" />Science School
+            <input type="checkbox" name="idCPs" id="CPs" value="6" />University Hospital
+        </div>
+        <input type="hidden" name="StartDate" value=@ViewBag.LastThu />
+        <input type="hidden" name="EndDate" value=@ViewBag.Today />
+        <input type="submit" value="Change" />
+    }
+    using (Html.BeginForm("SaveDisbursement", "StoreClerk", FormMethod.Post))
+    {
+        <table>
+            <thead>
+                <tr class="table100-head">
+                    <th class="col-1"></th>
+                    <th class="col-2">Description</th>
+                    <th class="col-3">Total Needed</th>
+                    <th class="col-4">Total Available</th>
+                    <th class="col-5">Location</th>
+                </tr>
+            </thead>
+            @foreach (var retrievalform in RetrievalForm)
+            {
+                <tbody>
+                    <tr>
+                        <td class="col-1">
+                            <input type="checkbox" name="IdItemRetrieved" value="@retrievalform.IdItem" />
+                        </td>
+                        <td class="col-2">@retrievalform.Description </td>
+                        <td class="col-3">@retrievalform.Unit</td>
+                        <td class="col-4">@retrievalform.StockUnit</td>
+                        <td class="col-5">@retrievalform.Location</td>
+                    </tr>
+                </tbody>
+            }
+        </table>
+        <div style="display: inline" float="right">
+            <input type="submit" value="Retrieve" style="padding: 10px 15px; cursor:pointer; background-color:cornflowerblue" />
+        </div>
+    }
+    using (Html.BeginForm("PrintPdf", "StoreClerk", FormMethod.Post))
+    {
+        <div style="display: inline" float="right">
+            <input type="submit" value="Print" style="padding: 10px 15px; cursor:pointer; background-color:aquamarine" />
+            <input type="hidden" name="StartDate" value="@(ViewBag.LastThu ?? String.Empty)"/>
+            <input type="hidden" name="EndDate" value="@(ViewBag.Today ?? String.Empty)" />
+        </div>
+    }
+
+}
+else
+{
+    if (NoNewRequisition)
+    {
+        <h5 style="color:red"> No requisition found from the selected data.</h5>
+    }
+    else
+    {
+        <div>
+            @using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
+            {
+                @Html.Editor("StartDate", new { htmlAttributes = new { @class = "startdate", @readonly = "readonly", placeholder = "Start Date..." } })
+                @Html.Editor("EndDate", new { htmlAttributes = new { @class = "enddate", @readonly = "readonly", placeholder = "End Date..." } })
+                <input type="submit" name="FormRetrieve" value="Get Retrieval Form" />
+            }
+        </div>
+    }
+}
+
+<link rel="stylesheet" href="~/Content/themes/base/jquery-ui.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+@section Scripts{
+    <script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script type="text/javascript">
+        var Today = new Date();
+        var lastthu = @Html.Raw(Json.Encode(ViewBag.LastThu));
+        var parts = lastthu.split('-');
+        var LastThu = new Date(parts[2], parts[1] - 1, parts[0]);
+
+        $(function () {
+            $(".startdate").datepicker({
+                dateFormat: "dd-mm-yy",
+                minDate: LastThu,
+                maxDate: Today,
+                autohide: true,
+                showOn: "both",
+                buttonText: "<i class='fa fa-calendar'></i>",
+            });
+            $(".enddate").datepicker({
+                dateFormat: "dd-mm-yy",
+                minDate: LastThu,
+                maxDate: Today,
+                autohide: true,
+                showOn: "both",
+                buttonText: "<i class='fa fa-calendar'></i>",
+            });
+        });
+
+        function choicetest() {
+            var choicearr = document.getElementsByName("idCPs");
+            var a = 0;
+            for (var i = 0; i < choicearr.length; i++)
+                if (choicearr[i].checked) {
+                    a = a + 1;
+                }
+            if (a >= 2) {
+                for (var i = 0; i < choicearr.length; i++)
+                    if (!choicearr[i].checked)
+                        choicearr[i].disabled = 'disabled';
+            } else {
+                for (var i = 0; i < choicearr.length; i++)
+                    choicearr[i].removeAttribute('disabled');
+            }
+        }
+
+        window.onload = function () {
+            var choicearr = document.getElementsByName("idCPs");
+            for (var i = 0; i < choicearr.length; i++) {
+                @foreach(int c in CPs)
+                {
+                <text>
+                if (choicearr[i].value == @c)
+                    choicearr[i].checked = 1;
+                </text>
+                }
+            }
+
+            for (var i = 0; i < choicearr.length; i++)
+                if (!choicearr[i].checked) {
+                    choicearr[i].disabled = 'disabled';
+                }
+        }
+    </script>
+}
+<style>
+    table {
+        border-spacing: 1px;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
+    }
+
+        table * {
+            position: relative;
+        }
+
+        table td, table th {
+            padding-left: 8px;
+        }
+
+        table thead tr {
+            height: 25px;
+        }
+
+        table tbody tr {
+            height: 15px;
+        }
+
+    .table100-head th {
+        font-family: OpenSans-Regular;
+        font-size: 20px;
+        color: #000000;
+        line-height: 1.2;
+        font-weight: unset;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #ffffff;
+    }
+
+    tbody tr {
+        font-family: OpenSans-Regular;
+        font-size: 18px;
+        color: #000000;
+        line-height: 1.2;
+        font-weight: unset;
+    }
+
+    .col-1 {
+        width: 5%;
+        text-align: center;
+    }
+
+    .col-2 {
+        width: 35%;
+        text-align: left;
+    }
+
+    .col-3 {
+        width: 10%;
+        text-align: center;
+    }
+
+    .col-4 {
+        width: 10%;
+        text-align: center;
+    }
+
+    .col-5 {
+        width: 10%;
+        text-align: center;
+    }
+</style>
+

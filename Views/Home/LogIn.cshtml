@@ -1,0 +1,32 @@
+﻿@model Team8ADProjectSSIS.Models.Employee
+@{
+    ViewBag.Title = "Log In";
+}
+    <h4 class="text-center">Logic University </h4>
+    <h4 class="text-center">Stationery Store Inventory System</h4>
+
+<h2 class="text-left">Log in</h2>
+
+@using (Html.BeginForm("LogIn", "Home", FormMethod.Post))
+{
+    <fieldset class="form-group row">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger", @style = "color:red" })
+    </fieldset>
+    
+    <fieldset class="form-group row">
+        @Html.LabelFor(x => x.UserName)
+        @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+        @*Html.ValidationMessageFor(x => x.UserName, "", new { @style = "color:red" })*@
+
+    </fieldset>
+
+    <fieldset class="form-group row">
+        @Html.LabelFor(x => x.HashedPassward)
+        @Html.PasswordFor(x => x.HashedPassward,new { @class = "form-control" })
+        @*Html.ValidationMessageFor(x => x.HashedPassward, "", new { @style = "color:red" })*@
+    </fieldset>
+
+    <fieldset class="form-group row">
+        <input type="submit" value="Login" class="btn btn-primary"/>
+    </fieldset>
+}
