@@ -106,8 +106,8 @@ namespace Team8ADProjectSSIS.Controllers
                 Random rand = new Random();
                 int orderNum = rand.Next(10000000, 100000000);
 
-                string sql = @"INSERT INTO Requisitions(IdStatusCurrent,RaiseDate,HeadRemark,ApprovedDate,WithdrawlDate,Employee_IdEmployee)
-                                    VALUES(1,GETDATE(),null,null,null,(SELECT IdEmployee from Employees WHERE Name = '" + username + "'))";
+                string sql = @"INSERT INTO Requisitions(IdStatusCurrent,RaiseDate,HeadRemark,ApprovedDate,WithdrawlDate,IdEmployee)
+                                    VALUES(1,GETDATE(),null,GETDATE(),GETDATE(),(SELECT IdEmployee from Employees WHERE Name = '" + username + "'))";
 
                 SqlCommand cmdd = new SqlCommand(sql, conn);
 
@@ -139,6 +139,14 @@ namespace Team8ADProjectSSIS.Controllers
 
                   cmdd.ExecuteNonQuery();
               }*/
+
+            int length = itemName.Length;
+
+            if (itemName.EndsWith("\""))
+            {
+                itemName.Remove(length - 1);
+                itemName.Remove(length - 2);
+            }
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -163,6 +171,13 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult updateReq(string username,int? selectedId,string itemName, int? quantity)
         {
+            int length = itemName.Length;
+
+            if (itemName.EndsWith("\""))
+            {
+                itemName.Remove(length - 1);
+                itemName.Remove(length - 2);
+            }
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -189,7 +204,13 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult insertReq(string username, int? selectedId, string itemName, int? quantity)
         {
+            int length = itemName.Length; 
 
+            if (itemName.EndsWith("\""))
+            {
+                itemName.Remove(length-1);
+                itemName.Remove(length - 2);
+            }
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -197,7 +218,7 @@ namespace Team8ADProjectSSIS.Controllers
                 Random rand = new Random();
                 int orderNum = rand.Next(10000000, 100000000);
 
-                string details = @"INSERT INTO RequisitionItems VALUES (" + selectedId + ",(SELECT IdItem from Items WHERE Description = '"
+                string details = @"INSERT INTO RequisitionItems VALUES (" + selectedId + ",(SELECT IdItem from Items WHERE Description ='"
                                   + itemName + "'),"+ quantity + ")";
 
 
@@ -214,6 +235,13 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult deleteReqItem(string username, int? selectedId, string itemName)
         {
+            int length = itemName.Length;
+
+            if (itemName.EndsWith("\""))
+            {
+                itemName.Remove(length - 1);
+                itemName.Remove(length - 2);
+            }
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -535,7 +563,7 @@ namespace Team8ADProjectSSIS.Controllers
 
                 conn.Open();
 
-                string ch = @"SELECT * From Requisitions Where Employee_IdEmployee =
+                string ch = @"SELECT * From Requisitions Where IdEmployee =
                                (SELECT IdEmployee from Employees Where Name = '" + username + "')";
 
                 SqlCommand chh = new SqlCommand(ch, conn);
