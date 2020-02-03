@@ -44,7 +44,9 @@ namespace Team8ADProjectSSIS.DAO
             {
                 items.AddRange(context.Items.OfType<Item>()
                 .Where(x => x.Description.ToLower().Contains(str.ToLower())
-                || x.Category.Label.ToLower().Contains(str.ToLower()))
+                || x.Category.Label.ToLower().Contains(str.ToLower())).
+                Include(i => i.PurchaseOrderDetails).
+                Include(i => i.PurchaseOrderDetails.Select(x => x.PurchaseOrder))
                 .ToList<Item>());
             }
             return items;
