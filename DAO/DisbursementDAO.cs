@@ -152,7 +152,6 @@ namespace Team8ADProjectSSIS.DAO
                 foreach (var p in pi)
                     Preparingitem.Add(p);
             }
-
             List<Retrieval> RetrievalForm = Preparingitem.GroupBy(x => x.IdItem)
                                             .Select(y => new Retrieval
                                             {
