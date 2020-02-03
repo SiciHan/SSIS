@@ -346,7 +346,49 @@ namespace Team8ADProjectSSIS.Controllers
 
             _purchaseOrderDAO.UpdateStatusToIncomplete(id);
 
+            return RedirectToAction("PurchaseOrderCart", "StoreClerk");
+        }
+
+        //@Shutong
+        public ActionResult UpdatePO(int id)
+        {
+            //not only update the status 
+            //but also need to merge with existing PO.... and delete remarks
+            _purchaseOrderDAO.UpdateRejectedToIncomplete(id);
+            return RedirectToAction("PurchaseOrderCart", "StoreClerk");
+        }
+
+        //@Shutong
+        [HttpGet]
+        public ActionResult CollectPO(int id)
+        {
+
+            ViewData["PurchaseOrder"] = _purchaseOrderDAO.FindPOById(id);
+            ViewData["pod"] = _purchaseOrderDetailsDAO.FindPODetailsByPOId(id);
+            return View();
+        }
+
+        //@Shutong
+        [HttpPost]
+        public ActionResult CollectPO(FormCollection form)
+        {
+            var IdPO = form["IdPO"];
+            int id = Int32.Parse(IdPO);
+            foreach (PurchaseOrderDetail pod in _purchaseOrderDetailsDAO.FindPODetailsByPOId(id))
+            {
+                var deliveredUnit = form["deliveredUnit_" + pod.IdPOD];
+                var deliveryRemark = form["deliveryRemarks_" + pod.IdPOD];
+                _purchaseOrderDetailsDAO.UpdateDeliveredUnitAndRemarksById(pod.IdPOD, Int32.Parse(deliveredUnit), deliveryRemark);
+            }
+            _purchaseOrderDAO.UpdateStatusToDelivered(id);
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
+        }
+        public ActionResult Schedule(int IdPO, string deliverDate)
+        {
+            //2222 - 02 - 01T00: 12
+            _purchaseOrderDAO.UpdateSchedule(IdPO, deliverDate);
+            return RedirectToAction("PurchaseOrderList", "StoreClerk");
+
         }
     }
 }

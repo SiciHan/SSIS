@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using Team8ADProjectSSIS.Models;
@@ -22,7 +23,8 @@ namespace Team8ADProjectSSIS.DAO
 
             //item and po into pod
 
-            PurchaseOrderDetail pod=context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().Where(x => x.Item.IdItem == i.IdItem && x.PurchaseOrder.IdPurchaseOrder == po.IdPurchaseOrder).FirstOrDefault();
+            PurchaseOrderDetail pod=context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().
+                Where(x => x.Item.IdItem == i.IdItem && x.PurchaseOrder.IdPurchaseOrder == po.IdPurchaseOrder).FirstOrDefault();
             if (pod == null) {
                 pod= new PurchaseOrderDetail
                 {
@@ -83,6 +85,22 @@ namespace Team8ADProjectSSIS.DAO
             PurchaseOrderDetail pod = context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().
                 Where(x => x.IdPOD == idPOD).FirstOrDefault();
             pod.OrderUnit = orderUnit;
+            context.SaveChanges();
+            return pod;
+        }
+
+        public List<PurchaseOrderDetail> FindPODetailsByPOId(int id)
+        {
+            return context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().Where(x => x.PurchaseOrder.IdPurchaseOrder == id)
+                .Include(p => p.Item).ToList();
+        }
+
+        public PurchaseOrderDetail UpdateDeliveredUnitAndRemarksById(int idPOD,int deliveredUnit,string Remarks)
+        {
+            PurchaseOrderDetail pod = context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().
+                Where(x => x.IdPOD == idPOD).FirstOrDefault();
+            pod.DeliveredUnit = deliveredUnit;
+            pod.DeliveryRemark = Remarks;
             context.SaveChanges();
             return pod;
         }

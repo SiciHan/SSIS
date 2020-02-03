@@ -499,6 +499,7 @@
     <Content Include="Views\StoreManager\DisbursementHistory.cshtml" />
     <Content Include="Views\StoreManager\DisbursementDetails.cshtml" />
     <Content Include="Views\StoreClerk\PurchaseOrderCart.cshtml" />
+    <Content Include="Views\StoreClerk\CollectPO.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

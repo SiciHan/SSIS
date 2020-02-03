@@ -187,7 +187,7 @@
     {
         <table class="table">
             <tr>
-                <th>Order Date</th>
+                <th>Scheduled Date</th>
                 <th>Ordered By</th>
                 <th>Supplier</th>
                 <th>Total Item</th>
@@ -199,7 +199,14 @@
             {
                 <tr>
                     <td>
-                        @po.OrderDate
+                        @if (po.DeliverDate.Equals(DateTime.Parse("01/01/1900")))
+                        {
+                            <span>Not Applicable</span>
+                        }
+                        else
+                        {
+                            @po.DeliverDate
+                        }
                     </td>
                     <td>
                         @po.StoreClerk.Name
@@ -295,8 +302,75 @@
                             </div>
                         </div>
                     </td>
-                    <td></td>
-                    <td></td>
+                    <td>
+                        <a class="btn btn-block" href="/StoreClerk/CollectPO?id=@po.IdPurchaseOrder">Collect</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-block" href="/StoreClerk/SchedulePO?id=@po.IdPurchaseOrder">Schedule</a>
+
+
+                        <button class="btn btn-block" data-toggle="modal" data-target="#schedule-@po.IdPurchaseOrder">Schedule</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="schedule-@po.IdPurchaseOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Schedule the Delivery Date</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            Order Date:
+                                            @if (po.OrderDate.Equals(DateTime.Parse("01/01/1900")))
+                                            {
+                                                <span>Not Applicable</span>
+                                            }
+                                            else
+                                            {
+                                                @po.OrderDate
+                                            }
+                                        </p>
+                                        <p>Order By: @po.StoreClerk.Name</p>
+
+                                        <p>
+                                            Approved Date:
+                                            @if (po.ApprovedDate.Equals(DateTime.Parse("01/01/1900")))
+                                            {
+                                                <span>Not Applicable</span>
+                                            }
+                                            else
+                                            {
+                                                @po.ApprovedDate
+                                            }
+                                        </p>
+
+                                        <p>
+                                            Delivered Date:
+                                            @if (po.DeliverDate.Equals(DateTime.Parse("01/01/1900")))
+                                            {
+                                                <span>Not Applicable</span>
+                                            }
+                                            else
+                                            {
+                                                @po.DeliverDate
+                                            }
+                                        </p>
+                                        <p>Supplier: @po.Supplier.Name</p>
+                                        <p>Supplier Contact: @po.Supplier.Tel</p>
+                                        <label for="deliveredDate"> Choose a new delivery date and time</label>
+                                        <input id="deliveredDate_@po.IdPurchaseOrder" type="datetime-local" value="@po.DeliverDate" />
+      
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" onclick="schedule(@po.IdPurchaseOrder)">Save Schedule</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
 
             }
@@ -323,19 +397,19 @@
                 <th></th>
             </tr>
             @foreach (PurchaseOrder po in rejectedList)
-            {
+    {
                 <tr>
                     <td>
                         <p>
                             
                             @if (po.OrderDate.Equals(DateTime.Parse("01/01/1900")))
-                            {
+    {
                                 <span>Not Applicable</span>
-                            }
-                            else
-                            {
+    }
+    else
+    {
                                 @po.OrderDate
-                            }
+    }
                         </p>
                     </td>
                     <td>
@@ -363,13 +437,13 @@
                                         <p>
                                             Order Date:
                                             @if (po.OrderDate.Equals(DateTime.Parse("01/01/1900")))
-                                            {
+    {
                                                 <span>Not Applicable</span>
-                                            }
-                                            else
-                                            {
+    }
+    else
+    {
                                                 @po.OrderDate
-                                            }
+    }
                                         </p>
                                         <p>Order By: @po.StoreClerk.Name</p>
                                         <p>Supplier: @po.Supplier.Name</p>
@@ -387,7 +461,7 @@
                                             </tr>
 
                                             @foreach (PurchaseOrderDetail pod in po.PurchaseOrderDetails)
-                                            {
+    {
                                                 <tr>
                                                     <td><input type="hidden" name="purchaseOrderID_@po.IdPurchaseOrder" value="@po.IdPurchaseOrder" /> @pod.Item.Description</td>
                                                     <td>@pod.OrderUnit</td>
@@ -397,7 +471,7 @@
                                                     <td>@pod.Item.StockUnit</td>
                                                     <td>@pod.Item.unitOfMeasure</td>
                                                 </tr>
-                                            }
+    }
                                         </table>
                                     </div>
                                     <div class="modal-footer">
@@ -408,7 +482,44 @@
                             </div>
                         </div>
                     </td>
-                    <td></td>
+                    <td>
+                        <button class="btn btn-block" data-toggle="modal" data-target="#change-@po.IdPurchaseOrder">Change</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="change-@po.IdPurchaseOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Change Rejected Purchase Order</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <p> By doing so, your Purchase Order will be pulled back to the Purchase Order cart. The remarks will be deleted. </p>
+                                        @{
+                                            
+                                            foreach (PurchaseOrder po2 in incompleteList)
+                                            {
+                                                if (po2.IdSupplier.Equals(po.IdSupplier))
+                                                {
+                                                    <p>Your current Purchase Order shared the same supplier as the purchase order in your Purchase Order Cart.</p>
+                                                    <p>To continue, your current Purchase Order will be merged with existing Purchase Order in the Cart. </p>
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    <p>Are you sure to continue? </p>
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-primary" onclick="updateRejectedPO(@po.IdPurchaseOrder)">Confirm Continue</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
                     <td></td>
                 </tr>
 
@@ -681,4 +792,33 @@
         //modal.find('.modal-title').text('New message to ' + recipient)
         //modal.find('.modal-body input').val(recipient)
     })
+
+    $('div[id^="change-"]').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        //var target = button.data('target') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        //modal.find('.modal-title').text('New message to ' + recipient)
+        //modal.find('.modal-body input').val(recipient)
+    })
+
+        $('div[id^="schedule-"]').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        //var target = button.data('target') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        //modal.find('.modal-title').text('New message to ' + recipient)
+        //modal.find('.modal-body input').val(recipient)
+    })
+
+    function updateRejectedPO(idPO) {
+
+        window.location.href = "/StoreClerk/UpdatePO?id=" + idPO;
+    }
+    function schedule(idPO) {
+        var x = document.getElementById("deliveredDate_" + idPO).value;
+        window.location.href = "/StoreClerk/Schedule?idPO=" + idPO + "&deliverDate=" + x;
+    }
 </script>
