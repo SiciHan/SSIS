@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "History";
     var disbursements = ViewBag.disbursements;
+    var searchContext = ViewBag.searchContext;
 }
 
 <div class="navbar navbar-default navbar-fixed-top">
@@ -36,9 +37,9 @@
     <div class="col-lg-6">
         <div class="input-group">
             <span class="input-group-btn">
-                <button class="btn btn-default glyphicon glyphicon-search" type="button"></button>
+                <button class="btn btn-default glyphicon glyphicon-search" type="button" onclick="onSearchClick()"></button>
             </span>
-            <input type="text" class="form-control" placeholder="Search">
+            <input id="input" type="text" class="form-control" placeholder="Search" value="@searchContext">
         </div><!-- /input-group -->
     </div><!-- /.col-lg-6 -->
 </div>
@@ -53,15 +54,19 @@
     </tr>
     @foreach (Disbursement d in disbursements)
     {
-        CollectionPoint cp = d.Department.CollectionPt;
-        Employee employee = d.Department.CollectionPt.CPClerks.FirstOrDefault().StoreClerk;
-        <td>@d.Date</td>
-        <td>@cp.Location</td>
-        <td>@employee.Name</td>
-        <td>Unknown</td>
-        <td><a class="btn btn-default" href="Details?idDisbursement=@d.IdDisbursement" role="button">Details</a></td>
-    }
-</table>
+        CollectionPoint cp = d.CollectionPoint;
+        Employee collectedBy = d.CollectedBy;
+        Employee disbursedBy = d.DisbursedBy;
+        <tr>
+            <td>@d.Date</td>
+            <td>@cp.Location</td>
+            <td>@disbursedBy.Name</td>
+            <td>@collectedBy.Name</td>
+            <td><a class="btn btn-default" href="Details?idDisbursement=@d.IdDisbursement" role="button">Details</a></td>
+        </tr>
+     }
+    </table>
+
 
 <style>
     table {
@@ -77,3 +82,15 @@
         text-align: center;
     }
 </style>
+
+<script type="text/javascript">
+    function onSearchClick() {
+        var input = $("#input");
+        var value = input.val();
+        console.log("value", value);
+        self.location.href = 'History?searchContext=' + value;
+
+    }
+
+
+</script>

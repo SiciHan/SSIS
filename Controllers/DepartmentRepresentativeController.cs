@@ -39,8 +39,8 @@ namespace Team8ADProjectSSIS.Controllers
             {
                 ViewBag.status = disbursement.Status;
                 ViewBag.department = disbursement.Department;
-                ViewBag.collectionPt = disbursement.Department.CollectionPt;
-                ViewBag.storeClerk = disbursement.Department.CollectionPt.CPClerks.FirstOrDefault().StoreClerk;
+                ViewBag.collectionPt = disbursement.CollectionPoint;
+                ViewBag.storeClerk = disbursement.DisbursedBy;
                 ViewBag.disbursementItems = disbursement.DisbursementItems;
             }
             else
@@ -52,30 +52,36 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
         [HttpGet]
-        public ActionResult UpdateCollectionPoint(int idCollectionPt)
+        public ActionResult UpdateCollectionPoint(int idDisbursement, int idCollectionPt)
         {
             int idEmployee = 4;
             //int idEmployee = (int)Session["IdEmployee"];
             Employee employee = _employeeDAO.FindEmployeeById(idEmployee);
-            bool result = _departmentDAO.UpdateCollectionPt(employee.CodeDepartment, idCollectionPt);
+            bool result1 =_departmentDAO.UpdateCollectionPt(employee.CodeDepartment, idCollectionPt);
+            bool result2 = _disbursementDAO.UpdateCollectionPt(idDisbursement, idCollectionPt);
             return RedirectToAction("Home");
         }
 
         [HttpGet]
         public ActionResult AcknowledgeCollection(int idDisbursement)
         {
-            bool result = _disbursementDAO.AcknowledgeCollection(idDisbursement);
+            int idEmployee = 4;
+            //int idEmployee = (int)Session["IdEmployee"];
+            Employee employee = _employeeDAO.FindEmployeeById(idEmployee);
+            bool result = _disbursementDAO.AcknowledgeCollection(idDisbursement, employee.IdEmployee);
             return RedirectToAction("Home");
         }
 
-        public ActionResult History()
+        public ActionResult History(string searchContext = "")
         {
+            
             //Testing Hardcode
             int idEmployee = 4;
             //int idEmployee = (int)Session["IdEmployee"];
             Employee employee = _employeeDAO.FindEmployeeById(idEmployee);
-            List<Disbursement> disbursements = _disbursementDAO.GetReceivedDisbursements(employee.CodeDepartment);
+            List<Disbursement> disbursements = _disbursementDAO.GetReceivedDisbursements(employee.CodeDepartment, searchContext);
             ViewBag.disbursements = disbursements;
+            ViewBag.searchContext = searchContext;            
             return View();
         }
 
@@ -87,8 +93,9 @@ namespace Team8ADProjectSSIS.Controllers
             {
                 ViewBag.status = disbursement.Status;
                 ViewBag.department = disbursement.Department;
-                ViewBag.collectionPt = disbursement.Department.CollectionPt;
-                ViewBag.storeClerk = disbursement.Department.CollectionPt.CPClerks.FirstOrDefault().StoreClerk;
+                ViewBag.collectionPt = disbursement.CollectionPoint;
+                ViewBag.collectedBy = disbursement.CollectedBy;
+                ViewBag.disbursedBy = disbursement.DisbursedBy;
                 ViewBag.disbursementItems = disbursement.DisbursementItems;
             }
             else
@@ -107,7 +114,9 @@ namespace Team8ADProjectSSIS.Controllers
         }
         public ActionResult CollectionPoints()
         {
-            return View("CollectionPoints");
+            List<CollectionPoint> collectionPoints = _collectionPointDAO.FindAll();
+            ViewBag.collectionPoints = collectionPoints;
+            return View();
         }
     }
 }

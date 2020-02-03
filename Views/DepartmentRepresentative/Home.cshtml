@@ -84,7 +84,7 @@ else
             <div class="form-group" style="margin-top: 0%">
                 <div class="input-group col-sm-3 col-xs-offset-6">
                     <input type="button" style="height:25px" value="Comfirm" onclick="onCollectionPointChange()" />&nbsp;&nbsp;&nbsp;
-                    <button style="height:25px">View Map</button>
+                    <button style="height:25px" onclick="onViewMapClick()">View Map</button>
                 </div>
             </div> 
     </div>
@@ -142,7 +142,7 @@ else
         var options = $("#collectionPt");
         var value = options.val();
         console.log("value", value);
-        self.location.href = 'UpdateCollectionPoint?idCollectionPt=' + value;
+        self.location.href = 'UpdateCollectionPoint?idDisbursement=' + @disbursement.IdDisbursement +'&idCollectionPt=' + value;
     }
 
     function onCheckBoxChange() {
@@ -167,5 +167,10 @@ else
 	    {
 
 	    }
+    }
+
+    function onViewMapClick() {
+        var value = @disbursement.IdCollectionPt;
+        self.location.href = 'LocationMap?idCollectionPt=' + value;
     }
 </script>

@@ -1,6 +1,7 @@
-﻿
+﻿@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "CollectionPoints";
+    var collectionPoints = ViewBag.collectionPoints;
 }
 
 <div class="navbar navbar-default navbar-fixed-top">
@@ -17,9 +18,9 @@
 
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li>@Html.ActionLink("Disbursement", "Index", "DepRep")</li>
-                <li>@Html.ActionLink("History", "Index", "DepRep")</li>
-                <li class="active">@Html.ActionLink("Collection Point", "Index", "DepRep")</li>
+                <li>@Html.ActionLink("Disbursement", "Home", "DepartmentRepresentative")</li>
+                <li>@Html.ActionLink("History", "History", "DepartmentRepresentative")</li>
+                <li class="active">@Html.ActionLink("Collection Point", "CollectionPoints", "DepartmentRepresentative")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
@@ -37,14 +38,15 @@
         <th>COLLECTION TIME</th>
         <th>OPERATION</th>
     </tr>
-    @*@foreach (Disbursement d in disbursements)
-    {
-        CollectionPoint cp = d.Department.CollectionPt;
-        Employee employee = d.Department.CollectionPt.CPClerks.FirstOrDefault().StoreClerk;
-        <td>@d.Date</td>
-        <td>@cp.Location</td>
-        <td><a class="btn btn-default" href="Details?idDisbursement=@d.IdDisbursement" role="button">View Map</a></td>
-    }*@
+    @foreach (CollectionPoint cp in collectionPoints)
+        {
+        <tr>
+            <td>@cp.Location</td>
+            <td>@cp.Time</td>
+            <td><a class="btn btn-default" href="LocationMap?idCollectionPt=@cp.IdCollectionPt" role="button">View Map</a></td>
+
+        </tr>
+        }
 </table>
 
 <style>

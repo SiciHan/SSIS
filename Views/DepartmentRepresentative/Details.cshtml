@@ -4,7 +4,8 @@
     ViewBag.Title = "Details";
     var disbursement = ViewBag.disbursement;
     var status = ViewBag.status;
-    var storeClerk = ViewBag.storeClerk;
+    var collectedBy = ViewBag.collectedBy;
+    var disbursedBy = ViewBag.disbursedBy;
     var collectionPt = ViewBag.collectionPt;
     var disbursementItems = ViewBag.disbursementItems;
     int iterator = 0;
@@ -37,37 +38,43 @@
         </div>
     </div>
 </div>
-
+<!--startprint-->
 <h2 class="text-center">Dibursement Detail</h2>
 <div class="row">
     <div class="col-md-3 col-md-offset-2">
-        <p>Schedual Date: @disbursement.Date</p>
+        <p>Received Date: @disbursement.Date</p>
     </div>
-    <div class="col-md-2 col-md-offset-3">
+    <div class="col-md-2 col-md-offset-2">
         <p>Status: @status.Label</p>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-3 col-md-offset-2">
-        <p>Delivery by:@storeClerk.Name </p>
+        <p>Delivery by:@disbursedBy.Name </p>
     </div>
-    <div class="col-md-4 col-md-offset-3">
-        <p>Contact Number:@storeClerk.Tel </p>
+    <div class="col-md-4 col-md-offset-2">
+        <p>Contact Number:@disbursedBy.Tel </p>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-4 col-md-offset-2">
+    <div class="col-md-3 col-md-offset-2">
+        <p>Collected by:@collectedBy.Name </p>
+    </div>
+    <div class="col-md-3 col-md-offset-2">
         <p>Collection Point: @collectionPt.Location </p>
     </div>
-
-    <div class="form-group" style="margin-top: 0%; margin-right: 100px">
-        <div class="input-group col-sm-3 col-sm-offset-9">
-            <button onclick="onViewMapClick()">View Map</button>
-        </div>
+    <div class="col-md-2">
+        <button id="btn_view_map" onclick="onViewMapClick()">View Map</button>
     </div>
+    @*<div class="form-group" style="margin-top: 0%; margin-right: 100px">
+        <div class="input-group col-md-3 col-md-offset-12">*@
+
+    @*</div>
+        </div>*@
 </div>
+
 
 <div class="row" style="margin-left:30px; margin-right:30px;margin-top:20px">
     <table class="table table-bordered table-hover text-center">
@@ -90,12 +97,13 @@
         }
     </table>
 </div>
+<!--endprint-->
 
 
 <div class="form-group" style="margin-top: 4%; margin-right: 32px">
     <div class="input-group col-sm-3 col-sm-offset-9">
         <button type="submit" name="btn_dark" id="btn_apply"
-                class="btn btn-primary" style="width: 40%; float: right;">
+                class="btn btn-primary" style="width: 40%; float: right;" onclick="onPrintClick()">
             Print
         </button>
         <button name="btn_dark" id="btn_cancel" class="btn btn-dark" type="reset"
@@ -105,6 +113,13 @@
     </div>
 </div>
 
+<style type="text/css" media="print">
+    button {
+        visibility:hidden;
+        display:none
+    }
+</style>
+
 <script type="text/javascript">
     function onViewMapClick() {
         var value = @collectionPt.IdCollectionPt;
@@ -113,5 +128,17 @@
 
     function onBackClick() {
         self.location.href = 'History';
+    }
+
+    function onPrintClick() {
+        bdhtml=window.document.body.innerHTML;
+        sprnstr="<!--startprint-->";
+        eprnstr="<!--endprint-->";
+        prnhtml=bdhtml.substr(bdhtml.indexOf(sprnstr)+17);
+        prnhtml=prnhtml.substring(0,prnhtml.indexOf(eprnstr));
+        window.document.body.innerHTML = prnhtml;
+        $('#btn_view_map').attr("style","display:none;");
+        window.print();
+        location.reload();
     }
 </script>
