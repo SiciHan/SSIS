@@ -414,14 +414,19 @@ namespace Team8ADProjectSSIS.Controllers
         // James: Disbursement overview
         public ActionResult Disbursement()
         {
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
+            int IdStoreClerk = (int)Session["IdEmployee"];
+
+
+
             // retrieve 2 lists of Disbursement Lists which are "Prepared" and "Scheduled" under the same Coll Point
             // find by Status and Clerk's Collection Points
-            // assume clerkId is 2
-            int clerkId = 2;
-            List<Disbursement> prepList = _disbursementDAO.FindByStatus("Prepared", clerkId);
-            List<Disbursement> scheList = _disbursementDAO.FindByStatus("Scheduled", clerkId);
-            scheList.AddRange(_disbursementDAO.FindByStatus("Received", clerkId));
-            scheList.AddRange(_disbursementDAO.FindByStatus("Disbursed", clerkId));
+            List<Disbursement> prepList = _disbursementDAO.FindByStatus("Prepared", IdStoreClerk);
+            List<Disbursement> scheList = _disbursementDAO.FindByStatus("Scheduled", IdStoreClerk);
+            scheList.AddRange(_disbursementDAO.FindByStatus("Received", IdStoreClerk));
+            scheList.AddRange(_disbursementDAO.FindByStatus("Disbursed", IdStoreClerk));
 
             ViewBag.prepList = prepList;
             ViewBag.scheList = scheList;
@@ -440,8 +445,10 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult Schedule(IEnumerable<int> disbIdsToSchedule, String pickDate)
         {
-            // assume clerkId is 2
-            int IdStoreClerk = 2;
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
+            int IdStoreClerk = (int)Session["IdEmployee"];
 
             if (disbIdsToSchedule != null)
             {
@@ -477,8 +484,10 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, String pickDate)
         {
-            // assume clerkId is 2
-            int IdStoreClerk = 2;
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
+            int IdStoreClerk = (int)Session["IdEmployee"];
 
             // give and take from disbursement Item and creates the reversal entry and new entry for stock records
             _disbursementItemDAO.GiveAndTake(disbItemId, transferQtyNum, disbItemIdDeptFrom, IdStoreClerk);
@@ -512,8 +521,11 @@ namespace Team8ADProjectSSIS.Controllers
         // James: Opens page to redistribute qty from other disbursements
         public ActionResult Redistribute(int disbId)
         {
-            // assume clerkId is 2
-            int IdStoreClerk = 2;
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
+            int IdStoreClerk = (int)Session["IdEmployee"];
+
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
             ViewBag.disb = targetDisbursement;
 
@@ -540,6 +552,9 @@ namespace Team8ADProjectSSIS.Controllers
         //James: Opens page to handle disbursement with Dep Rep
         public ActionResult DisbursementDetails(int disbId)
         {
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
             ViewBag.disb = targetDisbursement;
 
@@ -557,8 +572,10 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult RefreshDisbursement(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
         {
-            // assume clerkId is 2
-            int IdStoreClerk = 2;
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
+            int IdStoreClerk = (int)Session["IdEmployee"];
 
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
             ViewBag.disb = targetDisbursement;
@@ -583,8 +600,10 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult ClerkSign(IEnumerable<int> disbId)
         {
-            // assume clerkId is 2
-            int IdStoreClerk = 2;
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
+            int IdStoreClerk = (int)Session["IdEmployee"];
 
             // updates the disb's status to "Disbursed" or 7
             _disbursementDAO.UpdateStatus(disbId, 7, DateTime.Now, IdStoreClerk);
@@ -611,6 +630,9 @@ namespace Team8ADProjectSSIS.Controllers
         //James: Stocktake overview
         public ActionResult Stocktake()
         {
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
             ViewBag.allItems = _itemDAO.GetAllItems();
 
             ViewBag.mth1 = DateTime.Now.ToString("yyyy-MM");
@@ -626,8 +648,10 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult SaveStocktake(IList<int> itemId, IList<int> actualQty, IList<int> missingQty, IList<int> wrongQty, IList<int> brokenQty, IList<int> giftQty)
         {
-            // assume clerkId is 2
-            int IdStoreClerk = 2;
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
+            int IdStoreClerk = (int)Session["IdEmployee"];
 
             Debug.WriteLine($"actual: {actualQty.Count}, missing: {missingQty.Count}, wrong: {wrongQty.Count}, broken: {brokenQty.Count}, gift: {giftQty.Count}");
             Debug.WriteLine($"actual: {actualQty[0]}, missing: {missingQty[0]}, wrong: {wrongQty[0]}, broken: {brokenQty[0]}, gift: {giftQty[0]}");
@@ -711,6 +735,9 @@ namespace Team8ADProjectSSIS.Controllers
         //James: View past stocktake based on time
         public ActionResult ViewStocktake(String targetMonth)
         {
+            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");
+
             DateTime month = DateTime.ParseExact(targetMonth, "yyyy-MM",
                 System.Globalization.CultureInfo.InvariantCulture);
             List<StockRecord> SRbyMonth = _stockRecordDAO.FindByMonthAndYear(month);
