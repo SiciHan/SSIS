@@ -444,6 +444,10 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\Notification.js" />
+    <Content Include="Scripts\POCart.js" />
+    <Content Include="Scripts\SignalR.js" />
+    <Content Include="Scripts\StoreClerkIndex.js" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.min.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.css" />
@@ -514,6 +518,7 @@
     <Content Include="Views\Employee\Update.cshtml" />
     <Content Include="Views\Employee\UpdatereqId.cshtml" />
     <Content Include="Views\StoreClerk\CollectPO.cshtml" />
+    <Content Include="Views\StoreClerk\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

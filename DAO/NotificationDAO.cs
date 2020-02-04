@@ -7,5 +7,6 @@ namespace Team8ADProjectSSIS.DAO
 {
     public class NotificationDAO
     {
+      
     }
 }

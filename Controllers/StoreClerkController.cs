@@ -23,6 +23,7 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly CollectionPointDAO _collectionpointDAO;
         private readonly EmployeeDAO _employeeDAO;
         private readonly StatusDAO _statusDAO;
+        private readonly NotificationChannelDAO _notificationChannelDAO;
         //private readonly EmployeeDAO _employeeDAO;
         public StoreClerkController()
         {
@@ -37,6 +38,7 @@ namespace Team8ADProjectSSIS.Controllers
             this._purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
             this._employeeDAO = new EmployeeDAO();
             this._collectionpointDAO = new CollectionPointDAO();
+            this._notificationChannelDAO = new NotificationChannelDAO();
             //this._employeeDAO = new EmployeeDAO();
         }
         
@@ -44,8 +46,17 @@ namespace Team8ADProjectSSIS.Controllers
         // GET: StoreClerk
         public ActionResult Index()
         {
+            int IdReceiver = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdReceiver= (int)Session["IdEmployee"];
+            }
+            ViewData["NCs"]=_notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
+
             return View();
+            
         }
+
         // Get: FormRetrieve Method
         public ActionResult FormRetrieve()
         {
@@ -360,11 +371,15 @@ namespace Team8ADProjectSSIS.Controllers
 
         //@Shutong
         [HttpGet]
-        public ActionResult CollectPO(int id)
+        public ActionResult CollectPO(int? id)
         {
-
-            ViewData["PurchaseOrder"] = _purchaseOrderDAO.FindPOById(id);
-            ViewData["pod"] = _purchaseOrderDetailsDAO.FindPODetailsByPOId(id);
+            if (!id.HasValue)
+            {
+                return RedirectToAction("PurchaseOrderList", "StoreClerk");
+            }
+            
+            ViewData["PurchaseOrder"] = _purchaseOrderDAO.FindPOById(id.Value);
+            ViewData["pod"] = _purchaseOrderDetailsDAO.FindPODetailsByPOId(id.Value);
             return View();
         }
 
@@ -373,6 +388,10 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult CollectPO(FormCollection form)
         {
             var IdPO = form["IdPO"];
+            if (IdPO == null || String.IsNullOrEmpty(IdPO)||IdPO.Contains("undefine"))
+            {
+                return RedirectToAction("PurchaseOrderList", "StoreClerk");
+            }
             int id = Int32.Parse(IdPO);
             foreach (PurchaseOrderDetail pod in _purchaseOrderDetailsDAO.FindPODetailsByPOId(id))
             {

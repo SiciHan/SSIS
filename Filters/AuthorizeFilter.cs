@@ -44,21 +44,21 @@ namespace Team8ADProjectSSIS.Filters
             }
             if (controllerName.Contains("StoreClerk"))
             {
-                if (role.Contains("StoreClerk"))
+                if (role.Contains("Clerk"))
                 {
                     isAuthOk = true;
                 }
             }
             if (controllerName.Contains("StoreManager"))
             {
-                if (role.Contains("StoreManager"))
+                if (role.Contains("Manager"))
                 {
                     isAuthOk = true;
                 }
             }
             if (controllerName.Contains("StoreSupervisor"))
             {
-                if (role.Contains("StoreManager")||role.Contains("StoreSupervisor"))
+                if (role.Contains("Manager")||role.Contains("Supervisor"))
                 {
                     isAuthOk = true;
                 }

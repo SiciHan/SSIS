@@ -5,6 +5,34 @@
     var pods = ViewData["pod"] as IList<PurchaseOrderDetail>;
 }
 
+<!--Please copy paste this div-->
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
+                <li>@Html.ActionLink("Disbursement", "Index", "StoreClerk")</li>
+                <li class="active">@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
+                <li>@Html.ActionLink("Stock Take", "Index", "StoreClerk")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 <h2>Collect Purchase Order from Suppliers</h2>
 <p>Ordered by : @po.StoreClerk.Name</p>
 <p>Supplier : @po.Supplier.Name</p>
@@ -12,7 +40,7 @@
 <p>Approved Date: @po.ApprovedDate</p>
 <p>Scheduled Delivery Date: @po.DeliverDate</p>
 <p>Purchase Remarks: @po.PurchaseRemarks</p>
-@using (Html.BeginForm("CollectPO", "StoreClerk", FormMethod.Post, new { @onsubmit="confirmReceiveOrder()"}))
+@using (Html.BeginForm("CollectPO", "StoreClerk", FormMethod.Post, new { @onsubmit = "confirmReceiveOrder()" }))
 {
     <input type="hidden" name="IdPO" value="@po.IdPurchaseOrder" />
     <table class="table">
@@ -41,9 +69,9 @@
                     <td>
                         @pod.OrderUnit
                     </td>
-                    
+
                     <td>
-                        <input type="number" id="deliveredUnit_@pod.IdPOD" name="deliveredUnit_@pod.IdPOD" value=@pod.OrderUnit min="0" required/>
+                        <input type="number" id="deliveredUnit_@pod.IdPOD" name="deliveredUnit_@pod.IdPOD" value=@pod.OrderUnit min="0" required />
                     </td>
                     <td>
                         <textarea rows="4" cols="50" id="deliveryRemarks_@pod.IdPOD" name="deliveryRemarks_@pod.IdPOD"></textarea>
@@ -52,7 +80,7 @@
             }
         }
     </table>
-    <input type="submit" class="btn btn-primary" value="Delivered Items are Received"/>
+    <input type="submit" class="btn btn-primary" value="Delivered Items are Received" />
 }
 <script>
     function confirmReceiveOrder() {
