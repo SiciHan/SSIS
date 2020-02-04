@@ -27,7 +27,7 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly NotificationDAO _notificationDAO;
         private readonly SupplierItemDAO _supplierItemDAO;
 
-        private readonly NotificationChannelDAO _notificationChannelDAO;
+        //private readonly NotificationChannelDAO _notificationChannelDAO;
         //private readonly EmployeeDAO _employeeDAO;
         public StoreClerkController()
         {
@@ -45,7 +45,7 @@ namespace Team8ADProjectSSIS.Controllers
             this._notificationChannelDAO = new NotificationChannelDAO();
             this._notificationDAO = new NotificationDAO();
             this._supplierItemDAO = new SupplierItemDAO();
-            this._notificationChannelDAO = new NotificationChannelDAO();
+            //this._notificationChannelDAO = new NotificationChannelDAO();
             //this._employeeDAO = new EmployeeDAO();
         }
 
