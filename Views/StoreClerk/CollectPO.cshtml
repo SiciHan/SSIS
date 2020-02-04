@@ -27,20 +27,26 @@
                 <li>@Html.ActionLink("Stock Take", "Index", "StoreClerk")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li>
+                    <a href="@Url.Action("Index","StoreClerk")">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </div>
 </div>
 <h2>Collect Purchase Order from Suppliers</h2>
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 <p>Ordered by : @po.StoreClerk.Name</p>
 <p>Supplier : @po.Supplier.Name</p>
 <p>Ordered Date: @po.OrderDate</p>
 <p>Approved Date: @po.ApprovedDate</p>
 <p>Scheduled Delivery Date: @po.DeliverDate</p>
 <p>Purchase Remarks: @po.PurchaseRemarks</p>
-@using (Html.BeginForm("CollectPO", "StoreClerk", FormMethod.Post, new { @onsubmit = "confirmReceiveOrder()" }))
+@using (Html.BeginForm("CollectPO", "StoreClerk", FormMethod.Post, new { @id = "confirmReceiveOrder" }))
 {
     <input type="hidden" name="IdPO" value="@po.IdPurchaseOrder" />
     <table class="table">
@@ -82,10 +88,12 @@
     </table>
     <input type="submit" class="btn btn-primary" value="Delivered Items are Received" />
 }
-<script>
-    function confirmReceiveOrder() {
-        alert("You have confirmed that you received all items in this purchase order.");
-    }
-</script>
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/CollectPO.js"></script>
+}
+
 
 

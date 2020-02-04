@@ -27,13 +27,19 @@
                 <li>@Html.ActionLink("Stock Take", "Index", "StoreClerk")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="@Url.Action("Index","StoreClerk")"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li>
+                    <a href="@Url.Action("Index","StoreClerk")">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </div>
 </div>
 <h2>Notifications</h2>
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 <button id="Unread" class="btn">Unread</button>
 <button id="Read" class="btn">Read</button>
 <button id="All" class="btn">All Notifications</button>
@@ -84,7 +90,6 @@
     <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
     <script src="~/signalr/hubs"></script>
     <script src="~/Scripts/StoreClerkIndex.js"></script>
-
 }
 
 

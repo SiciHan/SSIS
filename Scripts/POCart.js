@@ -86,6 +86,7 @@ $(document).ready(function () {
         })
         .fail();
 
+    //copy paste this to all pages.
     $.connection.chatHub.client.receiveNotification = function (IdReceiver) {
         //if the notification is sent to me
         if (parseInt($("#hdnSession1").val()) == IdReceiver) {

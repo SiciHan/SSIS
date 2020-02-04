@@ -435,6 +435,8 @@
     <Content Include="Content\bootstrap\badges.less" />
     <Content Include="Content\bootstrap\alerts.less" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\CollectPO.js" />
+    <Content Include="Scripts\FormRetrieve.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -449,6 +451,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\MakePO.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\moment-with-locales.min.js" />
@@ -456,6 +459,7 @@
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\Notification.js" />
     <Content Include="Scripts\POCart.js" />
+    <Content Include="Scripts\POList.js" />
     <Content Include="Scripts\SignalR.js" />
     <Content Include="Scripts\StoreClerkIndex.js" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.css" />

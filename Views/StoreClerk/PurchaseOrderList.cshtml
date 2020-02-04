@@ -26,7 +26,11 @@
                 <li>@Html.ActionLink("Stock Take", "Index", "StoreClerk")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li>
+                    <a href="@Url.Action("Index","StoreClerk")">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
@@ -37,6 +41,8 @@
     <div class="row">
         <div class="col">
             <h2>Purchase Order</h2>
+            <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+            <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
         </div>
         <div class="col">
             <a href="@Url.Action("PurchaseOrderCart","StoreClerk")" class="btn btn-primary">View Purchase Order Cart</a>
@@ -80,102 +86,102 @@
     }
     else
     {
-<table class="table">
-    <tr>
-        <th>Order Date</th>
-        <th>Ordered By</th>
-        <th>Supplier</th>
-        <th>Total Item</th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-    @foreach (PurchaseOrder po in pendingList)
-    {
-<tr>
-    <td>
-        @po.OrderDate
-    </td>
-    <td>
-        @po.StoreClerk.Name
-    </td>
-    <td>
-        @po.Supplier.Name
-    </td>
-    <td>
-        @po.PurchaseOrderDetails.Count
-    </td>
-    <td>
-        <button class="btn btn-block" data-toggle="modal" data-target="#details-@po.IdPurchaseOrder">Details</button>
-        <!-- Modal -->
-        <div class="modal fade" id="details-@po.IdPurchaseOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Purchase Order Details</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            Order Date:
-                            @if (po.OrderDate.Equals(DateTime.Parse("01/01/1900")))
-                            {
-                                <span>Not Applicable</span>
-                            }
-                            else
-                            {
-                                @po.OrderDate
-                            }
-                        </p>
-                        <p>Order By: @po.StoreClerk.Name</p>
-                        <p>Supplier: @po.Supplier.Name</p>
-                        <p>Supplier Contact: @po.Supplier.Tel</p>
-                        <table class="table">
-                            <tr>
-                                <th>Item </th>
-                                <th>Order Unit</th>
-                                <th>Reorder Level</th>
-                                <th>Reorder Unit</th>
-                                <th>Available Unit</th>
-                                <th>Stock Unit</th>
-                                <th>Unit of Measure</th>
-                            </tr>
+        <table class="table">
+            <tr>
+                <th>Order Date</th>
+                <th>Ordered By</th>
+                <th>Supplier</th>
+                <th>Total Item</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            @foreach (PurchaseOrder po in pendingList)
+            {
+                <tr>
+                    <td>
+                        @po.OrderDate
+                    </td>
+                    <td>
+                        @po.StoreClerk.Name
+                    </td>
+                    <td>
+                        @po.Supplier.Name
+                    </td>
+                    <td>
+                        @po.PurchaseOrderDetails.Count
+                    </td>
+                    <td>
+                        <button class="btn btn-block" data-toggle="modal" data-target="#details-@po.IdPurchaseOrder">Details</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="details-@po.IdPurchaseOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Purchase Order Details</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            Order Date:
+                                            @if (po.OrderDate.Equals(DateTime.Parse("01/01/1900")))
+                                            {
+                                                <span>Not Applicable</span>
+                                            }
+                                            else
+                                            {
+                                                @po.OrderDate
+                                            }
+                                        </p>
+                                        <p>Order By: @po.StoreClerk.Name</p>
+                                        <p>Supplier: @po.Supplier.Name</p>
+                                        <p>Supplier Contact: @po.Supplier.Tel</p>
+                                        <table class="table">
+                                            <tr>
+                                                <th>Item </th>
+                                                <th>Order Unit</th>
+                                                <th>Reorder Level</th>
+                                                <th>Reorder Unit</th>
+                                                <th>Available Unit</th>
+                                                <th>Stock Unit</th>
+                                                <th>Unit of Measure</th>
+                                            </tr>
 
-                            @foreach (PurchaseOrderDetail pod in po.PurchaseOrderDetails)
-                            {
-                                <tr>
-                                    <td><input type="hidden" name="purchaseOrderID_@po.IdPurchaseOrder" value="@po.IdPurchaseOrder" /> @pod.Item.Description</td>
-                                    <td>@pod.OrderUnit</td>
-                                    <td>@pod.Item.ReorderLevel</td>
-                                    <td>@pod.Item.ReorderUnit</td>
-                                    <td>@pod.Item.AvailableUnit</td>
-                                    <td>@pod.Item.StockUnit</td>
-                                    <td>@pod.Item.unitOfMeasure</td>
+                                            @foreach (PurchaseOrderDetail pod in po.PurchaseOrderDetails)
+                                            {
+                                                <tr>
+                                                    <td><input type="hidden" name="purchaseOrderID_@po.IdPurchaseOrder" value="@po.IdPurchaseOrder" /> @pod.Item.Description</td>
+                                                    <td>@pod.OrderUnit</td>
+                                                    <td>@pod.Item.ReorderLevel</td>
+                                                    <td>@pod.Item.ReorderUnit</td>
+                                                    <td>@pod.Item.AvailableUnit</td>
+                                                    <td>@pod.Item.StockUnit</td>
+                                                    <td>@pod.Item.unitOfMeasure</td>
 
-                                </tr>
-                            }
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                        <!--<button type="button" class="btn btn-primary">Save changes</button>-->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </td>
-    <td><a class="btn btn-block" href="/StoreClerk/WithdrawPO?id=@po.IdPurchaseOrder">Withdraw</a></td>
-    <td><a class="btn btn-block" href="/StoreClerk/CancelPO?id=@po.IdPurchaseOrder">Cancel</a></td>
-</tr>
-    
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                        <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><a class="btn btn-block" href="/StoreClerk/WithdrawPO?id=@po.IdPurchaseOrder">Withdraw</a></td>
+                    <td><a class="btn btn-block" href="/StoreClerk/CancelPO?id=@po.IdPurchaseOrder">Cancel</a></td>
+                </tr>
+
+            }
+
+        </table>
     }
 
-</table>
-    }
 
-    
 </div>
 <div>
     <h3>Approved Purchase Orders</h3>
@@ -254,7 +260,7 @@
                                                 @po.ApprovedDate
                                             }
                                         </p>
-                                        
+
                                         <p>
                                             Delivered Date:
                                             @if (po.DeliverDate.Equals(DateTime.Parse("01/01/1900")))
@@ -361,11 +367,11 @@
                                         <p>Supplier Contact: @po.Supplier.Tel</p>
                                         <label for="deliveredDate"> Choose a new delivery date and time</label>
                                         <input id="deliveredDate_@po.IdPurchaseOrder" type="datetime-local" value="@po.DeliverDate" />
-      
+
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="schedule(@po.IdPurchaseOrder)">Save Schedule</button>
+                                        <button type="button" id="Schedule"  name="@po.IdPurchaseOrder" class="btn btn-primary">Save Schedule</button>
                                     </div>
                                 </div>
                             </div>
@@ -397,19 +403,19 @@
                 <th></th>
             </tr>
             @foreach (PurchaseOrder po in rejectedList)
-    {
+            {
                 <tr>
                     <td>
                         <p>
-                            
+
                             @if (po.OrderDate.Equals(DateTime.Parse("01/01/1900")))
-    {
+                            {
                                 <span>Not Applicable</span>
-    }
-    else
-    {
+                            }
+                            else
+                            {
                                 @po.OrderDate
-    }
+                            }
                         </p>
                     </td>
                     <td>
@@ -437,13 +443,13 @@
                                         <p>
                                             Order Date:
                                             @if (po.OrderDate.Equals(DateTime.Parse("01/01/1900")))
-    {
+                                            {
                                                 <span>Not Applicable</span>
-    }
-    else
-    {
+                                            }
+                                            else
+                                            {
                                                 @po.OrderDate
-    }
+                                            }
                                         </p>
                                         <p>Order By: @po.StoreClerk.Name</p>
                                         <p>Supplier: @po.Supplier.Name</p>
@@ -461,7 +467,7 @@
                                             </tr>
 
                                             @foreach (PurchaseOrderDetail pod in po.PurchaseOrderDetails)
-    {
+                                            {
                                                 <tr>
                                                     <td><input type="hidden" name="purchaseOrderID_@po.IdPurchaseOrder" value="@po.IdPurchaseOrder" /> @pod.Item.Description</td>
                                                     <td>@pod.OrderUnit</td>
@@ -471,7 +477,7 @@
                                                     <td>@pod.Item.StockUnit</td>
                                                     <td>@pod.Item.unitOfMeasure</td>
                                                 </tr>
-    }
+                                            }
                                         </table>
                                     </div>
                                     <div class="modal-footer">
@@ -498,7 +504,7 @@
 
                                         <p> By doing so, your Purchase Order will be pulled back to the Purchase Order cart. The remarks will be deleted. </p>
                                         @{
-                                            
+
                                             foreach (PurchaseOrder po2 in incompleteList)
                                             {
                                                 if (po2.IdSupplier.Equals(po.IdSupplier))
@@ -509,12 +515,12 @@
                                                 }
                                             }
                                         }
-                                    <p>Are you sure to continue? </p>
-                                        
+                                        <p>Are you sure to continue? </p>
+
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                                        <button type="button" class="btn btn-primary" onclick="updateRejectedPO(@po.IdPurchaseOrder)">Confirm Continue</button>
+                                        <button type="button" id="updateRejectedPO" name="@po.IdPurchaseOrder" class="btn btn-primary">Confirm Continue</button>
                                     </div>
                                 </div>
                             </div>
@@ -551,7 +557,7 @@
                 <tr>
                     <td>
                         <p>
-                           
+
                             @if (po.OrderDate.Equals(DateTime.Parse("01/01/1900")))
                             {
                                 <span>Not Applicable</span>
@@ -666,7 +672,7 @@
                 <tr>
                     <td>
                         <p>
-                            
+
                             @if (po.OrderDate.Equals(DateTime.Parse("01/01/1900")))
                             {
                                 <span>Not Applicable</span>
@@ -713,9 +719,9 @@
                                         <p>Order By: @po.StoreClerk.Name</p>
                                         <p>Supplier: @po.Supplier.Name</p>
                                         <p>Supplier Contact: @po.Supplier.Tel</p>
-                                        
+
                                         <p>
-                                            Approved Date: 
+                                            Approved Date:
                                             @if (po.ApprovedDate.Equals(DateTime.Parse("01/01/1900")))
                                             {
                                                 <span>Not Applicable</span>
@@ -782,43 +788,9 @@
     }
 </div>
 
-<script>
-    $('div[id^="details-"]').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        //var target = button.data('target') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        //modal.find('.modal-title').text('New message to ' + recipient)
-        //modal.find('.modal-body input').val(recipient)
-    })
 
-    $('div[id^="change-"]').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        //var target = button.data('target') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        //modal.find('.modal-title').text('New message to ' + recipient)
-        //modal.find('.modal-body input').val(recipient)
-    })
-
-        $('div[id^="schedule-"]').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        //var target = button.data('target') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-        //modal.find('.modal-title').text('New message to ' + recipient)
-        //modal.find('.modal-body input').val(recipient)
-    })
-
-    function updateRejectedPO(idPO) {
-
-        window.location.href = "/StoreClerk/UpdatePO?id=" + idPO;
-    }
-    function schedule(idPO) {
-        var x = document.getElementById("deliveredDate_" + idPO).value;
-        window.location.href = "/StoreClerk/Schedule?idPO=" + idPO + "&deliverDate=" + x;
-    }
-</script>
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/POList.js"></script>
+}
