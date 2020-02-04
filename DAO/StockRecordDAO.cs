@@ -49,12 +49,6 @@ namespace Team8ADProjectSSIS.DAO
 
             }
         }
-        private readonly SSISContext context;
-
-        public StockRecordDAO()
-        {
-            this.context = new SSISContext();
-        }
 
         public List<StockRecord> FindVoucher()
         {
