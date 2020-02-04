@@ -55,9 +55,8 @@ namespace Team8ADProjectSSIS.Controllers
             // Get Department that seleceted same collection point as store clerk
             List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
 
-            bool NoDisbursement = false;
             DateTime Today = DateTime.Now;
-            DateTime LastThu = Today.AddDays(-4);
+            DateTime LastThu = Today.AddDays(-1);
             while (LastThu.DayOfWeek != DayOfWeek.Thursday)
                 LastThu = LastThu.AddDays(-1);
 
@@ -141,6 +140,7 @@ namespace Team8ADProjectSSIS.Controllers
                             System.Globalization.CultureInfo.InvariantCulture);
             DateTime EDate = DateTime.ParseExact(EndDate, "dd-MM-yyyy",
                             System.Globalization.CultureInfo.InvariantCulture).AddDays(1);
+            
             // Search and retrieve Requisition & Requisition Item
             List<Retrieval> RetrievalItem = _requisitionDAO
                                             .RetrieveRequisition(DClerk, SDate, EDate);
@@ -152,12 +152,17 @@ namespace Team8ADProjectSSIS.Controllers
             if (NewRetrievalItem.Any())
             {
                 // Create Disbursement and set status to "preparing"
-                List<int> PKDisbursement = _disbursementDAO.CreateDisbursement(NewRetrievalItem);
+                List<int> IdDisbursement = _disbursementDAO.CreateDisbursement(NewRetrievalItem);
                 // Create DisbursementItem and set status to "preparing"
-                List<int> PKDisbursementItem = _disbursementItemDAO
-                                               .CreateDisbursementItem(PKDisbursement, NewRetrievalItem);
+                List<int> IdDisbursementItem = _disbursementItemDAO
+                                               .CreateDisbursementItem(IdDisbursement, NewRetrievalItem);
+
+                // Distribute stock item based on approved date given stockunit less than sum of requested unit
+                _disbursementItemDAO.DisbursementItemByPriority(NewRetrievalItem);
+
                 // Search Disbursement with status set as "preparing"
-                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, EDate, SDate);
+                DateTime Today = DateTime.Now;
+                List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, Today, SDate);
                 ViewData["RetrievalForm"] = RetrievalForm;
                 ViewData["NoDisbursement"] = false;
                 ViewData["NoNewRequisition"] = false;
@@ -188,15 +193,25 @@ namespace Team8ADProjectSSIS.Controllers
 
             if (IdItemRetrieved.Any())
             {
+                // Get IdDisbursementItem from Selecte Retrieved Item
+                List<int> IdDisbursementItem = _disbursementItemDAO.GetIdByItemRetrieved(DClerk, IdItemRetrieved);
                 // update disbursementitem and set status to "prepared"
                 // return IdDisbursement with at lease one items have been set as "prepared"
-                List<int> IdDisbursement = _disbursementItemDAO.UpdateDisbursementItem(DClerk, IdItemRetrieved);
+                List<int> IdDisbursement = _disbursementItemDAO.UpdateDisbursementItem(IdDisbursementItem);
                 // update disbursement and set status to "prepared"
                 _disbursementDAO.UpdateDisbursement(IdDisbursement);
-                // update item stock unit
+                // update item stock unit and available unit
+                _itemDAO.UpdateItem(IdDisbursementItem);
 
-                // raise alert
+                // update stockrecord
+                _stockRecordDAO.UpdateStockRecord(IdStoreClerk, IdDisbursementItem);
 
+                // check if stock unit is less reorder level
+                bool IsLowerThanReorderLevel = _itemDAO.CheckIfLowerThanReorderLevel(IdItemRetrieved);
+                if (IsLowerThanReorderLevel)
+                {
+                    // raise alert
+                }
             }
             else
             {
@@ -216,14 +231,13 @@ namespace Team8ADProjectSSIS.Controllers
                             System.Globalization.CultureInfo.InvariantCulture);
             DateTime EDate = DateTime.ParseExact(EndDate, "dd-MM-yyyy",
                             System.Globalization.CultureInfo.InvariantCulture).AddDays(1);
-
-            List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, EDate, SDate);
+            DateTime Today = DateTime.Now;
+            List<Retrieval> RetrievalForm = _disbursementDAO.RetrievePreparingItem(DClerk, Today, SDate);
 
             RetrievalFormReport retrievalFromReport = new RetrievalFormReport();
             byte[] abytes = retrievalFromReport.PrepareReport(RetrievalForm);
             return File(abytes,"application/pdf", "Retrieve Form.pdf");
 
-            //return RedirectToAction("FormRetrieve", "StoreClerk");
         }
         
         //@Shutong
@@ -346,7 +360,49 @@ namespace Team8ADProjectSSIS.Controllers
 
             _purchaseOrderDAO.UpdateStatusToIncomplete(id);
 
+            return RedirectToAction("PurchaseOrderCart", "StoreClerk");
+        }
+
+        //@Shutong
+        public ActionResult UpdatePO(int id)
+        {
+            //not only update the status 
+            //but also need to merge with existing PO.... and delete remarks
+            _purchaseOrderDAO.UpdateRejectedToIncomplete(id);
+            return RedirectToAction("PurchaseOrderCart", "StoreClerk");
+        }
+
+        //@Shutong
+        [HttpGet]
+        public ActionResult CollectPO(int id)
+        {
+
+            ViewData["PurchaseOrder"] = _purchaseOrderDAO.FindPOById(id);
+            ViewData["pod"] = _purchaseOrderDetailsDAO.FindPODetailsByPOId(id);
+            return View();
+        }
+
+        //@Shutong
+        [HttpPost]
+        public ActionResult CollectPO(FormCollection form)
+        {
+            var IdPO = form["IdPO"];
+            int id = Int32.Parse(IdPO);
+            foreach (PurchaseOrderDetail pod in _purchaseOrderDetailsDAO.FindPODetailsByPOId(id))
+            {
+                var deliveredUnit = form["deliveredUnit_" + pod.IdPOD];
+                var deliveryRemark = form["deliveryRemarks_" + pod.IdPOD];
+                _purchaseOrderDetailsDAO.UpdateDeliveredUnitAndRemarksById(pod.IdPOD, Int32.Parse(deliveredUnit), deliveryRemark);
+            }
+            _purchaseOrderDAO.UpdateStatusToDelivered(id);
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
+        }
+        public ActionResult Schedule(int IdPO, string deliverDate)
+        {
+            //2222 - 02 - 01T00: 12
+            _purchaseOrderDAO.UpdateSchedule(IdPO, deliverDate);
+            return RedirectToAction("PurchaseOrderList", "StoreClerk");
+
         }
     }
 }

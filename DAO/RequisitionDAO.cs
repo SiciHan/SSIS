@@ -50,9 +50,6 @@ namespace Team8ADProjectSSIS.DAO
                 }
                 
             }
-            Debug.WriteLine(IdRequestedItem);
-
-            // Get DepartmentCode from approved requistion Id and where id Employee equals to IdEmplloyee
 
             // Get Retrieval Form 
             List<Retrieval> RetrievalItem = new List<Retrieval>();

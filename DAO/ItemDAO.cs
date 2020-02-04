@@ -44,10 +44,57 @@ namespace Team8ADProjectSSIS.DAO
             {
                 items.AddRange(context.Items.OfType<Item>()
                 .Where(x => x.Description.ToLower().Contains(str.ToLower())
-                || x.Category.Label.ToLower().Contains(str.ToLower()))
+                || x.Category.Label.ToLower().Contains(str.ToLower())).
+                Include(i => i.PurchaseOrderDetails).
+                Include(i => i.PurchaseOrderDetails.Select(x => x.PurchaseOrder))
                 .ToList<Item>());
             }
             return items;
+        }
+
+        public void UpdateItem(List<int> IdDisbursementItem)
+        {
+            foreach (int x in IdDisbursementItem)
+            {
+                DisbursementItem disbursementItem = context.DisbursementItems
+                                                    .Where(di => di.IdDisbursementItem == x)
+                                                    .FirstOrDefault();
+
+                Item items = context.Items.Where(i => i.IdItem == disbursementItem.IdItem).FirstOrDefault();
+
+                if (items != null)
+                {
+                    if (items.StockUnit - disbursementItem.UnitIssued >= 0)
+                    {
+                        items.StockUnit = items.StockUnit - disbursementItem.UnitIssued;
+                        context.SaveChanges();
+                    }
+                    if (items.AvailableUnit - disbursementItem.UnitIssued >= 0)
+                    {
+                        items.AvailableUnit = items.AvailableUnit - disbursementItem.UnitIssued;
+                        context.SaveChanges();
+                    }
+
+                }
+
+            }
+            
+        }
+
+        public bool CheckIfLowerThanReorderLevel(int[] IdItemRetrieved) 
+        {
+            foreach (int IdItem in IdItemRetrieved)
+            {
+                Item items = context.Items.Where(i => i.IdItem == IdItem).FirstOrDefault();
+
+                if (items != null)
+                {
+                    if (items.StockUnit <= items.ReorderLevel)
+                        return true;
+                }
+
+            }
+            return false;
         }
 
     }

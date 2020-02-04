@@ -137,6 +137,23 @@ namespace Team8ADProjectSSIS.DAO
                 .Include(x => x.PurchaseOrders.Select(c => c.PurchaseOrderDetails))
                 .Include(x => x.PurchaseOrders.Select(c => c.PurchaseOrderDetails.Select(p=>p.Item)))
                 .ToList<Supplier>();
+
+            foreach(Supplier s in suppliers)
+            {
+                List<PurchaseOrder> incompletePOs = s.PurchaseOrders.Where(x => x.IdStatus == 1).ToList();
+
+                if (incompletePOs.Count() > 1)
+                {
+                    PurchaseOrder keptPO = incompletePOs.FirstOrDefault();
+                    for(int i=1;i<incompletePOs.Count();i++)
+                    {
+                        foreach(PurchaseOrderDetail pod in incompletePOs[i].PurchaseOrderDetails)
+                        {
+                            pod.PurchaseOrder = keptPO;
+                        }
+                    }
+                }
+            }
             return suppliers;
         }
 
@@ -162,6 +179,61 @@ namespace Team8ADProjectSSIS.DAO
         {
             PurchaseOrder po = context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == purchaseOrderID).Include(c => c.Status).FirstOrDefault();
             po.Status = context.Status.OfType<Status>().Where(x => x.Label.Equals("Cancelled")).FirstOrDefault();            
+            context.SaveChanges();
+            return po;
+        }
+
+        public PurchaseOrder UpdateStatusToDelivered(int purchaseOrderID)
+        {
+            //need to ask the user to input delivered amount and delivery Remarks
+            PurchaseOrder po = context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == purchaseOrderID).
+                Include(c => c.Status).
+                Include(c => c.Supplier).
+                Include(c => c.StoreClerk).
+                Include(c => c.PurchaseOrderDetails).
+                Include(x => x.PurchaseOrderDetails.Select(c => c.Item)).
+                FirstOrDefault();
+            po.Status = context.Status.OfType<Status>().Where(x => x.Label.Equals("Delivered")).FirstOrDefault();
+            
+            foreach(PurchaseOrderDetail pod in po.PurchaseOrderDetails)
+            {
+                //also need to create a stock record
+                StockRecord stockRecord = new StockRecord();
+                stockRecord.Supplier = po.Supplier;
+                stockRecord.StoreClerk = po.StoreClerk;
+                stockRecord.Operation = context.Operations.OfType<Operation>().Where(x => x.Label.Equals("Delivery")).FirstOrDefault();
+                stockRecord.Date = DateTime.Now;
+                stockRecord.Item = pod.Item;
+                //add stockunit and available unit
+                stockRecord.Item.StockUnit += pod.DeliveredUnit;
+                stockRecord.Item.AvailableUnit += pod.DeliveredUnit;
+                stockRecord.Unit = pod.DeliveredUnit;
+                //add the stock record
+                context.StockRecords.Add(stockRecord);
+            }
+            context.SaveChanges();
+            return po;
+        }
+
+        public PurchaseOrder UpdateRejectedToIncomplete(int purchaseOrderID)
+        {
+            PurchaseOrder po = context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == purchaseOrderID).Include(c => c.Status).FirstOrDefault();
+            po.Status = context.Status.OfType<Status>().Where(x => x.Label.Equals("Incomplete")).FirstOrDefault();
+            po.OrderDate = DateTime.Parse("01/01/1900");
+            po.PurchaseRemarks = null;
+            context.SaveChanges();
+            return po;
+        }
+
+        public PurchaseOrder FindPOById(int id)
+        {
+            return context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == id).Include(x => x.StoreClerk).Include(x => x.Supplier).FirstOrDefault();
+        }
+
+        public PurchaseOrder UpdateSchedule(int idPO, string deliverDate)
+        {
+            PurchaseOrder po = context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == idPO).FirstOrDefault();
+            po.DeliverDate = DateTime.Parse(deliverDate);
             context.SaveChanges();
             return po;
         }
