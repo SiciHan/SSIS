@@ -16,19 +16,23 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
         </div>
 
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
-                <li>@Html.ActionLink("Retrieval", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
                 <li class="active">@Html.ActionLink("Disbursement", "Disbursement", "StoreClerk")</li>
                 <li>@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
                 <li>@Html.ActionLink("Stock Take", "Stocktake", "StoreClerk")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li>
+                    <a href="@Url.Action("Index","StoreClerk")">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
@@ -36,6 +40,8 @@
 </div>
 
 <h2>Disbursement</h2>
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
 @using (Html.BeginForm("Schedule", "StoreClerk", FormMethod.Post))
 {
@@ -143,7 +149,26 @@
     </div>
 </div>
 
+
+<script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+<script src="~/signalr/hubs"></script>
 <script>
+    //copy paste this to all pages.
+    $.connection.hub.start()
+        .done()
+        .fail();
+
+    $.connection.chatHub.client.receiveNotification = function (IdReceiver) {
+        //if the notification is sent to me
+        if (parseInt($("#hdnSession1").val()) == IdReceiver) {
+            var count = 0;
+            count = parseInt($('#noti-count').html()) || 0;
+            count++;
+            alert("There is a notification");
+            $('#noti-count').html(count);
+        }
+    };
+
     var Redistribute = function (disbId) {
         var url = "/StoreClerk/Redistribute?disbId=" + disbId;
 
@@ -154,7 +179,7 @@
                 keyboard: false
             });
         })
-    }
+    };
 
 
     var Disbursement = function (disbId) {
@@ -172,9 +197,9 @@
             } else {
                 document.getElementById('confirmDelLabel').style.visibility = "hidden"
             }
-            
+
         })
-    }
+    };
 
     var d;
 
@@ -195,7 +220,7 @@
                 });
             }
         });
-    }
+    };
 
     $('.redistribute_table tr').click(function (event) {
         if (event.target.type !== 'checkbox' && event.target.tagName !== 'BUTTON' && event.target.tagName !== 'I') {
@@ -205,3 +230,5 @@
 
 
 </script>
+
+

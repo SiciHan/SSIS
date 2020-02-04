@@ -25,9 +25,9 @@
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
                 <li class="active">@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
-                <li>@Html.ActionLink("Disbursement", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Disbursement", "Disbursement", "StoreClerk")</li>
                 <li>@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
-                <li>@Html.ActionLink("StockTake", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("StockTake", "Stocktake", "StoreClerk")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -35,7 +35,7 @@
                         <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
                     </a>
                 </li>
-                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </div>
