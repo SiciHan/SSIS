@@ -15,5 +15,6 @@ namespace Team8ADProjectSSIS.Models
         public int Unit { get; set; }
         public int IdStatus { get; set; }
         public DateTime ApprovedDate { get; set; }
+        public string Location { get; set; }
     }
 }

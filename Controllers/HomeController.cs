@@ -45,7 +45,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
         [HttpPost]
-        public ActionResult LogIn(string UserName, string HashedPassword)
+        public ActionResult LogIn(string UserName, string HashedPassward)
         {
             //Try to find the user from user name
             Employee user = _employeeDAO.FindEmployeeByUsername(UserName);
@@ -53,27 +53,28 @@ namespace Team8ADProjectSSIS.Controllers
             if (user != null)
             {
                 //get the hashed string of the input password
-                SHA1CryptoServiceProvider sh = new SHA1CryptoServiceProvider();
-                sh.ComputeHash(Encoding.ASCII.GetBytes(HashedPassword));
+                SHA1 sh = new SHA1CryptoServiceProvider();
+                sh.ComputeHash(Encoding.ASCII.GetBytes(HashedPassward));
                 byte[] re = sh.Hash;
                 StringBuilder sb = new StringBuilder();
                 foreach (byte b in re)
                 {
                     sb.Append(b.ToString("x2"));//hexidecimal string of 2 chars
                 }
+                Console.WriteLine(sb.ToString());//5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8
                 //compare the input password to actual password, if matched
                 if (user.HashedPassward.Equals(sb.ToString()))
                 {
                     //set the user session
                     Session["sessionId"] = Guid.NewGuid();//setting user session
                     Session["IdEmployee"] = user.IdEmployee;
-                    Session["Role"] = user.IdRole;
+                    Session["Role"] = _roleDAO.FindRoleLabelById(user.IdRole);
 
                     //redirect to different pages based on the roles
                     switch (_roleDAO.FindRoleLabelById(user.IdRole))
                     {
                         case "Employee":
-                            return RedirectToAction("Dashboard", "Employee");
+                            return RedirectToAction("Index", "Employee");
                         case "Head":
                             return RedirectToAction("Dashboard", "DepartmentHead");
                         case "Representative":

@@ -1,0 +1,63 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "CollectPO";
+    var po = ViewData["PurchaseOrder"] as PurchaseOrder;
+    var pods = ViewData["pod"] as IList<PurchaseOrderDetail>;
+}
+
+<h2>Collect Purchase Order from Suppliers</h2>
+<p>Ordered by : @po.StoreClerk.Name</p>
+<p>Supplier : @po.Supplier.Name</p>
+<p>Ordered Date: @po.OrderDate</p>
+<p>Approved Date: @po.ApprovedDate</p>
+<p>Scheduled Delivery Date: @po.DeliverDate</p>
+<p>Purchase Remarks: @po.PurchaseRemarks</p>
+@using (Html.BeginForm("CollectPO", "StoreClerk", FormMethod.Post, new { @onsubmit="confirmReceiveOrder()"}))
+{
+    <input type="hidden" name="IdPO" value="@po.IdPurchaseOrder" />
+    <table class="table">
+        <tr>
+            <th>
+                Item
+            </th>
+            <th>
+                Order Unit
+            </th>
+            <th>
+                Delivered Unit
+            </th>
+            <th>
+                Delivery Remark
+            </th>
+        </tr>
+
+        @{
+            foreach (PurchaseOrderDetail pod in pods)
+            {
+                <tr>
+                    <td>
+                        @pod.Item.Description
+                    </td>
+                    <td>
+                        @pod.OrderUnit
+                    </td>
+                    
+                    <td>
+                        <input type="number" id="deliveredUnit_@pod.IdPOD" name="deliveredUnit_@pod.IdPOD" value=@pod.OrderUnit min="0" required/>
+                    </td>
+                    <td>
+                        <textarea rows="4" cols="50" id="deliveryRemarks_@pod.IdPOD" name="deliveryRemarks_@pod.IdPOD"></textarea>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+    <input type="submit" class="btn btn-primary" value="Delivered Items are Received"/>
+}
+<script>
+    function confirmReceiveOrder() {
+        alert("You have confirmed that you received all items in this purchase order.");
+    }
+</script>
+
+

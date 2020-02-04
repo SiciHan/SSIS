@@ -2,6 +2,34 @@
 @{
     ViewBag.Title = "MakePurchaseOrder";
 }
+<!--Please copy paste this div-->
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Retrieval", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Disbursement", "Index", "StoreClerk")</li>
+                <li class="active">@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
+                <li>@Html.ActionLink("Stock Take", "Index", "StoreClerk")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 <h2>Make Purchase Order</h2>
 <!--Display the Low stock items-->
@@ -12,6 +40,76 @@
     var searchStr = (string)ViewData["SearchStr"];
 }
 
+<div>
+    <a href="@Url.Action("PurchaseOrderCart", "StoreClerk")" class="btn btn-primary">View Purchase Order Cart</a>
+</div>
+
+<h3>Manually Search Item and Add To Cart</h3>
+<input id="searchStr" type="text" placeholder="e.g. Clip" value="@searchStr" />
+<button onclick="findItems()" class="btn btn-info">Find Items</button>
+
+
+<div>
+    @{
+        if (searchResult != null && searchResult.Any<Item>())
+        {
+            <p>Search Results:</p>
+            ////display all searched results and add to cart button
+            using (Html.BeginForm("AddToCart", "StoreClerk", FormMethod.Post, new { @onsubmit = "addToCart()" }))
+            {
+
+                <table class="table">
+                    <tr>
+                        <th><input type="checkbox" name="select-all" id="select-all" onclick="toggle(this)"></th>
+                        <th>Item</th>
+                        <th>Reorder Level</th>
+                        <th>Available Units</th>
+                        <th>Reorder Units</th>
+                        <th>Ordered Units</th>
+                        <th>Supplier 1</th>
+                        <th>Supplier 2</th>
+                        <th>Supplier 3</th>
+                    </tr>
+
+
+                    @{
+                        foreach (Item item in searchResult)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" id="checkbox-@item.IdItem.ToString()"
+                                           name="checkbox-@item.IdItem.ToString()">
+                                    <input type="hidden" id="hiddenS-@item.IdItem.ToString()"
+                                           name="hiddenS-@item.IdItem.ToString()" value="1" />
+                                </td>
+                                <td>@item.Description</td>
+                                <td>@item.ReorderLevel</td>
+                                <td>@item.AvailableUnit</td>
+                                <td>@item.ReorderUnit</td>
+                                <td>@item.PurchaseOrderDetails.Where(x => x.PurchaseOrder.IdStatus == 1 || x.PurchaseOrder.IdStatus == 2 || x.PurchaseOrder.IdStatus == 3 || x.PurchaseOrder.IdStatus == 4).Sum(x => x.OrderUnit).ToString()</td>
+                                <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier1" checked /> @item.CodeSupplier1</td>
+                                <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier2" />@item.CodeSupplier2</td>
+                                <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier3" />@item.CodeSupplier3</td>
+                            </tr>
+
+                        }
+                    }
+                </table>
+                <div class="form-group" align="right">
+                    <input type="submit" class="btn btn-primary" value="Add to Cart" />
+                </div>
+            }//end of form
+        }
+        else if (searchResult != null && !searchResult.Any<Item>())
+        {
+            <p>Sorry. No Result found.</p>
+        }
+        else
+        {
+        }
+    }
+</div>
+
 
 @{ if (lowStock.Any<Item>())
     {
@@ -20,59 +118,79 @@
         //display all the items
 
 
-        using (Html.BeginForm("MakePurchaseOrder", "StockClerk", FormMethod.Post))
+        using (Html.BeginForm("AddToCart", "StoreClerk", FormMethod.Post, new { @onsubmit = "addToCart()" }))
         {
-            foreach (Item item in lowStock)
-            {
-                Html.CheckBox(item.IdItem.ToString());
-                //Html.Display(item.Category.Label);
-                Html.Display(item.Description);
-            }
 
-            <div class="form-group text-center">
+            <table class="table">
+                <tr>
+                    <th><input type="checkbox" name="select-all" id="select-all" onclick="toggle(this)"></th>
+                    <th>Item</th>
+                    <th>Reorder Level</th>
+                    <th>Available Units</th>
+                    <th>Reorder Units</th>
+                    <th>Ordered Units</th>
+                    <th>Supplier 1</th>
+                    <th>Supplier 2</th>
+                    <th>Supplier 3</th>
+                </tr>
+
+
+                @{
+                    foreach (Item item in lowStock)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="checkbox-@item.IdItem.ToString()"
+                                       name="checkbox-@item.IdItem.ToString()">
+                                <input type="hidden" id="hiddenS-@item.IdItem.ToString()"
+                                       name="hiddenS-@item.IdItem.ToString()" value="1" />
+                            </td>
+                            <td>@item.Description</td>
+                            <td>@item.ReorderLevel</td>
+                            <td>@item.AvailableUnit</td>
+                            <td>@item.ReorderUnit</td>
+                            <td>@item.PurchaseOrderDetails.Where(x => x.PurchaseOrder.IdStatus == 1 || x.PurchaseOrder.IdStatus == 2 || x.PurchaseOrder.IdStatus == 3 || x.PurchaseOrder.IdStatus == 4).Sum(x => x.OrderUnit).ToString()</td>
+                            <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier1" checked /> @item.CodeSupplier1</td>
+                            <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier2" />@item.CodeSupplier2</td>
+                            <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier3" />@item.CodeSupplier3</td>
+                        </tr>
+
+                    }
+                }
+            </table>
+            <div class="form-group" align="right">
                 <input type="submit" class="btn btn-primary" value="Add to Cart" />
             </div>
-        }
-        <div>
-
-        </div>
-    }
+        }//end of form
+    }//end of if
     else
     {
         <h3>There is no Low Stock items.</h3>
-        <input id="searchStr" type="text" placeholder="e.g. Clip" value="@searchStr" />
-        <button onclick="findItems()" class="btn btn-info">Find Items</button>
-
-
-        <div>
-            @{
-                if (searchResult != null && searchResult.Any<Item>())
-                {
-                    <p>Search Results:</p>
-                    ////display all searched results and add to cart button
-                }
-                else if (searchResult != null && !searchResult.Any<Item>())
-                {
-                    <p>Sorry. No Result found.</p>
-                }
-                else
-                {
-                }
-            }
-        </div>
-
     }
 }
 
-<div>
-    <h3>Purchase Order Cart</h3>
-</div>
+
+
+
+
+
 
 
 <script>
     function findItems() {
         var searchStr = document.getElementById("searchStr").value;
         window.location.href = window.location.href.split('?')[0] + "?searchStr=" + searchStr;
+    }
+
+    function toggle(source) {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source)
+                checkboxes[i].checked = source.checked;
+        }
+    }
+    function addToCart() {
+        alert("you have added something to the cart");
     }
 </script>
 
