@@ -1,0 +1,76 @@
+﻿@using Team8ADProjectSSIS.Models
+
+@{
+    ViewBag.Title = "DisbursementDetails";
+    Disbursement disb = ViewBag.disb;
+    List<DisbursementItem> disbursementItems = disb.DisbursementItems.ToList();
+    Employee depRep = ViewBag.depRep;
+}
+
+
+<div class="row">
+    <div class="col-md-6">
+        <p>Department: <b>@disb.Department.Name</b></p>
+        <p>CP: <b>@disb.Department.CollectionPt.Location (@disb.Department.CollectionPt.Time)</b></p>
+    </div>
+    <div class="col-md-6">
+        <p>Representative: @depRep.Title  <b>@depRep.Name</b></p>
+        <p>Telephone: @depRep.Tel</p>
+    </div>
+</div>
+
+<hr />
+
+@using (Html.BeginForm("RefreshDisbursement", "StoreClerk", FormMethod.Post, new { id="refreshDisbForm"}))
+{
+    <div style="overflow-x:auto">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Description</th>
+                <th scope="col">Qty Requested</th>
+                <th scope="col">Qty from Store</th>
+                @if (disb.IdStatus == 10)
+                {
+                    <th scope="col">Qty Disbursed</th>
+                }
+                </tr>
+        </thead>
+        <tbody>
+            @foreach (DisbursementItem i in disbursementItems)
+            {
+                <tr>
+                    <td>@i.Item.Description<input type="hidden" name="disbItemId" value="@i.IdDisbursementItem" /></td>
+                    <td>@i.UnitRequested</td>
+                    <td>
+                        <span id="qtyFromStore@(i.IdDisbursementItem)">@i.UnitIssued</span>
+                    </td>
+                    @if(disb.IdStatus == 10)
+                    {
+                        <td>
+                            <div class="number-input">
+                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();"></button>
+                                <input class="qtyDisbursed" type="number" name="qtyDisbursed" id="qtyDisbursed@(i.IdDisbursementItem)" value="@i.UnitIssued" min="0" max="@i.UnitIssued" readonly/>
+                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();" class="plus"></button>
+                            </div>
+                        </td>
+                    } else
+                    {
+                        <td>
+                            <input type="hidden" name="qtyDisbursed" value="@i.UnitIssued" />
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+
+    <br />
+
+    <input type="hidden" name="disbId" id="@disb.IdDisbursement" value="@disb.IdDisbursement" />
+    if(disb.IdStatus == 11)
+    {
+        <input type="submit" id="confirmDel" class="hidden" formaction="@Url.Action("ClerkSign")" formmethod="post" onclick="alert('Successfully disbursed! A confirmation has been sent to you and @disb.Department.Name!')"/>
+    } 
+}

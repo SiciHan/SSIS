@@ -70,5 +70,26 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return nc;
         }
+        private readonly SSISContext context;
+
+        public NotificationChannelDAO()
+        {
+            this.context = new SSISContext();
+        }
+
+        internal void SendNotification(int IdStoreClerk, int IdEmployee, int notifId, DateTime date)
+        {
+            NotificationChannel NC = new NotificationChannel()
+            {
+                IdFrom = IdStoreClerk,
+                IdTo = IdEmployee,
+                IdNotification = notifId,
+                IsRead = false,
+                Date = date
+            };
+
+            context.NotificationChannels.Add(NC);
+            context.SaveChanges();
+        }
     }
 }

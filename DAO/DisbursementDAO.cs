@@ -385,5 +385,45 @@ namespace Team8ADProjectSSIS.DAO
             return true;
         }
 
+        //James
+        public List<Disbursement> FindByStatus(String status, int IdStoreClerk)
+        {
+            // Check IdStoreClerk selected collection point
+            List<int> CPClerk = new List<int>();
+            CPClerk = context.CPClerks
+                      .Where(x => x.IdStoreClerk == IdStoreClerk)
+                      .Select(x => x.IdCollectionPt).ToList();
+
+            var list = context.Disbursements
+                .Where(x => x.Status.Label == status && CPClerk.Contains((int)x.IdCollectionPt))
+                .ToList();
+
+            return list;
+        }
+
+        //James
+        public void UpdateStatus(IEnumerable<int> disbIdsToSchedule, int idStatus, DateTime SDate, int? IdStoreClerk)
+        {
+            try
+            {
+                context.Disbursements.Where(x => disbIdsToSchedule.Contains(x.IdDisbursement))
+                    .ToList()
+                    .ForEach(x => {
+                        x.IdStatus = idStatus;
+                        x.Date = SDate;
+                        x.IdDisbursedBy = IdStoreClerk;
+                        });
+                context.SaveChanges();
+            } catch (Exception e)
+            {
+                Debug.WriteLine(e.StackTrace);
+            }
+        }
+
+        //James
+        public Disbursement FindById(int disbId)
+        {
+            return context.Disbursements.Where(x => x.IdDisbursement == disbId).FirstOrDefault();
+        }
     }
 }

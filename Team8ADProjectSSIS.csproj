@@ -476,6 +476,7 @@
     <Content Include="Scripts\vendor\jquery\jquery.min.js" />
     <Content Include="Scripts\vendor\jquery\jquery.slim.js" />
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.js" />
+    <Content Include="Styles\css\number-input.css" />
     <Content Include="Styles\css\simple-sidebar.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -511,6 +512,8 @@
     <Content Include="Views\StoreSupervisor\Index.cshtml" />
     <Content Include="Views\StoreManager\ItemsForSuppliers.cshtml" />
     <Content Include="Views\StoreManager\Suppliers.cshtml" />
+    <Content Include="Views\StoreClerk\Disbursement.cshtml" />
+    <Content Include="Views\StoreClerk\Redistribute.cshtml" />
     <Content Include="Views\Home\LogIn.cshtml" />
     <Content Include="Views\StoreClerk\PurchaseOrderList.cshtml" />
     <Content Include="Views\DepartmentRepresentative\Home.cshtml" />
@@ -538,6 +541,9 @@
     <Content Include="Views\DepartmentRepresentative\CollectionPoints.cshtml" />
     <Content Include="Views\DepartmentRepresentative\LocationMap.cshtml" />
     <Content Include="Views\StoreManager\Voucher.cshtml" />
+    <Content Include="Views\StoreClerk\DisbursementDetails.cshtml" />
+    <Content Include="Views\StoreClerk\Stocktake.cshtml" />
+    <Content Include="Views\StoreClerk\ViewStocktake.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
