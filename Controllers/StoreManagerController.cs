@@ -17,6 +17,7 @@ namespace Team8ADProjectSSIS.Controllers
         PurchaseOrderDetailsDAO _purchaseOrderDetailsDAO;
         DisbursementDAO _disbursementDAO;
         DisbursementItemDAO _disbursementItemDAO;
+        StockRecordDAO _stockRecordDAO;
 
         public StoreManagerController()
         {
@@ -26,6 +27,7 @@ namespace Team8ADProjectSSIS.Controllers
             _purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
             _disbursementDAO = new DisbursementDAO();
             _disbursementItemDAO = new DisbursementItemDAO();
+            _stockRecordDAO = new StockRecordDAO();
         }
 
         // GET: StoreManager
@@ -47,7 +49,6 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
-        [HttpPost]
         public ActionResult Suppliers(int itemId)
         {
             List<SupplierItem> supplierItems = _supplieritemDAO.GetSuppliersById(itemId);
@@ -89,6 +90,34 @@ namespace Team8ADProjectSSIS.Controllers
             List<JoinDandDI> DetailDisbursement = _disbursementItemDAO.FindDetailDisbursement(IdDisbursement);
             ViewData["DetailDisbursement"] = DetailDisbursement;
             return View();
+        }
+
+        public ActionResult Voucher()
+        {
+            List<StockRecord> vouchers = _stockRecordDAO.FindVoucher();
+            List<float> prices = new List<float>(); 
+            foreach(StockRecord voucher in vouchers)
+            {
+                float price = _itemDAO.FindPriceById(voucher.IdItem);
+                prices.Add(price);
+            }
+            ViewData["prices"] = prices;
+            ViewData["vouchers"] = vouchers;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult JudgeAdjustment(string judge, List<StockRecord> vouchers)
+        {
+            if(judge == "Approve")
+            {
+                _stockRecordDAO.UpdateVoucherToApproved(vouchers);
+            }
+            else
+            {
+                _stockRecordDAO.UpdateVoucherToRejected(vouchers);
+            }
+            return RedirectToAction("Voucher", "StoreManager");
         }
     }
 }

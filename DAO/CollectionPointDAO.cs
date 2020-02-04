@@ -40,6 +40,14 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
+        public CollectionPoint Find(int id)
+        {
+            using (SSISContext context = new SSISContext())
+            {
+                return context.CollectionPoints.OfType<CollectionPoint>().Where(x=>x.IdCollectionPt == id).FirstOrDefault();
+            }
+        }
+
         public void Delete(CollectionPoint cp)
         {
 
@@ -47,6 +55,42 @@ namespace Team8ADProjectSSIS.DAO
                 context.CollectionPoints.Remove(collectionPoint);
                 context.SaveChanges();
             
+        }
+
+        public List<int> FindByClerkId(int clerkId)
+        {
+            List<int> CPs = new List<int>();
+            CPs = context.CPClerks.Include("CollectionPoint")
+                .Where(x => x.IdStoreClerk == clerkId)
+                .Select(x => x.CollectionPoint.IdCollectionPt)
+                .ToList();
+            return CPs;
+        }
+
+        public void ChangeCPTo(int ClerkId, List<int> new_IdCPs)
+        {
+            List<int> IdTables = context.CPClerks
+                .Where(x => x.IdStoreClerk == ClerkId)
+                .Select(x => x.IdCA)
+                .ToList();
+
+            int id = IdTables[0];
+            CollectionPoint cp = context.CPClerks
+                .Include("CollectionPoint")
+                .Where(x => x.IdStoreClerk == ClerkId)
+                .Select(x => x.CollectionPoint)
+                .FirstOrDefault();
+            foreach (int new_id in new_IdCPs)
+            {
+                CPClerk cPClerk = context.CPClerks
+                    .Where(x => x.IdCA == id)
+                    .FirstOrDefault();
+                cPClerk.IdCollectionPt = new_id;
+                context.SaveChanges();
+                id++;
+            }
+            //context.SaveChanges();
+
         }
 
     }

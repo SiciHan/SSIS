@@ -1,0 +1,106 @@
+﻿@using Team8ADProjectSSIS.Models;
+
+
+@{
+    ViewBag.Title = "LocationMap";
+    var collectionPoint = ViewBag.collectionPoint;
+}
+
+@*<head>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8x5AhfFxCilSwrYY9YR0SaXlM0EqpG3g">
+        </script>
+        <style>
+                 /* Always set the map height explicitly to define the size of the div
+            * element that contains the map. */
+                 #map_canvas {
+                     height: 100%;
+                 }
+        </style>
+    </head>*@
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Disbursement", "Home", "DepartmentRepresentative")</li>
+                <li>@Html.ActionLink("History", "History", "DepartmentRepresentative")</li>
+                <li>@Html.ActionLink("Collection Point", "CollectionPoints", "DepartmentRepresentative")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h2 class="text-center">Collection Location Map</h2>
+<div class="row">
+    <div class="col-md-10 col-md-offset-2">
+        <p>Collection Point Location: @collectionPoint.Location</p>
+    </div>
+</div>
+
+
+@switch (collectionPoint.IdCollectionPt)
+{
+    case 1:
+        <p align="center">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.8029117726264!2d103.77414999999999!3d1.292679!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTcnMzMuNiJOIDEwM8KwNDYnMjYuOSJF!5e0!3m2!1szh-CN!2ssg!4v1580492644688!5m2!1szh-CN!2ssg" frameborder="0" style="border:0;height:50vh;width:60vw" allowfullscreen=""></iframe>
+        </p>
+        break;
+    case 2:
+        <p align="center">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.793607259068!2d103.77269995071381!3d1.298588362094138!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTcnNTQuOSJOIDEwM8KwNDYnMjkuNiJF!5e0!3m2!1szh-CN!2ssg!4v1580493035504!5m2!1szh-CN!2ssg" frameborder="0" style="border:0;height:50vh;width:60vw" allowfullscreen=""></iframe>
+        </p>
+        break;
+    case 3:
+        <p align="center">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7969422818137!2d103.77965195071393!3d1.296473362100177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTcnNDcuMyJOIDEwM8KwNDYnNTQuNyJF!5e0!3m2!1szh-CN!2ssg!4v1580493125791!5m2!1szh-CN!2ssg" frameborder="0" style="border:0;height:50vh;width:60vw" allowfullscreen=""></iframe>
+        </p>break;
+    case 4:
+        <p align="center">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7969422818137!2d103.77965195071393!3d1.296473362100177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTgnMDEuMSJOIDEwM8KwNDYnMTQuOSJF!5e0!3m2!1szh-CN!2ssg!4v1580493187820!5m2!1szh-CN!2ssg" frameborder="0" style="border:0;height:50vh;width:60vw" allowfullscreen=""></iframe>
+        </p>break;
+    case 5:
+        <p align="center">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7908847610124!2d103.76860995071382!3d1.300312362089225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTcnNDYuMyJOIDEwM8KwNDYnNDUuNCJF!5e0!3m2!1szh-CN!2ssg!4v1580493215518!5m2!1szh-CN!2ssg" frameborder="0" style="border:0;height:50vh;width:60vw" allowfullscreen=""></iframe>
+        </p>break;
+    case 6:
+        <p align="center">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2371.754963570247!2d103.7821132352464!3d1.294217486554809!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da1a52374f2091%3A0x726da300a5e05b96!2zTlVIIOWMu-eWl-S4reW_gw!5e0!3m2!1szh-CN!2ssg!4v1580493505247!5m2!1szh-CN!2ssg" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+        </p>break;
+    default:
+        <p align="center">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.8029117726264!2d103.77414999999999!3d1.292679!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTcnMzMuNiJOIDEwM8KwNDYnMjYuOSJF!5e0!3m2!1szh-CN!2ssg!4v1580492644688!5m2!1szh-CN!2ssg" frameborder="0" style="border:0;height:50vh;width:60vw" allowfullscreen=""></iframe>
+        </p>     break;
+}
+
+
+
+@*<script type="text/javascript">
+        function initialize() {
+            var mapcoordinatesX = @mapcoordinatesX;
+            var mapcoordinatesY = @mapcoordinatesY;
+            console.log("x,y", mapcoordinatesX + ', ' + mapcoordinatesY);
+            var mapOptions = {
+              center: new google.maps.LatLng(mapcoordinatesX, mapcoordinatesY),
+              zoom: 8,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map_canvas"),
+                mapOptions);
+          }
+    </script>*@
+
+
+

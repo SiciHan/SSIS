@@ -123,7 +123,7 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
-        public List<Retrieval> RetrievePreparingItem(List<string> DClerk)
+        public List<Retrieval> RetrievePreparingItem(List<string> DClerk, DateTime Today, DateTime LastThu)
         {
             // Join DisbursementItem and Item Entity return status "preparing"
             List<Retrieval> PItem = context.Items
@@ -131,16 +131,20 @@ namespace Team8ADProjectSSIS.DAO
                                             i => i.IdItem, di => di.IdItem,
                                             (i, di) => new { i, di })
                                             .Join(context.Disbursements,
-                                            d => d.di.IdDisbursement, dd => dd.IdDisbursement,
-                                            (d, dd) => new Retrieval
-                                            {
-                                                Description = d.i.Description,
-                                                IdItem = d.i.IdItem,
-                                                StockUnit = d.i.StockUnit,
-                                                Unit = d.di.UnitRequested,
-                                                CodeDepartment = dd.CodeDepartment,
-                                                IdStatus = d.di.IdStatus
-                                            }).Where(x => x.IdStatus == 8).ToList();
+                                            idi => idi.di.IdDisbursement, d => d.IdDisbursement,
+                                            (idi, d) => new {idi,d })
+                                            .Where(x => x.d.Date <= Today)
+                                            .Where(x => x.d.Date >= LastThu)
+                                            .Where(x => x.idi.di.IdStatus == 8)
+                                            .Select(x => new Retrieval {
+                                                Description = x.idi.i.Description,
+                                                IdItem = x.idi.i.IdItem,
+                                                StockUnit = x.idi.i.StockUnit,
+                                                Unit = x.idi.di.UnitRequested,
+                                                CodeDepartment = x.d.CodeDepartment,
+                                                IdStatus = x.idi.di.IdStatus,
+                                                Location = x.idi.i.Location
+                                            }).ToList();
             List<Retrieval> Preparingitem = new List<Retrieval>(); 
             foreach (string CodeDpt in DClerk)
             {
@@ -148,14 +152,14 @@ namespace Team8ADProjectSSIS.DAO
                 foreach (var p in pi)
                     Preparingitem.Add(p);
             }
-
             List<Retrieval> RetrievalForm = Preparingitem.GroupBy(x => x.IdItem)
                                             .Select(y => new Retrieval
                                             {
                                                 Description = y.First().Description,
                                                 IdItem = y.First().IdItem,
                                                 StockUnit = y.First().StockUnit,
-                                                Unit = y.Sum(z => z.Unit)
+                                                Unit = y.Sum(z => z.Unit),
+                                                Location = y.First().Location
                                             }).ToList();
 
             return RetrievalForm;
@@ -193,19 +197,19 @@ namespace Team8ADProjectSSIS.DAO
                 }
             }
             List<Retrieval> NewRetrievalItem = new List<Retrieval>();
-            List<Retrieval> ExtraRetrievalItem = new List<Retrieval>();
+            List<Retrieval> ExistingRetrievalItem = new List<Retrieval>();
             if (ExistingIdRequisition.Any())
             {
                 foreach (int eir in ExistingIdRequisition)
                 {
-                    var extra = RetrievalItem.Where(x => x.IdRequisition == eir);
+                    var existing = RetrievalItem.Where(x => x.IdRequisition == eir);
 
-                    foreach (var newri in extra)
+                    foreach (var newri in existing)
                     {
-                        ExtraRetrievalItem.Add(newri);
+                        ExistingRetrievalItem.Add(newri);
                     }
                 }
-                NewRetrievalItem = RetrievalItem.Except(ExtraRetrievalItem).ToList();
+                NewRetrievalItem = RetrievalItem.Except(ExistingRetrievalItem).ToList();
                 return NewRetrievalItem;
             }
             
@@ -233,6 +237,40 @@ namespace Team8ADProjectSSIS.DAO
             return JoinDanDi;
         }
 
+        public List<Disbursement> GetAllDisbursements()
+        {
+            List<Disbursement> models = new List<Disbursement>();
+            using (SSISContext db = new SSISContext())
+            {
+                models = db.Disbursements
+                    .Include("DisbursementItems.Item")
+                    .Include("Department")
+                    .Include("CollectedBy")
+                    .Include("DisbursedBy")
+                    .Include("CollectionPoint")
+                    .Include("Status")
+                    .ToList();
+            }
+            return models;
+        }
+
+        public Disbursement GetDisbursement(int id)
+        {
+            Disbursement model = new Disbursement();
+            using (SSISContext db = new SSISContext())
+            {
+                model = db.Disbursements
+                    .Include("DisbursementItems.Item")
+                    .Include("Department")
+                    .Include("CollectedBy")
+                    .Include("DisbursedBy")
+                    .Include("CollectionPoint")
+                    .Include("Status")
+                    .Where(x=>x.IdDisbursement == id)
+                    .FirstOrDefault();
+            }
+            return model;
+        }
         //James
         public List<Disbursement> FindByStatus(String status, int IdStoreClerk)
         {
@@ -249,6 +287,120 @@ namespace Team8ADProjectSSIS.DAO
             return list;
         }
 
+        public List<Disbursement> GetDeptDisbursements(string codeDepartment)
+        {
+            List<Disbursement> models = new List<Disbursement>();
+            using (SSISContext db = new SSISContext())
+            {
+                models = db.Disbursements
+                    .Include("DisbursementItems.Item")
+                    .Include("Department")
+                    .Include("CollectedBy")
+                    .Include("DisbursedBy")
+                    .Include("CollectionPoint")
+                    .Include("Status")
+                    .Where(x => x.CodeDepartment == codeDepartment)
+                    .ToList();
+            }
+            return models;
+        }
+
+        public Disbursement GetScheduledDisbursement(string codeDepartment)
+        {
+            Disbursement model = new Disbursement();
+            using (SSISContext db = new SSISContext())
+            {
+                model = db.Disbursements
+                    .Include("DisbursementItems.Item")
+                    .Include("Department")
+                    .Include("CollectedBy")
+                    .Include("DisbursedBy")
+                    .Include("CollectionPoint")                    
+                    .Include("Status")
+                    .Where(x => x.IdStatus == 10 && x.CodeDepartment == codeDepartment)
+                    .FirstOrDefault();
+            }
+            return model;
+        }
+
+        public List<Disbursement> GetReceivedDisbursements(string codeDepartment, string searchContext = "")
+        {
+            List<Disbursement> model = new List<Disbursement>();
+            using (SSISContext db = new SSISContext())
+            {
+                if (string.IsNullOrEmpty(searchContext))
+                {
+                    model = db.Disbursements
+                        .Include("DisbursementItems.Item")
+                        .Include("Department")
+                        .Include("CollectedBy")
+                        .Include("DisbursedBy")
+                        .Include("CollectionPoint")
+                        .Include("Status")
+                        .Where(x => x.IdStatus == 11 && x.CodeDepartment == codeDepartment)
+                        .ToList();
+                }
+                else
+                {
+                    model = db.Disbursements
+                        .Include("DisbursementItems.Item")
+                        .Include("Department")
+                        .Include("CollectedBy")
+                        .Include("DisbursedBy")
+                        .Include("CollectionPoint")
+                        .Include("Status")
+                        .Where(x => x.IdStatus == 11 && x.CodeDepartment == codeDepartment && 
+                        (x.Date.ToString().Contains(searchContext) || x.CollectionPoint.Location.ToString().Contains(searchContext) || x.DisbursedBy.Name.ToString().Contains(searchContext) || x.CollectedBy.Name.ToString().Contains(searchContext)))
+                        .ToList();
+                }
+
+            }
+            return model;
+        }
+
+        public bool AcknowledgeCollection(int idDisbursement, int IdCollectedBy)
+        {
+            using (SSISContext db = new SSISContext())
+            {
+                Disbursement disbursement = db.Disbursements.OfType<Disbursement>()
+                    .Where(x => x.IdDisbursement == idDisbursement)
+                    .FirstOrDefault();
+                if (disbursement == null) return false;
+                List<DisbursementItem> disbursementItems = db.DisbursementItems.OfType<DisbursementItem>()
+                   .Where(x => x.IdDisbursement == idDisbursement)
+                   .ToList();
+                disbursement.IdStatus = 11;
+                disbursement.IdCollectedBy = IdCollectedBy;
+                foreach (DisbursementItem di in disbursementItems)
+                    di.IdStatus = 11;
+                db.SaveChanges();
+            }
+            return true;
+        }
+
+        public bool UpdateCollectionPt(int idDisbursement, int idCollectionPt)
+        {
+            Disbursement model = null;
+            using (SSISContext db = new SSISContext())
+            {
+                model = db.Disbursements.OfType<Disbursement>()
+                    .Where(x => x.IdDisbursement == idDisbursement)
+                    .FirstOrDefault();
+                if (model == null) return false;
+                CollectionPoint collectionPt = db.CollectionPoints
+                   .Include("CPClerks")
+                   .OfType<CollectionPoint>()
+                   .Where(x => x.IdCollectionPt == idCollectionPt)
+                   .FirstOrDefault();
+                if (collectionPt == null) return false;
+                model.IdCollectionPt = idCollectionPt;
+                model.IdDisbursedBy = collectionPt.CPClerks.FirstOrDefault().IdStoreClerk;
+                db.SaveChanges();
+            }
+            return true;
+        }
+
+    
         //James
         public void UpdateStatus(IEnumerable<int> disbIdsToSchedule, int idStatus, DateTime SDate, int? IdStoreClerk)
         {

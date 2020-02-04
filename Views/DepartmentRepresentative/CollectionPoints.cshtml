@@ -1,0 +1,67 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "CollectionPoints";
+    var collectionPoints = ViewBag.collectionPoints;
+}
+
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Disbursement", "Home", "DepartmentRepresentative")</li>
+                <li>@Html.ActionLink("History", "History", "DepartmentRepresentative")</li>
+                <li class="active">@Html.ActionLink("Collection Point", "CollectionPoints", "DepartmentRepresentative")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h2 class="text-center">Collection Points</h2>
+
+<table style="margin-top:30px">
+    <tr>
+        <th>COLLECTION POINT</th>
+        <th>COLLECTION TIME</th>
+        <th>OPERATION</th>
+    </tr>
+    @foreach (CollectionPoint cp in collectionPoints)
+        {
+        <tr>
+            <td>@cp.Location</td>
+            <td>@cp.Time</td>
+            <td><a class="btn btn-default" href="LocationMap?idCollectionPt=@cp.IdCollectionPt" role="button">View Map</a></td>
+
+        </tr>
+        }
+</table>
+
+<style>
+    table {
+        width: 100%;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
+
+
