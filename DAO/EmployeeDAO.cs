@@ -21,5 +21,9 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        public List<Employee> FindByRole (int IdRole)
+        {
+            return context.Employees.Where(x => x.IdRole == IdRole).ToList();
+        }
     }
 }

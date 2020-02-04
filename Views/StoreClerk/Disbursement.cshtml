@@ -137,7 +137,7 @@
             </div>
             <div class="modal-footer" id="modalFootDivDisbursement">
                 <button type="button" class="btn btn-default" onclick="RefreshDisb()">Refresh</button>
-                <label for="confirmDel" class="btn btn-success" tabindex="0">Disburse</label>
+                <label for="confirmDel" id="confirmDelLabel" class="btn btn-success" visible="false">Disburse</label>
             </div>
         </div>
     </div>
@@ -166,6 +166,13 @@
                 backdrop: "static",
                 keyboard: false
             });
+            var confDelBtn = document.getElementById('confirmDel');
+            if (confDelBtn != null) {
+                document.getElementById('confirmDelLabel').style.visibility = "visible"
+            } else {
+                document.getElementById('confirmDelLabel').style.visibility = "hidden"
+            }
+            
         })
     }
 
@@ -180,13 +187,12 @@
             success: function () {
                 var url = "/StoreClerk/DisbursementDetails?disbId=" + d;
                 $("#modalBodyDivDisbursement").load(url, function () {
-                    //$("#modalDisb").modal("show");
+                    // prevents user from being able to click outside the form to close it or hitting the 'ESCAPE' key
                     $("#modalDisb").modal({
                         backdrop: "static",
                         keyboard: false
                     });
                 });
-                alert("Quantity updated and Dep Rep notified");
             }
         });
     }
@@ -196,4 +202,6 @@
             $(':checkbox', this).trigger('click');
         }
     });
+
+
 </script>

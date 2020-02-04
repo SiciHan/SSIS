@@ -19,6 +19,10 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly PurchaseOrderDAO _purchaseOrderDAO;
         private readonly ItemDAO _itemDAO;
         private readonly CollectionPointDAO _collectionPointDAO;
+        private readonly NotificationChannelDAO _notificationChannelDAO;
+        private readonly NotificationDAO _notificationDAO;
+        private readonly EmployeeDAO _employeeDAO;
+        private readonly SupplierItemDAO _supplierItemDAO;
 
         public StoreClerkController()
         {
@@ -30,6 +34,10 @@ namespace Team8ADProjectSSIS.Controllers
             this._purchaseOrderDAO = new PurchaseOrderDAO();
             this._itemDAO = new ItemDAO();
             this._collectionPointDAO = new CollectionPointDAO();
+            this._notificationChannelDAO = new NotificationChannelDAO();
+            this._notificationDAO = new NotificationDAO();
+            this._employeeDAO = new EmployeeDAO();
+            this._supplierItemDAO = new SupplierItemDAO();
         }
 
 
@@ -188,6 +196,7 @@ namespace Team8ADProjectSSIS.Controllers
             List<Disbursement> prepList = _disbursementDAO.FindByStatus("Prepared", clerkId);
             List<Disbursement> scheList = _disbursementDAO.FindByStatus("Scheduled", clerkId);
             scheList.AddRange(_disbursementDAO.FindByStatus("Received", clerkId));
+            scheList.AddRange(_disbursementDAO.FindByStatus("Disbursed", clerkId));
 
             ViewBag.prepList = prepList;
             ViewBag.scheList = scheList;
@@ -206,16 +215,34 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult Schedule(IEnumerable<int> disbIdsToSchedule, String pickDate)
         {
-            if(disbIdsToSchedule != null)
+            // assume clerkId is 2
+            int IdStoreClerk = 2;
+
+            if (disbIdsToSchedule != null)
             {
                 // schedule for selected date by setting the date from the form
                 DateTime SDate = DateTime.ParseExact(pickDate, "yyyy-MM-dd",
                                 System.Globalization.CultureInfo.InvariantCulture);
 
-                // add in notification here upon updating status
-
-
                 _disbursementDAO.UpdateStatus(disbIdsToSchedule, 10, SDate, null);
+
+                // add in notification here upon updating status
+                foreach (var disbId in disbIdsToSchedule)
+                {
+                    Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
+                    // Get Dep Rep
+                    Employee depRep = targetDisbursement.Department.Employees
+                        .Where(emp => emp.IdRole == 3)
+                        .FirstOrDefault();
+
+                    String message = (targetDisbursement.DisbursementItems.ToList().All(i => i.UnitIssued >= i.UnitRequested))? 
+                        $"Your department's request will be ready for collection on {SDate.ToString("dd/MM/yyyy")}." :
+                        $"Your department's request will be ready for collection on {SDate.ToString("dd/MM/yyyy")}. " +
+                            $"We are currently unable to prepare the full quantity of requested items from your department.";
+
+                    int notifId = _notificationDAO.CreateNotification(message);
+                    _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+                }
             } 
 
             return RedirectToAction("Disbursement");
@@ -236,7 +263,22 @@ namespace Team8ADProjectSSIS.Controllers
                 System.Globalization.CultureInfo.InvariantCulture);
 
             // add in notification here upon updating status and notify on shortfall (if any)
+            foreach (var di in disbId)
+            {
+                Disbursement targetDisbursement = _disbursementDAO.FindById(di);
+                // Get Dep Rep
+                Employee depRep = targetDisbursement.Department.Employees
+                    .Where(emp => emp.IdRole == 3)
+                    .FirstOrDefault();
 
+                String message = (targetDisbursement.DisbursementItems.ToList().All(i => i.UnitIssued >= i.UnitRequested)) ?
+                    $"Your department's request will be ready for collection on {SDate.ToString("dd/MM/yyyy")}." :
+                    $"Your department's request will be ready for collection on {SDate.ToString("dd/MM/yyyy")}. " +
+                        $"We are currently unable to prepare the full quantity of requested items from your department.";
+
+                int notifId = _notificationDAO.CreateNotification(message);
+                _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+            }
 
             _disbursementDAO.UpdateStatus(disbId, 10, SDate, null);
             return RedirectToAction("Disbursement");
@@ -309,9 +351,6 @@ namespace Team8ADProjectSSIS.Controllers
             // updates the disbitemId's unitissued to the qtyDisbursed
             _disbursementItemDAO.UpdateUnitIssued(disbItemId, qtyDisbursed);
 
-            // add notification below to DR
-
-
             return RedirectToAction("Disbursement");
         }
 
@@ -320,13 +359,27 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult ClerkSign(IEnumerable<int> disbId)
         {
             // assume clerkId is 2
-            int clerkId = 2;
+            int IdStoreClerk = 2;
 
             // updates the disb's status to "Disbursed" or 7
-            _disbursementDAO.UpdateStatus(disbId, 7, DateTime.Now, clerkId);
+            _disbursementDAO.UpdateStatus(disbId, 7, DateTime.Now, IdStoreClerk);
 
             // emails a copy / sends notification to DR and Clerk
+            foreach (var di in disbId)
+            {
+                Disbursement targetDisbursement = _disbursementDAO.FindById(di);
+                // Get Dep Rep
+                Employee depRep = targetDisbursement.Department.Employees
+                    .Where(emp => emp.IdRole == 3)
+                    .FirstOrDefault();
 
+                String message = $"Attached a copy of the acknolwedged Disbursement for {targetDisbursement.CodeDepartment} on {targetDisbursement.Date.ToString("dd/MM/yyyy")}.";
+
+                int notifId1 = _notificationDAO.CreateNotification(message);
+                int notifId2 = _notificationDAO.CreateNotification(message);
+                _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId1, DateTime.Now);
+                _notificationChannelDAO.SendNotification(IdStoreClerk, IdStoreClerk, notifId2, DateTime.Now);
+            }
 
             return RedirectToAction("Disbursement");
         }
@@ -359,6 +412,8 @@ namespace Team8ADProjectSSIS.Controllers
             Item item;
             int diff;
             DateTime now = DateTime.Now;
+            Employee man = _employeeDAO.FindByRole(6).FirstOrDefault();
+            Employee sup = _employeeDAO.FindByRole(7).FirstOrDefault();
 
             //update the Item's stock and available unit as well as create stock records
             for (int i = 0; i < actualQty.Count; i++)
@@ -376,7 +431,8 @@ namespace Team8ADProjectSSIS.Controllers
                     //_itemDAO.UpdateUnits(item, diff); // Clerk shouldn't be changing the units freely. Should raise SA instead
 
                     // Raise SA instead
-                    _stockRecordDAO.RaiseSA(now, 3, null, null, IdStoreClerk, item.IdItem, -diff);
+                    //_stockRecordDAO.RaiseSA(now, 3, null, null, IdStoreClerk, item.IdItem, -diff);
+                    RaiseSAandNotifyBoss(now, 3, null, null, IdStoreClerk, item, -diff, sup, man);
 
                     // if < Reorder level, send low stock alert
 
@@ -384,21 +440,47 @@ namespace Team8ADProjectSSIS.Controllers
                 }
 
                 // Create stockRecord
-                if(missingQty[i] > 0)
-                    _stockRecordDAO.RaiseSA(now, 3, null, null, IdStoreClerk, item.IdItem, -missingQty[i]);
+                if (missingQty[i] > 0)
+                {
+                    //_stockRecordDAO.RaiseSA(now, 3, null, null, IdStoreClerk, item.IdItem, -missingQty[i]);
+                    RaiseSAandNotifyBoss(now, 3, null, null, IdStoreClerk, item, -missingQty[i], sup, man);
+
+                }
                 if(wrongQty[i] > 0)
-                    _stockRecordDAO.RaiseSA(now, 4, null, null, IdStoreClerk, item.IdItem, -wrongQty[i]);
+                {
+                    //_stockRecordDAO.RaiseSA(now, 4, null, null, IdStoreClerk, item.IdItem, -wrongQty[i]);
+                    RaiseSAandNotifyBoss(now, 4, null, null, IdStoreClerk, item, -wrongQty[i], sup, man);
+                }
                 if(brokenQty[i] > 0)
-                    _stockRecordDAO.RaiseSA(now, 5, null, null, IdStoreClerk, item.IdItem, -brokenQty[i]);
-                if(giftQty[i] > 0)
-                    _stockRecordDAO.RaiseSA(now, 6, null, null, IdStoreClerk, item.IdItem, giftQty[i]);
+                {
+                    //_stockRecordDAO.RaiseSA(now, 5, null, null, IdStoreClerk, item.IdItem, -brokenQty[i]);
+                    RaiseSAandNotifyBoss(now, 5, null, null, IdStoreClerk, item, -brokenQty[i], sup, man);
 
-                // send notification to manager/supervisor
-
+                }
+                if (giftQty[i] > 0)
+                {
+                    //_stockRecordDAO.RaiseSA(now, 6, null, null, IdStoreClerk, item.IdItem, giftQty[i]);
+                    RaiseSAandNotifyBoss(now, 6, null, null, IdStoreClerk, item, giftQty[i], sup, man);
+                }
 
             }
 
             return RedirectToAction("Stocktake");
+        }
+
+        public void RaiseSAandNotifyBoss(DateTime date, int IdOperation, String IdDepartment, String IdSupplier, int IdStoreClerk, Item item, int qty, 
+            Employee supervisor, Employee manager)
+        {
+            String message = $"Stock adjustment raised for Item ({item.Description}). Please approve/reject.";
+            _stockRecordDAO.RaiseSA(date, IdOperation, IdDepartment, IdSupplier, IdStoreClerk, item.IdItem, qty);
+            int notifId = _notificationDAO.CreateNotification(message);
+
+            SupplierItem si = _supplierItemDAO.FindByItem(item);
+            if (Math.Abs(qty * si.Price) > 250)
+                _notificationChannelDAO.SendNotification(IdStoreClerk, manager.IdEmployee, notifId, date);
+            else
+                _notificationChannelDAO.SendNotification(IdStoreClerk, supervisor.IdEmployee, notifId, date);
+
         }
 
         //James: View past stocktake based on time
