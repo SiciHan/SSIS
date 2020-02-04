@@ -1,0 +1,101 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "Manager - Voucher";
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+    List<StockRecord> vouchers = (List<StockRecord>)ViewData["vouchers"];
+    List<float> prices = (List<float>)ViewData["prices"];
+    int i = 0;
+}
+
+<div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+    <div class="container">
+        <h2><b>STATIONERY STORE - ADJUSTMENT VOUCHER</b></h2>
+        <p>You can authorize stock adjustment here!</p>
+    </div>
+</div>
+
+@using (Html.BeginForm("JudgeAdjustment", "StoreManager", FormMethod.Post))
+{
+    <div class="container-fluid">
+        <table>
+            <tr>
+                <th style="width:10%">
+                    <input type="checkbox" name="select_all" onclick="SelectAll(this.checked)" />Select All
+                </th>
+                <th style="width:20%">
+                    Item
+                </th>
+                <th>
+                    Unit
+                </th>
+                <th>
+                    Single Price
+                </th>
+                <th>
+                    Store Clerk
+                </th>
+                <th>
+                    Reason
+                </th>
+            </tr>
+            @foreach (StockRecord voucher in vouchers)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="vouchers" value="@voucher.IdStockRecord" />
+                    </td>
+
+                    <td>
+                        @voucher.Item.Description
+                    </td>
+                    <td>
+                        @voucher.Unit
+                    </td>
+                    <td>
+                        @prices[i]
+                    </td>
+                    <td>
+                        @voucher.StoreClerk.Name
+                    </td>
+                    <td>
+                        @voucher.Operation.Label
+                    </td>
+
+                </tr>
+                i++;
+            }
+        </table>
+        <input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-top:24px" />
+
+        <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-right:24px; margin-top:24px" />
+    </div>
+}
+
+<script type="text/javascript">
+    function SelectAll(isChecked) {
+        var vouchers = document.getElementsByName("vouchers");
+        //var selectall = document.getElementsByName("select_all");
+        for (var i = 0; i < vouchers.length; i++) {
+            vouchers[i].checked = isChecked;
+        }
+    }
+</script>
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
+
+
+

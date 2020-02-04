@@ -48,7 +48,6 @@ namespace Team8ADProjectSSIS.Controllers
             // Get Department that seleceted same collection point as store clerk
             List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
 
-            bool NoDisbursement = false;
             DateTime Today = DateTime.Now;
             DateTime LastThu = Today.AddDays(-3);
             while (LastThu.DayOfWeek != DayOfWeek.Thursday)

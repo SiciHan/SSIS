@@ -43,5 +43,14 @@ namespace Team8ADProjectSSIS.DAO
             return items;
         }
 
+        public float FindPriceById(int idItem)
+        {
+            float price = context.SupplierItems
+                .Where(x => x.IdItem == idItem)
+                .Select(x => x.Price)
+                .FirstOrDefault();
+
+            return price;
+        }
     }
 }
