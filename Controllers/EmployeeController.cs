@@ -7,7 +7,7 @@ using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Filters;
 
-
+//@phyu
 namespace Team8ADProjectSSIS.Controllers
 {
     [AuthenticateFilter]
@@ -24,10 +24,10 @@ namespace Team8ADProjectSSIS.Controllers
 
         public ActionResult Index(string cmd, int? id, string searchStr = " ")
         {
-         //   if (Session["IdEmployee"] == null)
-         //       return RedirectToAction("Login", "Home");
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
 
-         //   int idEmployee = (int)Session["IdEmployee"];
+            int idEmployee = (int)Session["IdEmployee"];
 
             ViewBag.items = ListProducts(searchStr);
             ViewBag.searchStr = searchStr;
@@ -37,10 +37,10 @@ namespace Team8ADProjectSSIS.Controllers
 
         public ActionResult Catalog(string cmd, int? id, string searchStr = " ")
         {
-            //   if (Session["IdEmployee"] == null)
-            //       return RedirectToAction("Login", "Home");
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
 
-            //   int idEmployee = (int)Session["IdEmployee"];
+            int idEmployee = (int)Session["IdEmployee"];
 
             ViewBag.items = ListProducts(searchStr);
             ViewBag.searchStr = searchStr;
@@ -51,10 +51,10 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult PopUp(string cmd, int? id, string searchStr = " ")
         {
 
-            //   if (Session["IdEmployee"] == null)
-            //       return RedirectToAction("Login", "Home");
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
 
-            //   int idEmployee = (int)Session["IdEmployee"];
+            int idEmployee = (int)Session["IdEmployee"];
 
             ViewBag.items = ListProducts(searchStr);
             ViewBag.searchStr = searchStr;
@@ -65,12 +65,12 @@ namespace Team8ADProjectSSIS.Controllers
         public JsonResult reqId(string username)
         {
 
-            //   if (Session["IdEmployee"] == null)
-            //       return RedirectToAction("Login", "Home");
+         //   if (Session["IdEmployee"] == null)
+            //    return RedirectToAction("Login", "Home");
 
-            //   int idEmployee = (int)Session["IdEmployee"];
+            int idEmployee = (int)Session["IdEmployee"];
 
-            int idEmployee = 2;
+            // int idEmployee = 2;
 
 
 
@@ -417,12 +417,12 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult UpdatereqId(int? reqID)
         {
-            //   if (Session["IdEmployee"] == null)
-            //       return RedirectToAction("Login", "Home");
+           //  if (Session["IdEmployee"] == null)
+           //        return RedirectToAction("Login", "Home");
 
-            //   int idEmployee = (int)Session["IdEmployee"];
+               int idEmployee = (int)Session["IdEmployee"];
 
-            int idEmployee = 2;
+           // int idEmployee = 2;
 
             int req = reqID.GetValueOrDefault();
             string status = "";
@@ -456,12 +456,12 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult Update(string username, string cmd, int? reqID)
         {
 
-            //   if (Session["IdEmployee"] == null)
-            //       return RedirectToAction("Login", "Home");
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
 
-            //   int idEmployee = (int)Session["IdEmployee"];
+            int idEmployee = (int)Session["IdEmployee"];
 
-            int idEmployee = 2;
+          //  int idEmployee = 2;
 
 
             int req = reqID.GetValueOrDefault();

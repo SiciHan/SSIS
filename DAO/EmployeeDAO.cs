@@ -30,5 +30,11 @@ namespace Team8ADProjectSSIS.DAO
             return ClerkId;
         }
 
+        public Employee FindEmployeeById(int idEmployee)
+        {
+            return context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).FirstOrDefault();
+
+        }
+
     }
 }
