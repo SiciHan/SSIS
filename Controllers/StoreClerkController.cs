@@ -30,7 +30,6 @@ namespace Team8ADProjectSSIS.Controllers
             this._purchaseOrderDAO = new PurchaseOrderDAO();
             this._itemDAO = new ItemDAO();
             this._collectionPointDAO = new CollectionPointDAO();
-
         }
 
 
@@ -279,7 +278,6 @@ namespace Team8ADProjectSSIS.Controllers
 
             // Get Dep Rep
             Employee depRep = targetDisbursement.Department.Employees
-                .ToList()
                 .Where(emp => emp.IdRole == 3)
                 .FirstOrDefault();
 
@@ -314,7 +312,7 @@ namespace Team8ADProjectSSIS.Controllers
             // add notification below to DR
 
 
-            return PartialView("DisbursementDetails");
+            return RedirectToAction("Disbursement");
         }
 
         //James: For clerk to sign, raises SA in case of discrepancy and email out a copy of the disbursement details

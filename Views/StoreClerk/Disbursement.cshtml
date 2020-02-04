@@ -156,7 +156,6 @@
         })
     }
 
-    var d;
 
     var Disbursement = function (disbId) {
         var url = "/StoreClerk/DisbursementDetails?disbId=" + disbId;
@@ -170,6 +169,8 @@
         })
     }
 
+    var d;
+
     // posts and refreshes the partial view!
     var RefreshDisb = function () {
         $.ajax({
@@ -179,7 +180,11 @@
             success: function () {
                 var url = "/StoreClerk/DisbursementDetails?disbId=" + d;
                 $("#modalBodyDivDisbursement").load(url, function () {
-                    $("#modalDisb").modal("show");
+                    //$("#modalDisb").modal("show");
+                    $("#modalDisb").modal({
+                        backdrop: "static",
+                        keyboard: false
+                    });
                 });
                 alert("Quantity updated and Dep Rep notified");
             }
