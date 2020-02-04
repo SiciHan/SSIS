@@ -25,7 +25,6 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly StatusDAO _statusDAO;
         private readonly NotificationChannelDAO _notificationChannelDAO;
         private readonly NotificationDAO _notificationDAO;
-        private readonly EmployeeDAO _employeeDAO;
         private readonly SupplierItemDAO _supplierItemDAO;
 
         public StoreClerkController()
@@ -601,10 +600,9 @@ namespace Team8ADProjectSSIS.Controllers
 
                 String message = $"Attached a copy of the acknolwedged Disbursement for {targetDisbursement.CodeDepartment} on {targetDisbursement.Date.ToString("dd/MM/yyyy")}.";
 
-                int notifId1 = _notificationDAO.CreateNotification(message);
-                int notifId2 = _notificationDAO.CreateNotification(message);
-                _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId1, DateTime.Now);
-                _notificationChannelDAO.SendNotification(IdStoreClerk, IdStoreClerk, notifId2, DateTime.Now);
+                int notifId = _notificationDAO.CreateNotification(message);
+                _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+                _notificationChannelDAO.SendNotification(IdStoreClerk, IdStoreClerk, notifId, DateTime.Now);
             }
 
             return RedirectToAction("Disbursement");

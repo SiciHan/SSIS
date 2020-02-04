@@ -227,6 +227,7 @@ namespace Team8ADProjectSSIS.DAO
                                         .ToList();
             return DetailDisbursement;
         }
+
         //James
         internal void GiveAndTake(IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, int IdStoreClerk)
         {

@@ -271,21 +271,6 @@ namespace Team8ADProjectSSIS.DAO
             }
             return model;
         }
-        //James
-        public List<Disbursement> FindByStatus(String status, int IdStoreClerk)
-        {
-            // Check IdStoreClerk selected collection point
-            List<int> CPClerk = new List<int>();
-            CPClerk = context.CPClerks
-                      .Where(x => x.IdStoreClerk == IdStoreClerk)
-                      .Select(x => x.IdCollectionPt).ToList();
-
-            var list = context.Disbursements
-                .Where(x => x.Status.Label == status && CPClerk.Contains((int)x.IdCollectionPt))
-                .ToList();
-
-            return list;
-        }
 
         public List<Disbursement> GetDeptDisbursements(string codeDepartment)
         {
@@ -400,7 +385,22 @@ namespace Team8ADProjectSSIS.DAO
             return true;
         }
 
-    
+        //James
+        public List<Disbursement> FindByStatus(String status, int IdStoreClerk)
+        {
+            // Check IdStoreClerk selected collection point
+            List<int> CPClerk = new List<int>();
+            CPClerk = context.CPClerks
+                      .Where(x => x.IdStoreClerk == IdStoreClerk)
+                      .Select(x => x.IdCollectionPt).ToList();
+
+            var list = context.Disbursements
+                .Where(x => x.Status.Label == status && CPClerk.Contains((int)x.IdCollectionPt))
+                .ToList();
+
+            return list;
+        }
+
         //James
         public void UpdateStatus(IEnumerable<int> disbIdsToSchedule, int idStatus, DateTime SDate, int? IdStoreClerk)
         {
