@@ -649,6 +649,7 @@ namespace Team8ADProjectSSIS.Controllers
                 if (qtyDisbursed[i] < targetList[i].UnitIssued)
                 {
                     _stockRecordDAO.StockAdjustmentDuringDisbursement(qtyDisbursed[i], targetList[i], IdStoreClerk);
+                    _itemDAO.UpdateUnits(targetList[i].Item, -(targetList[i].UnitIssued - qtyDisbursed[i]));
                 }
             }
 
