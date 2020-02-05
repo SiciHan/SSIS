@@ -414,8 +414,8 @@ namespace Team8ADProjectSSIS.Controllers
         // James: Disbursement overview
         public ActionResult Disbursement()
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             int IdStoreClerk = (int)Session["IdEmployee"];
 
@@ -445,8 +445,8 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult Schedule(IEnumerable<int> disbIdsToSchedule, String pickDate)
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             int IdStoreClerk = (int)Session["IdEmployee"];
 
@@ -484,8 +484,8 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, String pickDate)
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             int IdStoreClerk = (int)Session["IdEmployee"];
 
@@ -521,8 +521,8 @@ namespace Team8ADProjectSSIS.Controllers
         // James: Opens page to redistribute qty from other disbursements
         public ActionResult Redistribute(int disbId)
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             int IdStoreClerk = (int)Session["IdEmployee"];
 
@@ -552,8 +552,8 @@ namespace Team8ADProjectSSIS.Controllers
         //James: Opens page to handle disbursement with Dep Rep
         public ActionResult DisbursementDetails(int disbId)
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
             ViewBag.disb = targetDisbursement;
@@ -572,8 +572,8 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult RefreshDisbursement(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             int IdStoreClerk = (int)Session["IdEmployee"];
 
@@ -600,8 +600,8 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult ClerkSign(IEnumerable<int> disbId)
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             int IdStoreClerk = (int)Session["IdEmployee"];
 
@@ -630,8 +630,8 @@ namespace Team8ADProjectSSIS.Controllers
         //James: Stocktake overview
         public ActionResult Stocktake()
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             ViewBag.allItems = _itemDAO.GetAllItems();
 
@@ -648,8 +648,8 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult SaveStocktake(IList<int> itemId, IList<int> actualQty, IList<int> missingQty, IList<int> wrongQty, IList<int> brokenQty, IList<int> giftQty)
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             int IdStoreClerk = (int)Session["IdEmployee"];
 
@@ -735,8 +735,8 @@ namespace Team8ADProjectSSIS.Controllers
         //James: View past stocktake based on time
         public ActionResult ViewStocktake(String targetMonth)
         {
-            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
-                return RedirectToAction("Login", "Home");
+            //if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+            //    return RedirectToAction("Login", "Home");
 
             DateTime month = DateTime.ParseExact(targetMonth, "yyyy-MM",
                 System.Globalization.CultureInfo.InvariantCulture);
