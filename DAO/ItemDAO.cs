@@ -97,5 +97,19 @@ namespace Team8ADProjectSSIS.DAO
             return false;
         }
 
+        public List<Item> GetDownloadableData() 
+        {
+            List<Item> items = context.Items.OfType<Item>().
+                Include(i => i.Category).
+                Include(i => i.SupplierItems).
+                Include(i => i.SupplierItems.Select(x => x.Supplier)).
+                Include(i => i.RequisitionItems).
+                Include(i => i.RequisitionItems.Select(y => y.Requisition)).
+                Include(i => i.RequisitionItems.Select(y => y.Requisition.Employee)).
+                ToList<Item>();
+            return items;
+
+        }
+
     }
 }

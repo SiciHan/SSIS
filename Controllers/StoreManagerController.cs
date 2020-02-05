@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
+using Team8ADProjectSSIS.Report;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -88,6 +89,16 @@ namespace Team8ADProjectSSIS.Controllers
             List<JoinDandDI> DetailDisbursement = _disbursementItemDAO.FindDetailDisbursement(IdDisbursement);
             ViewData["DetailDisbursement"] = DetailDisbursement;
             return View();
+        }
+        [HttpPost]
+        public ActionResult ExportExcel()
+        {
+
+            List<Item> DownloadableData = _itemDAO.GetDownloadableData();
+            ExcelReport excelReport = new ExcelReport();
+            byte[] ExcelData = excelReport.GenerateExcelReport(DownloadableData);
+
+            return File(ExcelData, "application/xlsx", "Ordered Data.xlsx");
         }
     }
 }
