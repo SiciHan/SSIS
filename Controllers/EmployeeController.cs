@@ -18,11 +18,13 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly EmployeeDAO _employeeDAO;
         private readonly RequisitionDAO _requisitionDAO;
         private readonly RequisitionItemDAO _requisitionItemDAO;
+        private readonly NotificationChannelDAO _notificationChannelDAO;
         public EmployeeController()
         {
             _employeeDAO = new EmployeeDAO();
             _requisitionDAO = new RequisitionDAO();
             _requisitionItemDAO = new RequisitionItemDAO();
+            _notificationChannelDAO = new NotificationChannelDAO();
         }
         public static string connectionString = "Server=.;" +
               "Database=SSIS; Integrated Security=true;MultipleActiveResultSets=True ";
@@ -700,6 +702,18 @@ namespace Team8ADProjectSSIS.Controllers
             ViewBag.searchStr = searchStr;
 
             return View();
+        }
+
+        public ActionResult Notification()
+        {
+         
+            
+                int IdReceiver = (int)Session["IdEmployee"];
+
+                ViewData["NCs"] = _notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
+
+                return View();
+            
         }
     }
 }
