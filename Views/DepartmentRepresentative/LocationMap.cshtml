@@ -36,7 +36,12 @@
                 <li>@Html.ActionLink("Collection Point", "CollectionPoints", "DepartmentRepresentative")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li style="padding-right:8px">
+                    <a href="@Url.Action("Notification","DepartmentRepresentative")" style="padding-right:0px">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
@@ -44,6 +49,9 @@
 </div>
 
 <h2 class="text-center">Collection Location Map</h2>
+
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 <div class="row">
     <div class="col-md-10 col-md-offset-2">
         <p>Collection Point Location: @collectionPoint.Location</p>
@@ -82,7 +90,7 @@
     default:
         <p align="center">
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.8029117726264!2d103.77414999999999!3d1.292679!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTcnMzMuNiJOIDEwM8KwNDYnMjYuOSJF!5e0!3m2!1szh-CN!2ssg!4v1580492644688!5m2!1szh-CN!2ssg" frameborder="0" style="border:0;height:50vh;width:60vw" allowfullscreen=""></iframe>
-        </p>     break;
+        </p>        break;
 }
 
 
@@ -101,6 +109,10 @@
                 mapOptions);
           }
     </script>*@
-
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/DepartmentRepresentativeNotification.js"></script>
+}
 
 

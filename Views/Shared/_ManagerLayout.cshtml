@@ -5,22 +5,14 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
     <title>@ViewBag.Title</title>
     @*<link href="~/Scripts/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">*@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
-
-
 </head>
 
 <body>
-
-
-
     <!--Side Bar-->
     @*<div class="bg-light border-right position-fixed" id="sidebar-wrapper">
             <div class="sidebar-heading">Stationery Store </div>
@@ -55,7 +47,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>*@
             <div class="navbar-header">
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
 
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
@@ -76,12 +68,17 @@
                         </a>
                     </li>
                     <li>
-                        <a href="@Url.Action("Index","StoreManager")" class="nav-link">
-                            Discrepency
+                        <a href="@Url.Action("POHistory", "StoreManager")" class="nav-link">
+                            Purchase Order
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("DisbursementHistory", "StoreManager")" class="nav-link">
+                            Disbursement
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="@Url.Action("Index","StoreManager")" class="nav-link">
+                        <a href="@Url.Action("Voucher","StoreManager")" class="nav-link">
                             Voucher
                         </a>
                     </li>
@@ -97,12 +94,11 @@
                     </li>
 
                     <li style="padding-right:8px">
-                        <a href="@Url.Action("Index","StoreManager")" style="padding-right:0px">
-                            <span class="glyphicon glyphicon-bell" style="top:4px"></span>
-                            <span class="badge badge-danger">8</span>
+                        <a href="@Url.Action("Notification","StoreManager")" style="padding-right:0px">
+                            <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
                         </a>
                     </li>
-
                     <li style="padding-right:8px">
                         <a href="@Url.Action("Home","StoreManager")" style="padding-top:18px; padding-right:0px">
                             <span class="glyphicon glyphicon-home"></span>
@@ -111,17 +107,16 @@
                     </li>
 
                     <li>
-                        <a href="@Url.Action("Home","StoreManager")" style="padding-top:18px">
+                        <a href="@Url.Action("Logout","Home")" style="padding-top:18px">
                             <span class="glyphicon glyphicon-log-out"></span>
                             Logout
                         </a>
-                        @*@Html.ActionLink("Home", "Home", "StoreManager", null, new { @class = "nav-link" })*@
-                        @*<button class="btn btn-primary h-100">Home</button>*@
                     </li>
                 </ul>
             </div>
         </div>
-
+        <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+        <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
         <!--Content-->
         <div class="container-fluid">
             @RenderBody()
@@ -135,9 +130,11 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
+
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/StoreManagerNotification.js"></script>
     @RenderSection("scripts", required: false)
-    @*<script src="~/Scripts/vendor/jquery/jquery.min.js"></script>
-        <script src="~/Scripts/vendor/bootstrap/js/bootstrap.bundle.js"></script>*@
 
     <script>
         $(function () {
@@ -188,6 +185,7 @@
             background-color: #e60c0c;
             border-radius: 10px;
         }
+
         .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
             color: #555;
             background-color: #e7e7e7;

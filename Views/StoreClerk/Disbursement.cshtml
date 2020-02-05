@@ -1,0 +1,234 @@
+﻿@using Team8ADProjectSSIS.Models
+@{
+    ViewBag.Title = "Disbursement";
+    List<Disbursement> prepList = ViewBag.prepList;
+    List<Disbursement> scheList = ViewBag.scheList;
+}
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Styles/css/number-input.css" rel="stylesheet" />
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
+                <li class="active">@Html.ActionLink("Disbursement", "Disbursement", "StoreClerk")</li>
+                <li>@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
+                <li>@Html.ActionLink("Stock Take", "Stocktake", "StoreClerk")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="@Url.Action("Index","StoreClerk")">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
+                    </a>
+                </li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h2>Disbursement</h2>
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+
+@using (Html.BeginForm("Schedule", "StoreClerk", FormMethod.Post))
+{
+    <table class="table table-hover redistribute_table">
+        <thead>
+            <tr>
+                <th scope="col">Select</th>
+                <th scope="col">Department</th>
+                <th scope="col">Retrieval Date</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (prepList.Count > 0)
+            {
+                foreach (Disbursement d in prepList)
+                {
+                    <tr>
+                        @if (d.DisbursementItems.ToList().All(di => di.UnitIssued >= di.UnitRequested))
+                        {
+                            @:<tr class="label-success">
+                        }
+                        else
+                        {
+                            @:<tr class="label-danger">
+                        }
+                        <td><input type="checkbox" name="disbIdsToSchedule" id="disbIdsToSchedule" value="@d.IdDisbursement" /></td>
+                        <td>@d.Department.Name</td>
+                        <td>@d.Date.ToString("dd-MM-yyyy")</td>
+                        <td>@d.Status.Label</td>
+                        <td><button type="button" class="btn btn-info" onclick="Redistribute(@d.IdDisbursement)"><i class="glyphicon glyphicon-pencil"></i></button></td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr class="info">
+                    <td colspan="5" align="center">No more retrievals!</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    if (prepList.Count > 0)
+    {
+        <div class="form-group">
+            <input type="date" class="form-control" id="pickDate" name="pickDate" value="@ViewBag.NextMon" min="@ViewBag.NextMon" />
+            <br />
+            <input type="submit" value="Schedule" class="btn btn-primary" />
+        </div>
+    }
+}
+
+<hr />
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Department</th>
+            <th scope="col">Disbursement Date</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    @foreach (Disbursement d in scheList)
+    {
+        <tr>
+            <td>@d.Department.Name</td>
+            <td>@d.Date.ToString("dd-MM-yyyy")</td>
+            <td>@d.Status.Label</td>
+            <td><button type="button" class="btn btn-info" onclick="Disbursement(@d.IdDisbursement)" id="disb@(d.IdDisbursement)"><i class="glyphicon glyphicon-list"></i></button></td>
+        </tr>
+    }
+</table>
+
+<div class="modal fade" id="modalRedis">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 class="modal-title">Redistribute</h4>
+            </div>
+            <div class="modal-body" id="modalBodyDivRedistribute">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDisb">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 class="modal-title">Disbursement</h4>
+            </div>
+            <div class="modal-body" id="modalBodyDivDisbursement">
+
+            </div>
+            <div class="modal-footer" id="modalFootDivDisbursement">
+                <button type="button" class="btn btn-default" onclick="RefreshDisb()">Refresh</button>
+                <label for="confirmDel" id="confirmDelLabel" class="btn btn-success" visible="false">Disburse</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+<script src="~/signalr/hubs"></script>
+<script>
+    //copy paste this to all pages.
+    $.connection.hub.start()
+        .done()
+        .fail();
+
+    $.connection.chatHub.client.receiveNotification = function (IdReceiver) {
+        //if the notification is sent to me
+        if (parseInt($("#hdnSession1").val()) == IdReceiver) {
+            var count = 0;
+            count = parseInt($('#noti-count').html()) || 0;
+            count++;
+            alert("There is a notification");
+            $('#noti-count').html(count);
+        }
+    };
+
+    var Redistribute = function (disbId) {
+        var url = "/StoreClerk/Redistribute?disbId=" + disbId;
+
+        $("#modalBodyDivRedistribute").load(url, function () {
+            //$("#modalRedis").modal("show");
+            $("#modalRedis").modal({
+                backdrop: "static",
+                keyboard: false
+            });
+        })
+    };
+
+
+    var Disbursement = function (disbId) {
+        var url = "/StoreClerk/DisbursementDetails?disbId=" + disbId;
+        d = disbId;
+        $("#modalBodyDivDisbursement").load(url, function () {
+            //$("#modalDisb").modal("show");
+            $("#modalDisb").modal({
+                backdrop: "static",
+                keyboard: false
+            });
+            var confDelBtn = document.getElementById('confirmDel');
+            if (confDelBtn != null) {
+                document.getElementById('confirmDelLabel').style.visibility = "visible"
+            } else {
+                document.getElementById('confirmDelLabel').style.visibility = "hidden"
+            }
+
+        })
+    };
+
+    var d;
+
+    // posts and refreshes the partial view!
+    var RefreshDisb = function () {
+        $.ajax({
+            url: "/StoreClerk/RefreshDisbursement",
+            type: "POST",
+            data: $("#refreshDisbForm").serialize(),
+            success: function () {
+                var url = "/StoreClerk/DisbursementDetails?disbId=" + d;
+                $("#modalBodyDivDisbursement").load(url, function () {
+                    // prevents user from being able to click outside the form to close it or hitting the 'ESCAPE' key
+                    $("#modalDisb").modal({
+                        backdrop: "static",
+                        keyboard: false
+                    });
+                });
+            }
+        });
+    };
+
+    $('.redistribute_table tr').click(function (event) {
+        if (event.target.type !== 'checkbox' && event.target.tagName !== 'BUTTON' && event.target.tagName !== 'I') {
+            $(':checkbox', this).trigger('click');
+        }
+    });
+
+
+</script>
+
+

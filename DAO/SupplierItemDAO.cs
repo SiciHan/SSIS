@@ -8,6 +8,13 @@ namespace Team8ADProjectSSIS.DAO
 {
     public class SupplierItemDAO
     {
+        private readonly SSISContext context;
+
+        public SupplierItemDAO()
+        {
+            this.context = new SSISContext();
+        }
+
         public List<SupplierItem> GetSuppliersById(int itemId)
         {
             List<SupplierItem> suppliers = new List<SupplierItem>();
@@ -20,6 +27,14 @@ namespace Team8ADProjectSSIS.DAO
                     .ToList();
             }
             return suppliers;
+        }
+
+        public SupplierItem FindByItem(Item item)
+        {
+            return context.SupplierItems
+                .Include("Item")
+                .Where(x => x.IdItem == item.IdItem && x.IdSupplier.Equals(item.CodeSupplier1))
+                .FirstOrDefault();
         }
     }
 }

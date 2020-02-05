@@ -22,13 +22,17 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
-                <li>@Html.ActionLink("Retrieval", "Index", "StoreClerk")</li>
-                <li>@Html.ActionLink("Disbursement", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
+                <li>@Html.ActionLink("Disbursement", "Disbursement", "StoreClerk")</li>
                 <li class="active">@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
-                <li>@Html.ActionLink("Stock Take", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Stock Take", "Stocktake", "StoreClerk")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li>
+                    <a href="@Url.Action("Index","StoreClerk")">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
@@ -36,7 +40,12 @@
 </div>
 
 <h2>Purchase Order Cart</h2>
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
+<div id="noti-content" class="popover-content">
+    <ul id="notiContent"></ul>
+</div>
 <div>
     @{
         if (suppliers == null || !suppliers.Any())
@@ -71,7 +80,7 @@
                                         {
                                             <tr>
                                                 <td><input type="hidden" name="purchaseOrderID_@po.IdPurchaseOrder" value="@po.IdPurchaseOrder" /> @pod.Item.Description</td>
-                                                <td><input type="number" name="orderUnit_@pod.IdPOD" value=@pod.OrderUnit onblur="updateOrderUnit(this)" /></td>
+                                                <td><input type="number" id="target" name="orderUnit_@pod.IdPOD" value=@pod.OrderUnit /></td>
                                                 <td>@pod.Item.ReorderLevel</td>
                                                 <td>@pod.Item.ReorderUnit</td>
                                                 <td>@pod.Item.AvailableUnit</td>
@@ -94,8 +103,8 @@
                 </div>
 
                 <div class="form-group" align="right">
-                    <input type="submit" name="cancel" class="btn btn-primary" value="Cancel All Purchase Order" formaction="CancelAllPurchaseOrder" formmethod="post"/>
-                    <input type="submit" name="action" class="btn btn-primary" value="Submit Purchase Order for Approval" formaction="SubmitPurchaseOrder" formmethod="post" />
+                    <input type="submit" id="cancel" class="btn btn-primary" value="Cancel All Purchase Order" formaction="CancelAllPurchaseOrder" formmethod="post" />
+                    <input type="submit" id="submitaction" class="btn btn-primary" value="Submit Purchase Order for Approval" formaction="SubmitPurchaseOrder" formmethod="post" />
                 </div>
             }
         }
@@ -104,27 +113,13 @@
 </div>
 
 
-<script>
 
-    if ($_POST['action'] == 'Cancel All Purchase Order') {
-        //action for cancel PO here
-        alert("The Purchase Orders have been Cancelled.");
-    } else if ($_POST['action'] == 'Submit Purchase Order for Approval') {
-        //action for submit po
-        alert("The Purchase Orders have been submitted.");
-    } else {
-        //invalid action!
-    }
+@section scripts{
 
-    function updateOrderUnit(source) {
-        var orderUnit = source.value;
-        var idpod = source.name.split("_")[1];
-        if (orderUnit == null) {
-            orderUnit = 0;
-        }
-        window.location.href = "/StoreClerk/UpdateOrderUnit?orderUnit=" + orderUnit + "&idPOD=" + idpod;
-        alert("you are changing the order units");
-    }
-</script>
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/POCart.js"></script>
+
+}
 
 

@@ -1,7 +1,132 @@
 ﻿
+@using Team8ADProjectSSIS.Models
 @{
+    var reqs = (List<Requisition>)ViewData["reqs"];
+    var reqq = ViewBag.ReqItems;
     ViewBag.Title = "History";
+
+    var selectedId = "";
+
 }
 
-<h2>History</h2>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Requisition Form's History</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="~/Styles/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    @*<script src="~/Scripts/item.js"></script>*@
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="~/Styles/styles.css" rel="stylesheet" />
+
+
+</head>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Dashboard", "Index", "Employee")</li>
+                <li>@Html.ActionLink("Create", "Create", "Employee")</li>
+                <li>@Html.ActionLink("Update", "Update", "Employee")</li>
+                <li>@Html.ActionLink("Check Status", "CheckStatus", "Employee")</li>
+                <li>@Html.ActionLink("History", "History", "Employee")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right" id="noti-logout">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="title">
+    <h2>Requisition Forms' History</h2>
+ </div>
+    @Html.Partial("UpdatereqId")
+
+    <body>
+
+        @*<div class="container">
+                <h2>Update Requisition Form</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="sel1">Form ID</label>
+                        <select class="req">
+                            @foreach (var q in reqs)
+                            {
+                                <option>@q.IdRequisition</option>
+
+                            }
+                        </select>
+
+                    </div>
+                </form>
+            </div>*@
+
+
+    </body>
+
+
+
+
+    @*<section class="container content-section">
+            <h2 class="section-header">Request Cart</h2>
+            <div class="cart-row">
+                <span class="cart-item cart-header cart-column">Description</span>
+                <span class="cart-price cart-header cart-column">Unit</span>
+                <span class="cart-quantity cart-header cart-column">Quantity</span>
+            </div>
+
+
+            <div class="cart-items">
+                <div class="cart-row">
+                    <div class="cart-item cart-column">
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>*@
+
+    <script>
+
+    </script>
+
+
+</html>
+
+<script>
+
+
+
+</script>
+
+
+
+
+
+
 

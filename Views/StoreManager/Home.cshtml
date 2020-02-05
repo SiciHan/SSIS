@@ -31,10 +31,10 @@
             @*<button class="btn btn-primary" id="menu-toggle">&#9776; Menu</button>*@
 
             @*<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>*@
+                <span class="navbar-toggler-icon"></span>
+            </button>*@
             <div class="navbar-header">
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
 
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
@@ -48,14 +48,14 @@
                     </li>
 
                     <li style="padding-right:8px">
-                        <a href="@Url.Action("Index","StoreManager")" style="padding-right:0px">
-                            <span class="glyphicon glyphicon-bell" style="top:4px"></span>
-                            <span class="badge badge-danger">8</span>
+                        <a href="@Url.Action("Notification","StoreManager")" style="padding-right:0px">
+                            <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
                         </a>
                     </li>
 
                     <li>
-                        <a href="@Url.Action("Home","StoreManager")" style="padding-top:18px">
+                        <a href="@Url.Action("Logout","Home")" style="padding-top:18px">
                             <span class="glyphicon glyphicon-log-out"></span>
                             Logout
                         </a>
@@ -66,6 +66,8 @@
             </div>
         </div>
 
+        <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+        <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
         <!--Content-->
         <div class="container-fluid">
             <div class="row" style="height:400px; margin-top:60px">
@@ -110,6 +112,9 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/StoreManagerNotification.js"></script>
     @*<script src="~/Scripts/vendor/jquery/jquery.min.js"></script>
         <script src="~/Scripts/vendor/bootstrap/js/bootstrap.bundle.js"></script>*@
 

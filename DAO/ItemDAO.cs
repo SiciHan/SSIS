@@ -97,6 +97,28 @@ namespace Team8ADProjectSSIS.DAO
             return false;
         }
 
+        public float FindPriceById(int idItem)
+        {
+            float price = context.SupplierItems
+                .Where(x => x.IdItem == idItem)
+                .Select(x => x.Price)
+                .FirstOrDefault();
+
+            return price;
+        }
+        //James: saves the item's units
+        internal void UpdateUnits(Item i, int diff)
+        {
+            Item item = GetAllItems()
+                .Where(x => x.IdItem == i.IdItem)
+                .FirstOrDefault();
+
+            item.StockUnit -= diff;
+
+            item.AvailableUnit = ((item.AvailableUnit - diff) > 0) ? item.AvailableUnit - diff : 0;
+
+            context.SaveChanges();
+        }
         public List<Item> GetDownloadableData() 
         {
             List<Item> items = context.Items.OfType<Item>().
