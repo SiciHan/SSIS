@@ -79,7 +79,7 @@ namespace Team8ADProjectSSIS.Controllers
                         case "Head":
                             return RedirectToAction("Dashboard", "DepartmentHead");
                         case "Representative":
-                            return RedirectToAction("Dashboard", "DepartmentRepresentative");
+                            return RedirectToAction("Home", "DepartmentRepresentative");
                         case "StockClerk":
                             return RedirectToAction("Index", "StoreClerk");
                         case "StockManager":
@@ -144,6 +144,15 @@ namespace Team8ADProjectSSIS.Controllers
             int IdSender= (int)Session["IdEmployee"];
             //int IdSender = 2;
             _notificationChannelDAO.CreateNotificationsToGroup(role,IdSender,message);
+            string status = "OK";
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult CreateNotificationsToIndividual(int idReceiver, string message)
+        {
+            int IdSender = (int)Session["IdEmployee"];
+            //int IdSender = 2;
+            _notificationChannelDAO.CreateNotificationsToIndividual(idReceiver, IdSender, message);
             string status = "OK";
             return Json(status, JsonRequestBehavior.AllowGet);
         }

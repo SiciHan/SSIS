@@ -32,14 +32,21 @@
                 <li>@Html.ActionLink("Collection Point", "CollectionPoints", "DepartmentRepresentative")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li style="padding-right:8px">
+                    <a href="@Url.Action("Notification","DepartmentRepresentative")" style="padding-right:0px">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </div>
 </div>
 <!--startprint-->
-<h2 class="text-center">Dibursement Detail</h2>
+<h2 class="text-center">Disbursement Detail</h2>
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 <div class="row">
     <div class="col-md-3 col-md-offset-2">
         <p>Received Date: @disbursement.Date</p>
@@ -115,8 +122,8 @@
 
 <style type="text/css" media="print">
     button {
-        visibility:hidden;
-        display:none
+        visibility: hidden;
+        display: none
     }
 </style>
 
@@ -142,3 +149,9 @@
         location.reload();
     }
 </script>
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/DepartmentRepresentativeNotification.js"></script>
+}

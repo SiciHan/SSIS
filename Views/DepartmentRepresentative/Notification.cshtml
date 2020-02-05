@@ -1,7 +1,7 @@
 ﻿@using Team8ADProjectSSIS.Models;
 @{
-    ViewBag.Title = "CollectionPoints";
-    var collectionPoints = ViewBag.collectionPoints;
+    ViewBag.Title = "Notification";
+    var NCs = ViewData["NCs"] as IList<NotificationChannel>;
 }
 
 <div class="navbar navbar-default navbar-fixed-top">
@@ -20,7 +20,7 @@
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Disbursement", "Home", "DepartmentRepresentative")</li>
                 <li>@Html.ActionLink("History", "History", "DepartmentRepresentative")</li>
-                <li class="active">@Html.ActionLink("Collection Point", "CollectionPoints", "DepartmentRepresentative")</li>
+                <li>@Html.ActionLink("Collection Point", "CollectionPoints", "DepartmentRepresentative")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li style="padding-right:8px">
@@ -29,47 +29,59 @@
 
                     </a>
                 </li>
-                <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </div>
 </div>
-
-<h2 class="text-center">Collection Points</h2>
+<!--startprint-->
+<h2 class="text-center">Notification</h2>
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
-<table style="margin-top:30px">
-    <tr>
-        <th>COLLECTION POINT</th>
-        <th>COLLECTION TIME</th>
-        <th>OPERATION</th>
-    </tr>
-    @foreach (CollectionPoint cp in collectionPoints)
+
+<button id="Unread" class="btn">Unread</button>
+<button id="Read" class="btn">Read</button>
+<button id="All" class="btn">All Notifications</button>
+
+
+<div id="UnreadNC">
+    @foreach (NotificationChannel nc in NCs)
     {
-        <tr>
-            <td>@cp.Location</td>
-            <td>@cp.Time</td>
-            <td><a class="btn btn-default" href="LocationMap?idCollectionPt=@cp.IdCollectionPt" role="button">View Map</a></td>
+        if (nc.IsRead == false)
+        {
 
-        </tr>
+            <div>
+                <p><span>Date: @nc.Date   </span><span><button class="btn" name="markasread" id="@nc.IdNC">Mark as Read</button></span></p>
+                <p>@nc.Notification.Text</p>
+            </div>
+        }
     }
-</table>
+</div>
 
-<style>
-    table {
-        width: 100%;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-        border-collapse: collapse;
-        letter-spacing: 1px;
+
+<div id="ReadNC">
+    @foreach (NotificationChannel nc in NCs)
+    {
+        if (nc.IsRead == true)
+        {
+            <div>
+                <p><span>Date: @nc.Date   </span><span><button class="btn" name="markasunread" id="@nc.IdNC">Mark as Unread</button></span></p>
+                <p>@nc.Notification.Text</p>
+            </div>
+        }
     }
+</div>
 
-    table, th, tr, td {
-        border-bottom: 1px solid #dedede;
-        padding: 5px;
-        text-align: center;
+
+<div id="AllNC">
+    @foreach (NotificationChannel nc in NCs)
+    {
+        <div>
+            <p><span>Date: @nc.Date   </span></p>
+            <p>@nc.Notification.Text</p>
+        </div>
     }
-</style>
-
+</div>
 
 @section scripts{
     <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>

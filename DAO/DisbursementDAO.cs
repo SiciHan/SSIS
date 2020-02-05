@@ -302,7 +302,7 @@ namespace Team8ADProjectSSIS.DAO
                     .Include("DisbursedBy")
                     .Include("CollectionPoint")                    
                     .Include("Status")
-                    .Where(x => x.IdStatus == 10 && x.CodeDepartment == codeDepartment)
+                    .Where(x => x.IdStatus == 10 && x.CodeDepartment.Equals(codeDepartment))
                     .FirstOrDefault();
             }
             return model;
