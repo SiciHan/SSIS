@@ -20,13 +20,26 @@ namespace Team8ADProjectSSIS.Controllers
         ItemDAO _itemDAO;
         PurchaseOrderDAO _purchaseOrderDAO;
         PurchaseOrderDetailsDAO _purchaseOrderDetailsDAO;
-
+        NotificationChannelDAO _notificationChannelDAO;
         public StoreSupervisorController()
         {
             this._stockRecordDAO = new StockRecordDAO();
             this._itemDAO = new ItemDAO();
             this._purchaseOrderDAO = new PurchaseOrderDAO();
             this._purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
+            _notificationChannelDAO = new NotificationChannelDAO();
+        }
+
+        public ActionResult Notification()
+        {
+            int IdReceiver = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdReceiver = (int)Session["IdEmployee"];
+            }
+            ViewData["NCs"] = _notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
+
+            return View();
         }
 
         public ActionResult Voucher()

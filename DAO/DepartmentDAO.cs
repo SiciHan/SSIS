@@ -8,6 +8,12 @@ namespace Team8ADProjectSSIS.DAO
 {
     public class DepartmentDAO
     {
+        private readonly SSISContext context;
+
+        public DepartmentDAO()
+        {
+            context = new SSISContext();
+        }
         public bool UpdateCollectionPt(string codeDepartment, int idCollectionPt)
         {
             Department model = null;
@@ -25,6 +31,12 @@ namespace Team8ADProjectSSIS.DAO
                 db.SaveChanges();
             }
             return true;
+        }
+
+        internal string FindCodeDepartmentByIdEmployee(int v)
+        {
+            Department department = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == v).Select(x => x.Department).FirstOrDefault();
+            return department.CodeDepartment;
         }
     }
 }

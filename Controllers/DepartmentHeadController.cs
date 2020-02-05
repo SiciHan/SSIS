@@ -4,29 +4,36 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.Filters;
 using Team8ADProjectSSIS.Models;
 
 namespace Team8ADProjectSSIS.Controllers
 {
+
+    [AuthorizeFilter]
+    [AuthenticateFilter]
     public class DepartmentHeadController : Controller
     {
-        EmployeeDAO _employeeDAO;
-        RequisitionDAO _requisitionDAO;
-        RequisitionItemDAO _requisitionItemDAO;
-        ItemDAO _itemDAO;
+        private readonly EmployeeDAO _employeeDAO;
+        private readonly RequisitionDAO _requisitionDAO;
+        private readonly RequisitionItemDAO _requisitionItemDAO;
+        private readonly ItemDAO _itemDAO;
+        private readonly DepartmentDAO _departmentDAO;
         public DepartmentHeadController()
         {
             _employeeDAO = new EmployeeDAO();
             _requisitionDAO= new RequisitionDAO();
             _requisitionItemDAO = new RequisitionItemDAO();
             _itemDAO = new ItemDAO();
+            _departmentDAO = new DepartmentDAO();
         }
 
 
         // show lists of requisitions
         public ActionResult PendingLists()
         {
-            String codeDepartment = "ENGL"; // temporary use this employee id 36 with engL
+            string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
+            //String codeDepartment = "ENGL"; // temporary use this employee id 36 with engL
             
             List<Requisition> empReqList=_employeeDAO.RaisesRequisitions(codeDepartment);
             ViewBag.empReqList = empReqList;

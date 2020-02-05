@@ -470,6 +470,7 @@
     <Content Include="Scripts\StoreClerkIndex.js" />
     <Content Include="Scripts\DepartmentRepresentativeNotification.js" />
     <Content Include="Scripts\StoreManagerNotification.js" />
+    <Content Include="Scripts\StoreSupervisorNotification.js" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.min.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.css" />
@@ -567,6 +568,7 @@
     <Content Include="Views\DepartmentHead\ChangeRepCP.cshtml" />
     <Content Include="Views\DepartmentHead\Delegation.cshtml" />
     <Content Include="Views\Shared\_HeadLayout.cshtml" />
+    <Content Include="Views\StoreSupervisor\Notification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
