@@ -548,6 +548,7 @@
     <Content Include="Views\StoreSupervisor\PurchaseOrder.cshtml" />
     <Content Include="Views\StoreSupervisor\POHistory.cshtml" />
     <Content Include="Views\StoreSupervisor\PurchaseOrderDetail.cshtml" />
+    <Content Include="Views\StoreSupervisor\Dashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

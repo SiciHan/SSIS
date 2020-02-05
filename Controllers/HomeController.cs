@@ -83,7 +83,7 @@ namespace Team8ADProjectSSIS.Controllers
                         case "StockClerk":
                             return RedirectToAction("Index", "StoreClerk");
                         case "StockManager":
-                            return RedirectToAction("Dashboard", "StoreManager");
+                            return RedirectToAction("Home", "StoreManager");
                         case "StockSupervisor":
                             return RedirectToAction("Dashboard", "StoreSupervisor");
                         case "ActingHead":

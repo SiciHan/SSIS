@@ -24,6 +24,11 @@ namespace Team8ADProjectSSIS.Controllers
             this._purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
         }
 
+        public ActionResult Dashboard()
+        {
+            return View();
+        }
+
         public ActionResult Voucher()
         {
             List<StockRecord> vouchers = _stockRecordDAO.FindVoucherForSupervisor();
@@ -79,9 +84,51 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult PurchaseOrderDetail(int idPurchaseOrder)
         {
             List<PurchaseOrderDetail> PODetails = _purchaseOrderDetailsDAO.FindDetailPO(idPurchaseOrder);
+            PurchaseOrder po = _purchaseOrderDAO.FindPOById(idPurchaseOrder);
             ViewData["POD"] = PODetails;
+            ViewBag.po = po;
             return View();
         }
-        // GET: StoreSupervisor
+
+        [HttpPost]
+        public ActionResult HandlePO(string handle, List<int> purchase_ordersId)
+        {
+            List<PurchaseOrder> purchaseOrders = new List<PurchaseOrder>();
+            foreach (int id in purchase_ordersId)
+            {
+                PurchaseOrder po = _purchaseOrderDAO.FindPOById(id);
+                purchaseOrders.Add(po);
+            }
+            if (handle == "Approve")
+            {
+                _purchaseOrderDAO.UpdatePOToApproved(purchaseOrders);
+            }
+            else
+            {
+                _purchaseOrderDAO.UpdatePOToRejected(purchaseOrders);
+            }
+            return RedirectToAction("PurchaseOrder", "StoreSupervisor");
+        }
+
+        [HttpPost]
+        public ActionResult Handlejustment(string handle, List<int> vouchersId)
+        {
+            List<StockRecord> vouchers = new List<StockRecord>();
+            foreach (int id in vouchersId)
+            {
+                StockRecord voucher = _stockRecordDAO.FindById(id);
+                vouchers.Add(voucher);
+            }
+            if (handle == "Approve")
+            {
+                _stockRecordDAO.UpdateVoucherToApproved(vouchers);
+            }
+            else
+            {
+                _stockRecordDAO.UpdateVoucherToRejected(vouchers);
+            }
+            return RedirectToAction("Voucher", "StoreSupervisor");
+        }
+
     }
 }

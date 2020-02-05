@@ -249,9 +249,35 @@ namespace Team8ADProjectSSIS.DAO
                 .Include(x => x.PurchaseOrderDetails)
                 .Include(x => x.PurchaseOrderDetails.Select(p => p.Item))
                 .Include(x => x.StoreClerk)
+                .Include(x => x.Status)
                 .ToList();
 
             return handledPO;
+        }
+
+        public void UpdatePOToApproved(List<PurchaseOrder> POs)
+        {
+            foreach (PurchaseOrder po in POs)
+            {
+                PurchaseOrder temp = context.PurchaseOrders
+                    .Where(x => x.IdPurchaseOrder == po.IdPurchaseOrder)
+                    .FirstOrDefault();
+                temp.IdStatus = 3;
+                temp.ApprovedDate = DateTime.Now;
+                context.SaveChanges();
+            }
+        }
+
+        public void UpdatePOToRejected(List<PurchaseOrder> POs)
+        {
+            foreach (PurchaseOrder po in POs)
+            {
+                PurchaseOrder temp = context.PurchaseOrders
+                    .Where(x => x.IdPurchaseOrder == po.IdPurchaseOrder)
+                    .FirstOrDefault();
+                temp.IdStatus = 4;
+                context.SaveChanges();
+            }
         }
     }
 }

@@ -42,7 +42,7 @@
             {
                 <tr>
                     <td>
-                        <input type="checkbox" name="vouchers" value="@voucher.IdStockRecord" />
+                        <input type="checkbox" name="vouchersId" value="@voucher.IdStockRecord" />
                     </td>
 
                     <td>
@@ -65,9 +65,8 @@
                 i++;
             }
         </table>
-        <input type="button" class="btn btn-primary" value="Voucher History" onclick=
-               "location.href='@Url.Action("VoucherHistory", "StoreManager")'" style="margin-top:24px" />
-        
+        <input type="button" class="btn btn-primary" value="Voucher History" onclick="location.href='@Url.Action("VoucherHistory", "StoreManager")'" style="margin-top:24px" />
+
         <input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-top:24px" />
         <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-right:24px; margin-top:24px" />
     </div>
@@ -75,7 +74,7 @@
 
 <script type="text/javascript">
     function SelectAll(isChecked) {
-        var vouchers = document.getElementsByName("vouchers");
+        var vouchers = document.getElementsByName("vouchersId");
         //var selectall = document.getElementsByName("select_all");
         for (var i = 0; i < vouchers.length; i++) {
             vouchers[i].checked = isChecked;

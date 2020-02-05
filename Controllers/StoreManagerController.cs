@@ -131,8 +131,14 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
         [HttpPost]
-        public ActionResult JudgeAdjustment(string judge, List<StockRecord> vouchers)
+        public ActionResult JudgeAdjustment(string judge, List<int> vouchersId)
         {
+            List<StockRecord> vouchers = new List<StockRecord>();
+            foreach(int id in vouchersId)
+            {
+                StockRecord voucher = _stockRecordDAO.FindById(id);
+                vouchers.Add(voucher);
+            }
             if(judge == "Approve")
             {
                 _stockRecordDAO.UpdateVoucherToApproved(vouchers);

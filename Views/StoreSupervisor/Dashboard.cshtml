@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard - Supervisor";
+}
+
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">@Html.ActionLink("Dashboard", "Dashboard", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Purchase Order", "PurchaseOrder", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Purchase Order History", "POHistory", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Adjustment Voucher", "Voucher", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Adjustment Voucher History", "VoucherHistory", "StoreSupervisor")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h2>Dashboard</h2>
+
