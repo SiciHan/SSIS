@@ -19,6 +19,8 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly RequisitionItemDAO _requisitionItemDAO;
         private readonly ItemDAO _itemDAO;
         private readonly DepartmentDAO _departmentDAO;
+        private readonly NotificationChannelDAO _notificationChannelDAO;
+
         public DepartmentHeadController()
         {
             _employeeDAO = new EmployeeDAO();
@@ -26,9 +28,17 @@ namespace Team8ADProjectSSIS.Controllers
             _requisitionItemDAO = new RequisitionItemDAO();
             _itemDAO = new ItemDAO();
             _departmentDAO = new DepartmentDAO();
+            _notificationChannelDAO = new NotificationChannelDAO();
         }
 
+        public ActionResult Notification()
+        {
+            int IdReceiver = (int)Session["IdEmployee"];
 
+            ViewData["NCs"] = _notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
+
+            return View();
+        }
         // show lists of requisitions
         public ActionResult PendingLists()
         {
@@ -86,6 +96,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        //use home logout method!!
         public ActionResult Logout()
         {
             // need to redirect to Login page

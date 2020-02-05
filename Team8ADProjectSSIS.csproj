@@ -441,6 +441,7 @@
     <Content Include="Content\bootstrap\alerts.less" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\CollectPO.js" />
+    <Content Include="Scripts\DepartHeadNotification.js" />
     <Content Include="Scripts\EmployeeNotification.js" />
     <Content Include="Scripts\FormRetrieve.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -569,6 +570,8 @@
     <Content Include="Views\DepartmentHead\Delegation.cshtml" />
     <Content Include="Views\Shared\_HeadLayout.cshtml" />
     <Content Include="Views\StoreSupervisor\Notification.cshtml" />
+    <Content Include="Views\DepartmentHead\Notification.cshtml" />
+    <Content Include="Views\DepartmentActingHead\Notification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

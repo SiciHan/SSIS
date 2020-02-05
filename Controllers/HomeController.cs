@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.Filters;
 using Team8ADProjectSSIS.Models;
 
 namespace Team8ADProjectSSIS.Controllers
@@ -77,7 +78,7 @@ namespace Team8ADProjectSSIS.Controllers
                         case "Employee":
                             return RedirectToAction("Index", "Employee");
                         case "Head":
-                            return RedirectToAction("Dashboard", "DepartmentHead");
+                            return RedirectToAction("Notification", "DepartmentHead");
                         case "Representative":
                             return RedirectToAction("Home", "DepartmentRepresentative");
                         case "StockClerk":
@@ -87,7 +88,7 @@ namespace Team8ADProjectSSIS.Controllers
                         case "StockSupervisor":
                             return RedirectToAction("Dashboard", "StoreSupervisor");
                         case "ActingHead":
-                            return RedirectToAction("Dashboard", "DepartmentActingHead");
+                            return RedirectToAction("Notification", "DepartmentActingHead");
                         default:
                             return RedirectToAction("Index", "Home");
                     }
@@ -132,6 +133,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        [AuthenticateFilter]
         public JsonResult GetNotifications()
         {
             int IdReceiver = (int) Session["IdEmployee"];
@@ -139,6 +141,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(_notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver), JsonRequestBehavior.AllowGet);
         }
 
+        [AuthenticateFilter]
         public JsonResult CreateNotificationsToGroup(string role,string message)
         {
             int IdSender= (int)Session["IdEmployee"];
@@ -148,6 +151,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(status, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthenticateFilter]
         public JsonResult CreateNotificationsToIndividual(int idReceiver, string message)
         {
             int IdSender = (int)Session["IdEmployee"];
@@ -157,6 +161,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(status, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthenticateFilter]
         public JsonResult MarkNotificationChannelAsRead(int IdNC)
         {
             string status = null;
@@ -174,6 +179,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(status, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthenticateFilter]
         public JsonResult MarkNotificationChannelAsUnread(int IdNC)
         {
 
@@ -192,6 +198,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(status, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthenticateFilter]
         public JsonResult GetUnreadNotificationCount(int IdReceiver)
         {
             

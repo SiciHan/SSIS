@@ -18,6 +18,7 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly RequisitionItemDAO _requisitionItemDAO;
         private readonly ItemDAO _itemDAO;
         private readonly DepartmentDAO _departmentDAO;
+        private readonly NotificationChannelDAO _notificationChannelDAO;
         public DepartmentActingHeadController()
         {
             _employeeDAO = new EmployeeDAO();
@@ -25,12 +26,22 @@ namespace Team8ADProjectSSIS.Controllers
             _requisitionItemDAO = new RequisitionItemDAO();
             _itemDAO = new ItemDAO();
             _departmentDAO = new DepartmentDAO();
+            _notificationChannelDAO = new NotificationChannelDAO();
         }
 
         // GET: DepartmentActingHead
         public ActionResult Index()
         {
             string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
+            return View();
+        }
+
+        public ActionResult Notification()
+        {
+            int IdReceiver = (int)Session["IdEmployee"];
+
+            ViewData["NCs"] = _notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
+
             return View();
         }
     }
