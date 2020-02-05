@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Dashboard";
     var NCs = ViewData["NCs"] as IList<NotificationChannel>;
+
 }
 
 <!--Please copy paste this div-->
@@ -52,7 +53,7 @@
         {
 
             <div>
-                <p><span>Date: @nc.Date   </span><span><button id="markasread" name="@nc.IdNC">Mark as Read</button></span></p>
+                <p><span>Date: @nc.Date   </span><span><button name="markasread" id="@nc.IdNC" class="btn">Mark as Read</button></span></p>
                 <p>@nc.Notification.Text</p>
             </div>
         }
@@ -63,10 +64,10 @@
 <div id="ReadNC">
     @foreach (NotificationChannel nc in NCs)
     {
-        if (nc.IsRead == false)
+        if (nc.IsRead == true)
         {
             <div>
-                <p><span>Date: @nc.Date   </span><span><button id="markasunread" name="@nc.IdNC">Mark as Unread</button></span></p>
+                <p><span>Date: @nc.Date   </span><span><button name="markasunread" id="@nc.IdNC" class="btn">Mark as Unread</button></span></p>
                 <p>@nc.Notification.Text</p>
             </div>
         }

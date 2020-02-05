@@ -39,58 +39,58 @@
     });
 
     $("button[name='markasread']").click(function () {
-        
-            //alert("maked as read");
-            var idNC = $(this).attr("id");
-            $.ajax({
-                type: 'POST',
-                url: '/Home/MarkNotificationChannelAsRead',
-                data: { "idNC": idNC },
-                success: function (response) {
-                    console.log(response);
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-            //alert("maked as read");
-            //count minus 1
-            var count = parseInt($('#noti-count').html());
-            count--;
-            $('#noti-count').html(count);
 
-            $(this).attr("class", "btn-danger");
-            $(this).empty();
-            $(this).append("Read");
-            $(this).off();
-        
+        //alert("maked as read");
+        var idNC = $(this).attr("id");
+        $.ajax({
+            type: 'POST',
+            url: '/Home/MarkNotificationChannelAsRead',
+            data: { "idNC": idNC },
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+        //alert("maked as read");
+        //count minus 1
+        var count = parseInt($('#noti-count').html());
+        count--;
+        $('#noti-count').html(count);
+
+        $(this).attr("class", "btn-danger");
+        $(this).empty();
+        $(this).append("Read");
+        $(this).off();
+
     });
 
     $("button[name='markasunread']").click(function () {
-                //alert("maked as read");
-            var idNC = $(this).attr("id");
-            $.ajax({
-                type: 'POST',
-                url: '/Home/MarkNotificationChannelAsUnread',
-                data: { "idNC": idNC },
-                success: function (response) {
-                    console.log(response);
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-            //alert("maked as unread");
+        //alert("maked as read");
+        var idNC = $(this).attr("id");
+        $.ajax({
+            type: 'POST',
+            url: '/Home/MarkNotificationChannelAsUnread',
+            data: { "idNC": idNC },
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+        //alert("maked as unread");
 
-            //count plus 1
-            var count = parseInt($('#noti-count').html());
-            count++;
-            $('#noti-count').html(count);
-            $(this).attr("class", "btn-danger");
-            $(this).empty();
-            $(this).append("Unread");
-            $(this).off();
-        
+        //count plus 1
+        var count = parseInt($('#noti-count').html());
+        count++;
+        $('#noti-count').html(count);
+        $(this).attr("class", "btn-danger");
+        $(this).empty();
+        $(this).append("Unread");
+        $(this).off();
+
     });
 
     // initially hide All and Read notifcations
@@ -108,13 +108,15 @@
         .done()
         .fail();
 
+    //to change the count in real time when someone send a notification to the person
     $.connection.chatHub.client.receiveNotification = function (IdReceiver) {
+        alert("There is a notification");
         //if the notification is sent to me
         if (parseInt($("#hdnSession1").val()) == IdReceiver) {
             var count = 0;
             count = parseInt($('#noti-count').html()) || 0;
             count++;
-            alert("There is a notification");
+            alert("There is a notification and for you");
             $('#noti-count').html(count);
         }
     };
@@ -123,6 +125,7 @@
         type: 'GET',
         url: '/Home/GetUnreadNotificationCount?IdReceiver=' + $("#hdnSession1").val(),
         success: function (response) {
+            alert("There are " + response + "unread notifications " + "for" + $("#hdnSession1").val());
             $('#noti-count').html(response);
         },
         error: function (error) {

@@ -23,10 +23,10 @@ namespace Team8ADProjectSSIS.DAO
         public List<NotificationChannel> FindAllNotificationsByIdReceiver(int idReceiver)
         {
             List<NotificationChannel> nclist=context.NotificationChannels.OfType<NotificationChannel>().Where(x=>x.IdTo==idReceiver).Include(x => x.Notification).Include(x=>x.From).ToList();
-            foreach(NotificationChannel nc in nclist)
+/*            foreach(NotificationChannel nc in nclist)
             {
                 nc.IsRead = true;
-            }
+            }*/
             context.SaveChanges();
             return nclist;
         }
@@ -90,6 +90,12 @@ namespace Team8ADProjectSSIS.DAO
 
             context.NotificationChannels.Add(NC);
             context.SaveChanges();
+        }
+
+        internal int GetUnreadNotificationCount(int idReceiver)
+        {
+            List<NotificationChannel> ncs = context.NotificationChannels.OfType<NotificationChannel>().Where(x => x.IdTo == idReceiver && x.IsRead == false).ToList();
+            return ncs.Count;
         }
     }
 }

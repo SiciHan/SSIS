@@ -462,6 +462,7 @@
     <Content Include="Scripts\POList.js" />
     <Content Include="Scripts\SignalR.js" />
     <Content Include="Scripts\StoreClerkIndex.js" />
+    <Content Include="Scripts\StoreManagerNotification.js" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.min.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.css" />
@@ -544,6 +545,7 @@
     <Content Include="Views\StoreClerk\DisbursementDetails.cshtml" />
     <Content Include="Views\StoreClerk\Stocktake.cshtml" />
     <Content Include="Views\StoreClerk\ViewStocktake.cshtml" />
+    <Content Include="Views\StoreManager\Notification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

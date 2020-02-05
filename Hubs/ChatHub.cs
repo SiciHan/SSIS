@@ -28,9 +28,14 @@ namespace Team8ADProjectSSIS.Hubs
 
         public void SendNotificationByGroupByRole(int idSender, string receiverRole, string message)
         {
-            
+            int idReceiver = 0;
+
             //get the id of manager
-            int idReceiver = 1;//or storemanager
+            if (receiverRole.Contains("Manager"))
+            {
+                idReceiver = 4;
+            }
+            
             Clients.All.receiveNotification(idReceiver);//
 
         }
