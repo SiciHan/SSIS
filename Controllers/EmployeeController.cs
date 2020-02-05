@@ -10,8 +10,8 @@ using Team8ADProjectSSIS.Filters;
 //@phyu
 namespace Team8ADProjectSSIS.Controllers
 {
-   // [AuthenticateFilter]
-  //  [AuthorizeFilter]
+    [AuthenticateFilter]
+    [AuthorizeFilter]
     public class EmployeeController : Controller
     {
 
@@ -41,6 +41,18 @@ namespace Team8ADProjectSSIS.Controllers
             ViewBag.searchStr = searchStr;
             ViewData["Emp"] = _employeeDAO.FindEmployeeById(idEmployee);
             return View();
+        }
+
+        public ActionResult Notification()
+        {
+
+
+            int IdReceiver = (int)Session["IdEmployee"];
+
+            ViewData["NCs"] = _notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
+
+            return View();
+
         }
 
         public ActionResult Catalog(string cmd, int? id, string searchStr = " ")
@@ -88,7 +100,7 @@ namespace Team8ADProjectSSIS.Controllers
         public JsonResult reqId(string username)
         {
 
-         //   if (Session["IdEmployee"] == null)
+            //   if (Session["IdEmployee"] == null)
             //    return RedirectToAction("Login", "Home");
 
             int idEmployee = (int)Session["IdEmployee"];
@@ -96,20 +108,20 @@ namespace Team8ADProjectSSIS.Controllers
             _requisitionDAO.CreateRequisition(idEmployee);
             //replace with below
 
-/*            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
+            /*            using (SqlConnection conn = new SqlConnection(connectionString))
+                        {
+                            conn.Open();
 
-                Random rand = new Random();
-                int orderNum = rand.Next(10000000, 100000000);
+                            Random rand = new Random();
+                            int orderNum = rand.Next(10000000, 100000000);
 
-                string sql = @"INSERT INTO Requisitions(IdStatusCurrent,RaiseDate,HeadRemark,ApprovedDate,WithdrawlDate,IdEmployee)
-                                    VALUES(1,GETDATE(),null,GETDATE(),GETDATE()," + idEmployee + ")";
+                            string sql = @"INSERT INTO Requisitions(IdStatusCurrent,RaiseDate,HeadRemark,ApprovedDate,WithdrawlDate,IdEmployee)
+                                                VALUES(1,GETDATE(),null,GETDATE(),GETDATE()," + idEmployee + ")";
 
-                SqlCommand cmdd = new SqlCommand(sql, conn);
+                            SqlCommand cmdd = new SqlCommand(sql, conn);
 
-                cmdd.ExecuteNonQuery();
-            }*/
+                            cmdd.ExecuteNonQuery();
+                        }*/
 
             return Json(new
             {
@@ -154,13 +166,13 @@ namespace Team8ADProjectSSIS.Controllers
             });
         }
 
-        public JsonResult updateReq(string username,int? selectedId,string itemName, int? quantity)
+        public JsonResult updateReq(string username, int? selectedId, string itemName, int? quantity)
         {
 
             int idEmployee = (int)Session["IdEmployee"];
-            _requisitionItemDAO.UpdateRequisitionItemUnit(selectedId, itemName, quantity);//add requisitonitem to incomplete requisition
+            //  _requisitionItemDAO.UpdateRequisitionItemUnit(selectedId, itemName, quantity);//add requisitonitem to incomplete requisition
 
-            /*int length = itemName.Length;
+            int length = itemName.Length;
 
             if (itemName.EndsWith("\""))
             {
@@ -175,14 +187,14 @@ namespace Team8ADProjectSSIS.Controllers
                 Random rand = new Random();
                 int orderNum = rand.Next(10000000, 100000000);
 
-                string details = @"Update RequisitionItems SET Unit = " + quantity  + " WHERE IdItem = (SELECT IdItem from Items WHERE Description ='"
+                string details = @"Update RequisitionItems SET Unit = " + quantity + " WHERE IdItem = (SELECT IdItem from Items WHERE Description ='"
                                   + itemName + "') AND IdRequisiton = " + selectedId + "";
 
 
                 SqlCommand cmddd = new SqlCommand(details, conn);
 
                 cmddd.ExecuteNonQuery();
-            }*/
+            }
 
             return Json(new
             {
@@ -216,7 +228,7 @@ namespace Team8ADProjectSSIS.Controllers
 
                  cmddd.ExecuteNonQuery();
              }*/
-            
+
             return Json(new
             {
                 result = "OK"
@@ -226,8 +238,8 @@ namespace Team8ADProjectSSIS.Controllers
         public JsonResult deleteReqItem(string username, int? selectedId, string itemName)
         {
 
-            _requisitionItemDAO.DeleteRequisitionItem(selectedId, itemName);
-           /* int length = itemName.Length;
+            //    _requisitionItemDAO.DeleteRequisitionItem(selectedId, itemName);
+            int length = itemName.Length;
 
             if (itemName.EndsWith("\""))
             {
@@ -250,7 +262,7 @@ namespace Team8ADProjectSSIS.Controllers
 
                 cmddd.ExecuteNonQuery();
             }
-*/
+
             return Json(new
             {
                 result = "OK"
@@ -263,31 +275,21 @@ namespace Team8ADProjectSSIS.Controllers
         public JsonResult deleteReq(string username, int? selectedId)
         {
 
-            _requisitionItemDAO.DeleteRequisitionItemByReqId(selectedId);
-            _requisitionDAO.DeleteRequisition(selectedId);
-/*
+            //     _requisitionItemDAO.DeleteRequisitionItemByReqId(selectedId);
+            //    _requisitionDAO.DeleteRequisition(selectedId);
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
 
-                string RequisitionItems = @"DELETE from RequisitionItems WHERE IdRequisiton =" + selectedId + "";
+                string RequisitionItems = @"UPDATE Requisitions SET IdStatusCurrent = 5 WHERE IdRequisition = " + selectedId + "";
 
                 SqlCommand reqItems = new SqlCommand(RequisitionItems, conn);
 
                 reqItems.ExecuteNonQuery();
-            }*/
-/*            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-
-
-                string Requisitions = @"DELETE from Requisitions WHERE IdRequisition = " + selectedId + "";
-
-                SqlCommand reqId = new SqlCommand(Requisitions, conn);
-
-                reqId.ExecuteNonQuery();
-            }*/
+            }
+         
 
             return Json(new
             {
@@ -332,7 +334,7 @@ namespace Team8ADProjectSSIS.Controllers
         public String GetIdStatus(int ReqID)
         {
 
-            //return _requisitionDAO.GetStatusLabel(ReqID);
+            //  return _requisitionDAO.GetStatusLabel(ReqID);
             string status = "";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -359,15 +361,15 @@ namespace Team8ADProjectSSIS.Controllers
 
         public List<String> GetDescription(int ReqID)
         {
-            /*List<String> description = new List<String>();
-            List<RequisitionItem> reqItemList=_requisitionItemDAO.RetrieveRequisitionItemByReqId(ReqID);
-            
-            foreach(RequisitionItem ri in reqItemList)
+            List<String> description = new List<String>();
+            List<RequisitionItem> reqItemList = _requisitionItemDAO.RetrieveRequisitionItemByReqId(ReqID);
+
+            foreach (RequisitionItem ri in reqItemList)
             {
                 description.Add(ri.Item.Description);
-            }*/
+            }
 
-            List<String> description = new List<String>();
+            /*
             string des = "";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -384,13 +386,13 @@ namespace Team8ADProjectSSIS.Controllers
                 SqlDataReader readerr = chh.ExecuteReader();
                 while (readerr.Read())
                 {
-
+                   
                     des = (string)readerr["Description"];
-
+                  
                     description.Add(des);
                 };
-
-            }
+              
+            }*/
             return description;
         }
 
@@ -415,13 +417,14 @@ namespace Team8ADProjectSSIS.Controllers
                 while (readerr.Read())
                 {
                     requi = new Requisition()
-                    { IdRequisition = (int)readerr["IdRequisition"],
-                      IdStatusCurrent = (int)readerr["IdStatusCurrent"],
-                      RaiseDate = (DateTime)readerr["RaiseDate"],
-                      HeadRemark = (readerr["HeadRemark"] == DBNull.Value) ? string.Empty : (string)readerr["HeadRemark"],
-                      ApprovedDate = (readerr["ApprovedDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["ApprovedDate"],
+                    {
+                        IdRequisition = (int)readerr["IdRequisition"],
+                        IdStatusCurrent = (int)readerr["IdStatusCurrent"],
+                        RaiseDate = (DateTime)readerr["RaiseDate"],
+                        HeadRemark = (readerr["HeadRemark"] == DBNull.Value) ? string.Empty : (string)readerr["HeadRemark"],
+                        ApprovedDate = (readerr["ApprovedDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["ApprovedDate"],
 
-                      WithdrawlDate = (readerr["WithdrawlDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["WithdrawlDate"],
+                        WithdrawlDate = (readerr["WithdrawlDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["WithdrawlDate"],
                     };
 
                 };
@@ -461,13 +464,13 @@ namespace Team8ADProjectSSIS.Controllers
 
             // int idEmployee = 2;
 
-            int req = reqID.GetValueOrDefault(0);
+            int req = reqID.GetValueOrDefault();
             string status = "";
             List<String> des = new List<String>();
             Requisition requi = new Requisition();
             requi = GetRequisition(idEmployee);
             //  ViewBag.ReqItems = ListReqItems(reqID);
-            string username = "Sam Worthington";
+            //string username = "Sam Worthington";
 
             status = GetIdStatus(req);
             des = GetDescription(req);
@@ -498,7 +501,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             int idEmployee = (int)Session["IdEmployee"];
 
-          //  int idEmployee = 2;
+            //  int idEmployee = 2;
 
 
             int req = reqID.GetValueOrDefault();
@@ -543,43 +546,43 @@ namespace Team8ADProjectSSIS.Controllers
 
 
             }
-                return View();
+            return View();
         }
 
         public List<Requisition> ListReqID(int idEmployee)
         {
-          
+
             List<Requisition> reqs = _requisitionDAO.RetrieveRequisitionByEmpId(idEmployee);
-           /* using (SqlConnection conn = new SqlConnection(connectionString))
-            {
+            /* using (SqlConnection conn = new SqlConnection(connectionString))
+             {
 
-                conn.Open();
+                 conn.Open();
 
-                string ch = @"SELECT * From Requisitions Where IdEmployee = " + idEmployee;
-                               
+                 string ch = @"SELECT * From Requisitions Where IdEmployee = " + idEmployee;
 
-                SqlCommand chh = new SqlCommand(ch, conn);
 
-                SqlDataReader readerr = chh.ExecuteReader();
-                while (readerr.Read())
-                {
-                    Requisition req = new Requisition()
-                    {
-                        IdRequisition = (int)readerr["IdRequisition"],
-                        IdStatusCurrent = (int)readerr["IdStatusCurrent"],
-                        RaiseDate = (DateTime)readerr["RaiseDate"],
+                 SqlCommand chh = new SqlCommand(ch, conn);
 
-                        HeadRemark = (readerr["HeadRemark"] == DBNull.Value) ? string.Empty : (string)readerr["HeadRemark"],
-                        ApprovedDate = (readerr["ApprovedDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["ApprovedDate"],
+                 SqlDataReader readerr = chh.ExecuteReader();
+                 while (readerr.Read())
+                 {
+                     Requisition req = new Requisition()
+                     {
+                         IdRequisition = (int)readerr["IdRequisition"],
+                         IdStatusCurrent = (int)readerr["IdStatusCurrent"],
+                         RaiseDate = (DateTime)readerr["RaiseDate"],
 
-                        WithdrawlDate = (readerr["WithdrawlDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["WithdrawlDate"],
+                         HeadRemark = (readerr["HeadRemark"] == DBNull.Value) ? string.Empty : (string)readerr["HeadRemark"],
+                         ApprovedDate = (readerr["ApprovedDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["ApprovedDate"],
 
-                    };
+                         WithdrawlDate = (readerr["WithdrawlDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["WithdrawlDate"],
 
-                  
-                    reqs.Add(req);
-                };
-            }*/
+                     };
+
+
+                     reqs.Add(req);
+                 };
+             }*/
             return reqs;
         }
 
@@ -606,9 +609,9 @@ namespace Team8ADProjectSSIS.Controllers
 
             if (cmd == "delete")
             {
-                _requisitionItemDAO.DeleteRequisitionItemByReqId(reqID);
-                _requisitionDAO.DeleteRequisition(reqID);
-/*                using (SqlConnection conn = new SqlConnection(connectionString))
+                //     _requisitionItemDAO.DeleteRequisitionItemByReqId(reqID);
+                //     _requisitionDAO.DeleteRequisition(reqID);
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
@@ -629,7 +632,7 @@ namespace Team8ADProjectSSIS.Controllers
                     SqlCommand reqId = new SqlCommand(Requisitions, conn);
 
                     reqId.ExecuteNonQuery();
-                }*/
+                }
             }
             if (cmd == "update")
             {
@@ -658,8 +661,8 @@ namespace Team8ADProjectSSIS.Controllers
 
             if (cmd == "delete")
             {
-                _requisitionItemDAO.DeleteRequisitionItemByReqId(reqID);
-                _requisitionDAO.DeleteRequisition(reqID);/*
+                //    _requisitionItemDAO.DeleteRequisitionItemByReqId(reqID);
+                //    _requisitionDAO.DeleteRequisition(reqID);
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -681,7 +684,7 @@ namespace Team8ADProjectSSIS.Controllers
                     SqlCommand reqId = new SqlCommand(Requisitions, conn);
 
                     reqId.ExecuteNonQuery();
-                }*/
+                }
             }
             if (cmd == "update")
             {
@@ -702,18 +705,6 @@ namespace Team8ADProjectSSIS.Controllers
             ViewBag.searchStr = searchStr;
 
             return View();
-        }
-
-        public ActionResult Notification()
-        {
-         
-            
-                int IdReceiver = (int)Session["IdEmployee"];
-
-                ViewData["NCs"] = _notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
-
-                return View();
-            
         }
     }
 }
