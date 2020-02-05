@@ -129,8 +129,8 @@ namespace Team8ADProjectSSIS.Controllers
                         }
             */
             int idEmployee = (int)Session["IdEmployee"];
-            _requisitionItemDAO.CreateRequisitionItem(idEmployee,itemName, quantity);//add requisitonitem to incomplete requisition
-/*            using (SqlConnection conn = new SqlConnection(connectionString))
+            //_requisitionItemDAO.CreateRequisitionItem(idEmployee,itemName, quantity);//add requisitonitem to incomplete requisition
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
@@ -144,7 +144,7 @@ namespace Team8ADProjectSSIS.Controllers
                 SqlCommand cmddd = new SqlCommand(details, conn);
 
                 cmddd.ExecuteNonQuery();
-            }*/
+            }
 
             return Json(new
             {
@@ -452,34 +452,39 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult UpdatereqId(int? reqID)
         {
-           //  if (Session["IdEmployee"] == null)
-           //        return RedirectToAction("Login", "Home");
+            //  if (Session["IdEmployee"] == null)
+            //        return RedirectToAction("Login", "Home");
 
             int idEmployee = (int)Session["IdEmployee"];
+
+            // int idEmployee = 2;
+
             int req = reqID.GetValueOrDefault();
-            
-            //requi = new Requisition();
-            //requi = GetRequisition(idEmployee);???
-
-
-            //I think this is what you want.
-            Requisition requi = _requisitionDAO.RetrieveRequisitionByReqId(req);
+            string status = "";
+            List<String> des = new List<String>();
+            Requisition requi = new Requisition();
+            requi = GetRequisition(idEmployee);
             //  ViewBag.ReqItems = ListReqItems(reqID);
-            //string username = "Sam Worthington";
+            string username = "Sam Worthington";
 
-            string status = GetIdStatus(req);
-            List<string> des = GetDescription(req);
+            status = GetIdStatus(req);
+            des = GetDescription(req);
             List<Requisition> reqs = ListReqID(idEmployee);
             List<RequisitionItem> reqq = ListReqItems(req);
+
+
             ViewData["reqq"] = reqq;
             ViewData["reqs"] = reqs;
             ViewData["status"] = status;
-            var result = new { Req= requi, Items = reqq, status = status, descrip = des };
+
+
+            var result = new { Req = requi, Items = reqq, status = status, descrip = des };
             return Json(result, JsonRequestBehavior.AllowGet);
+
             //  return View();
         }
 
- 
+
 
 
 
