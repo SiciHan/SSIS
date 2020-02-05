@@ -179,14 +179,13 @@ span.search-filter {
 #nav {
     position: absolute;
     width: 100%;
-    height: 20px;
+    height:20px;
     left: 0;
     top: 0;
-    
 }
 
-#title{
-    margin-top:80px;
+.title{
+    margin-top:70px;
 }
 
 .navbar-nav {
@@ -211,7 +210,7 @@ span.search-filter {
     vertical-align: middle;
     padding: .67em .67em;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.5rem;
 }
 
 .btn-header {
@@ -445,6 +444,28 @@ span.search-filter {
     border-radius: 6px;
     margin-left: 40%;
     margin-top: 20px;
+    font-size: 1.4rem;
+}
+
+#table {
+    font-size: 1.4rem;
+    max-width: 900px;
+    margin-left: 300px;
+    padding: 0 1.5em;
+}
+
+.del-up-add {
+    font-size: 1.4rem;
+    max-width: 900px;
+    margin-left: 300px;
+    padding: 0 1.5em;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    font-size: 1.4rem;
 }
 
 

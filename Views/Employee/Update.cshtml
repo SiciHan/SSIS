@@ -30,6 +30,7 @@
 
 
 </head>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
     <div class="container">
 
@@ -57,68 +58,68 @@
         </div>
     </div>
 </nav>
+<div class="title">
+    <h2>Update Requisition Form</h2>
+</div>
+    @Html.Partial("UpdatereqId")
 
-<h2 id="title">Update Requisition Form</h2>
+    <body>
 
-@Html.Partial("UpdatereqId")
+        @*<div class="container">
+                <h2>Update Requisition Form</h2>
+                <form>
+                    <div class="form-group">
+                        <label for="sel1">Form ID</label>
+                        <select class="req">
+                            @foreach (var q in reqs)
+                            {
+                                <option>@q.IdRequisition</option>
 
-<body>
+                            }
+                        </select>
 
-    @*<div class="container">
-            <h2>Update Requisition Form</h2>
-            <form>
-                <div class="form-group">
-                    <label for="sel1">Form ID</label>
-                    <select class="req">
-                        @foreach (var q in reqs)
-                        {
-                            <option>@q.IdRequisition</option>
-
-                        }
-                    </select>
-
-                </div>
-            </form>
-        </div>*@
-
-
-</body>
+                    </div>
+                </form>
+            </div>*@
 
 
+    </body>
 
 
-@*<section class="container content-section">
-        <h2 class="section-header">Request Cart</h2>
-        <div class="cart-row">
-            <span class="cart-item cart-header cart-column">Description</span>
-            <span class="cart-price cart-header cart-column">Unit</span>
-            <span class="cart-quantity cart-header cart-column">Quantity</span>
-        </div>
 
 
-        <div class="cart-items">
+    @*<section class="container content-section">
+            <h2 class="section-header">Request Cart</h2>
             <div class="cart-row">
-                <div class="cart-item cart-column">
+                <span class="cart-item cart-header cart-column">Description</span>
+                <span class="cart-price cart-header cart-column">Unit</span>
+                <span class="cart-quantity cart-header cart-column">Quantity</span>
+            </div>
+
+
+            <div class="cart-items">
+                <div class="cart-row">
+                    <div class="cart-item cart-column">
+
+                    </div>
+
 
                 </div>
-
 
             </div>
 
-        </div>
+        </section>*@
 
-    </section>*@
+    <script>
 
-<script>
-
-</script>
+    </script>
 
 
 </html>
 
 <script>
 
-     
+
 
 </script>
 
