@@ -455,32 +455,27 @@ namespace Team8ADProjectSSIS.Controllers
            //  if (Session["IdEmployee"] == null)
            //        return RedirectToAction("Login", "Home");
 
-               int idEmployee = (int)Session["IdEmployee"];
-
-           // int idEmployee = 2;
-
+            int idEmployee = (int)Session["IdEmployee"];
             int req = reqID.GetValueOrDefault();
-            string status = "";
-            List<String> des = new List<String>();
-            Requisition requi = new Requisition();
-            requi = GetRequisition(idEmployee);
-            //  ViewBag.ReqItems = ListReqItems(reqID);
-            string username = "Sam Worthington";
+            
+            //requi = new Requisition();
+            //requi = GetRequisition(idEmployee);???
 
-            status = GetIdStatus(req);
-            des = GetDescription(req);
+
+            //I think this is what you want.
+            Requisition requi = _requisitionDAO.RetrieveRequisitionByReqId(req);
+            //  ViewBag.ReqItems = ListReqItems(reqID);
+            //string username = "Sam Worthington";
+
+            string status = GetIdStatus(req);
+            List<string> des = GetDescription(req);
             List<Requisition> reqs = ListReqID(idEmployee);
             List<RequisitionItem> reqq = ListReqItems(req);
-         
-
             ViewData["reqq"] = reqq;
             ViewData["reqs"] = reqs;
             ViewData["status"] = status;
-          
-
             var result = new { Req= requi, Items = reqq, status = status, descrip = des };
             return Json(result, JsonRequestBehavior.AllowGet);
-
             //  return View();
         }
 
@@ -578,9 +573,6 @@ namespace Team8ADProjectSSIS.Controllers
                     reqs.Add(req);
                 };
             }*/
-
-            
-
             return reqs;
         }
 
@@ -596,7 +588,7 @@ namespace Team8ADProjectSSIS.Controllers
 
 
             int req = reqID.GetValueOrDefault();
-            username = "Sam Worthington";
+            //username = "Sam Worthington";
 
             List<Requisition> reqs = ListReqID(idEmployee);
             List<RequisitionItem> reqq = ListReqItems(req);
@@ -607,7 +599,9 @@ namespace Team8ADProjectSSIS.Controllers
 
             if (cmd == "delete")
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                _requisitionItemDAO.DeleteRequisitionItemByReqId(reqID);
+                _requisitionDAO.DeleteRequisition(reqID);
+/*                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
@@ -628,7 +622,7 @@ namespace Team8ADProjectSSIS.Controllers
                     SqlCommand reqId = new SqlCommand(Requisitions, conn);
 
                     reqId.ExecuteNonQuery();
-                }
+                }*/
             }
             if (cmd == "update")
             {
@@ -645,12 +639,8 @@ namespace Team8ADProjectSSIS.Controllers
                 return RedirectToAction("Login", "Home");
 
             int idEmployee = (int)Session["IdEmployee"];
-
-            //  int idEmployee = 2;
-
-
             int req = reqID.GetValueOrDefault();
-            username = "Sam Worthington";
+            //username = "Sam Worthington";
 
             List<Requisition> reqs = ListReqID(idEmployee);
             List<RequisitionItem> reqq = ListReqItems(req);
@@ -661,6 +651,8 @@ namespace Team8ADProjectSSIS.Controllers
 
             if (cmd == "delete")
             {
+                _requisitionItemDAO.DeleteRequisitionItemByReqId(reqID);
+                _requisitionDAO.DeleteRequisition(reqID);/*
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -682,7 +674,7 @@ namespace Team8ADProjectSSIS.Controllers
                     SqlCommand reqId = new SqlCommand(Requisitions, conn);
 
                     reqId.ExecuteNonQuery();
-                }
+                }*/
             }
             if (cmd == "update")
             {

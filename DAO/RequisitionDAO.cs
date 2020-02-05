@@ -118,5 +118,11 @@ namespace Team8ADProjectSSIS.DAO
         {
             return context.Requisitions.OfType<Requisition>().Where(x => x.IdEmployee == idEmployee).ToList();
         }
+
+        internal Requisition RetrieveRequisitionByReqId(int ReqId)
+        {
+            return context.Requisitions.OfType<Requisition>().Where(x => x.IdRequisition == ReqId).FirstOrDefault();
+
+        }
     }
 }
