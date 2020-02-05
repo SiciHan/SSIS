@@ -1,0 +1,43 @@
+﻿@using Team8ADProjectSSIS.Models
+
+@{
+    ViewBag.Title = "DisbursementDetails";
+    List<StockRecord> SRbyMonth = ViewBag.SRbyMonth;
+}
+
+<h4>For the month of <i><b>@ViewBag.targetMonth.ToString("MMM yyyy")</b></i></h4>
+
+@if(SRbyMonth.Count != 0)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Operation</th>
+                <th>Department</th>
+                <th>Supplier</th>
+                <th>Clerk</th>
+                <th>Item</th>
+                <th>Unit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(StockRecord sr in SRbyMonth)
+            {
+            <tr>
+                <td>@sr.Date.ToString("dd-MM-yyyy")</td>
+                <td>@sr.Operation.Label</td>
+                <td>@((sr.Department != null) ? sr.Department.Name : "")</td>
+                <td>@((sr.Supplier != null) ? sr.Supplier.Name : "")</td>
+                <td>@sr.StoreClerk.Name</td>
+                <td>@sr.Item.Description</td>
+                <td>@sr.Unit</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No Stock Adjustment Vouchers raised!</p>
+}

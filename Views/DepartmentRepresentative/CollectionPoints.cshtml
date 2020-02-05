@@ -23,7 +23,12 @@
                 <li class="active">@Html.ActionLink("Collection Point", "CollectionPoints", "DepartmentRepresentative")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li style="padding-right:8px">
+                    <a href="@Url.Action("Notification","DepartmentRepresentative")" style="padding-right:0px">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
@@ -31,7 +36,8 @@
 </div>
 
 <h2 class="text-center">Collection Points</h2>
-
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 <table style="margin-top:30px">
     <tr>
         <th>COLLECTION POINT</th>
@@ -39,14 +45,14 @@
         <th>OPERATION</th>
     </tr>
     @foreach (CollectionPoint cp in collectionPoints)
-        {
+    {
         <tr>
             <td>@cp.Location</td>
             <td>@cp.Time</td>
             <td><a class="btn btn-default" href="LocationMap?idCollectionPt=@cp.IdCollectionPt" role="button">View Map</a></td>
 
         </tr>
-        }
+    }
 </table>
 
 <style>
@@ -65,3 +71,8 @@
 </style>
 
 
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/DepartmentRepresentativeNotification.js"></script>
+}

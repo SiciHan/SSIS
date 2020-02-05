@@ -1,0 +1,53 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "Notification";
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+    var NCs = ViewData["NCs"] as IList<NotificationChannel>;
+}
+
+<h2>Notification</h2>
+
+<button id="Unread" class="btn">Unread</button>
+<button id="Read" class="btn">Read</button>
+<button id="All" class="btn">All Notifications</button>
+
+
+<div id="UnreadNC">
+    @foreach (NotificationChannel nc in NCs)
+    {
+        if (nc.IsRead == false)
+        {
+
+            <div>
+                <p><span>Date: @nc.Date   </span><span><button class="btn" name="markasread" id="@nc.IdNC">Mark as Read</button></span></p>
+                <p>@nc.Notification.Text</p>
+            </div>
+        }
+    }
+</div>
+
+
+<div id="ReadNC">
+    @foreach (NotificationChannel nc in NCs)
+    {
+        if (nc.IsRead == true)
+        {
+            <div>
+                <p><span>Date: @nc.Date   </span><span><button class="btn" name="markasunread" id="@nc.IdNC">Mark as Unread</button></span></p>
+                <p>@nc.Notification.Text</p>
+            </div>
+        }
+    }
+</div>
+
+
+<div id="AllNC">
+    @foreach (NotificationChannel nc in NCs)
+    {
+        <div>
+            <p><span>Date: @nc.Date   </span></p>
+            <p>@nc.Notification.Text</p>
+        </div>
+    }
+</div>
+

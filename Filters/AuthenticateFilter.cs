@@ -26,11 +26,11 @@ namespace Team8ADProjectSSIS.Filters
                 if (sessionId == null) {
                     filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary{
                         { "controller", "Home" },
-                        { "action", "SessionExpired" } }
+                        { "action", "Login" } }
                       );
                 }
                 //illegal user
-                if(!(sessionId is Guid))
+                else if(!(sessionId is Guid))
                 {
                     filterContext.Result = new HttpUnauthorizedResult();
                 }

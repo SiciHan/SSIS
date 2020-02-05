@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using Team8ADProjectSSIS.Models;
@@ -54,9 +55,13 @@ namespace Team8ADProjectSSIS.DAO
 
         public Employee FindEmployeeById(int idEmployee)
         {
-            return context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).FirstOrDefault();
+            return context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x=>x.Department).FirstOrDefault();
 
         }
 
+        public List<Employee> FindByRole (int IdRole)
+        {
+            return context.Employees.Where(x => x.IdRole == IdRole).ToList();
+        }
     }
 }

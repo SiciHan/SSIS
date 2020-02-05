@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "DashBoard";
+}
+
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">@Html.ActionLink("Dashboard", "Dashboard", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Stock Adjustment Voucher", "Index", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Discrepancy Report", "Index", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Reorder Report", "Index", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Purchase Order", "Index", "StoreSupervisor")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<h2>DashBoard</h2>
+<div class="box">
+    @using (Html.BeginForm("ExportExcel", "StoreSupervisor", FormMethod.Post))
+    {
+        <button class="download"><i class="fa fa-download"></i></button>
+    }
+    @using (Html.BeginForm("PrintPDF", "StoreSupervisor", FormMethod.Post))
+    {
+        <button class="print" ><i class="fa fa-print"></i></button>
+    }
+</div>
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .box {
+        float: right;
+    }
+    .box button {
+        font-size: 24px;
+        background-color: white;
+        border: none;
+    }
+    .download{
+        color: red;
+    }
+    .print {
+        color:blue;
+    }
+    .box form {
+        display:inline-block;
+    }
+</style>

@@ -1,0 +1,82 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "Manager - Voucher";
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+    List<StockRecord> vouchers = (List<StockRecord>)ViewData["vouchers"];
+    List<float> prices = (List<float>)ViewData["prices"];
+    List<string> status = (List<string>)ViewData["status"];
+    int i = 0;
+}
+
+<div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+    <div class="container">
+        <h2><b>STATIONERY STORE - ADJUSTMENT VOUCHER HISTORY</b></h2>
+        <p>You can review the adjustment voucher history here!</p>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <table>
+        <tr>
+            <th>
+                Item
+            </th>
+            <th>
+                Unit
+            </th>
+            <th>
+                Single Price
+            </th>
+            <th>
+                Store Clerk
+            </th>
+            <th>
+                Reason
+            </th>
+            <th>
+                Status
+            </th>
+        </tr>
+        @foreach (StockRecord voucher in vouchers)
+        {
+            <tr>
+                <td>
+                    @voucher.Item.Description
+                </td>
+                <td>
+                    @voucher.Unit
+                </td>
+                <td>
+                    @prices[i]
+                </td>
+                <td>
+                    @voucher.StoreClerk.Name
+                </td>
+                <td>
+                    @voucher.Operation.Label
+                </td>
+                <td>
+                    @status[i]
+                </td>
+            </tr>
+            i++;
+        }
+    </table>
+</div>
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
+

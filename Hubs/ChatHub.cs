@@ -2,31 +2,63 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using Microsoft.AspNet.SignalR;
+using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.Models;
 
 namespace Team8ADProjectSSIS.Hubs
 {
     public class ChatHub : Hub
     {
+        
         public void Hello()
         {
             Clients.All.hello();
         }
 
-        // Develop a hub as the main coordination object on the server, 
-        //and using the SignalR jQuery library to send and receive messages.
-        public void Send(string name, string message)
+        public void Announce(string message)
         {
-            //Call this method to update clients
+            Clients.All.announce(message);
+        }
+        public void Send(string name, string message)
+        {  
             Clients.All.addNewMessageToPage(name, message);
         }
-/*        Clients call the method to send a new message.
- *        ChatHub.Send
- *        The hub in turn sends the name and message to all clients by calling.
- *        Clients.All.addNewMessageToPage
- *        To Call a function on the client to update the clients.
- *        Clients.All.addNewMessageToPage(name, message);
- *        Use this property to access all clients connected to this hub.
- *        Microsoft.AspNet.SignalR.Hub.Clients*/
+
+        public void SendNotificationByGroupByRole(int idSender, string receiverRole, string message)
+        {
+
+            //get the id of manager
+            if (receiverRole.Contains("Manager"))
+            {
+                //4 is manager
+                Clients.All.receiveNotification(4);//
+            }
+
+            else if (receiverRole.Contains("Clerk"))
+            {
+                //1,2,3 are clerks
+                Clients.All.receiveNotification(1);//
+                Clients.All.receiveNotification(2);//
+                Clients.All.receiveNotification(3);//
+            }else if (receiverRole.Contains("Supervisor"))
+            {
+                //5 is manager
+                Clients.All.receiveNotification(5);//
+            }
+            else
+            {
+
+            }
+
+        }
+
+        public void SendNotificationById(int idReceiver)
+        {
+            Clients.All.receiveNotification(idReceiver);//
+        }
+
+
     }
 }

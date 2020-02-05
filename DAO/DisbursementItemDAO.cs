@@ -227,5 +227,116 @@ namespace Team8ADProjectSSIS.DAO
                                         .ToList();
             return DetailDisbursement;
         }
+
+        //James
+        internal void GiveAndTake(IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, int IdStoreClerk)
+        {
+            //Debugging and PoC
+            /*System.Diagnostics.Debug.WriteLine($"disbItemId Count: {disbItemId.Count}, transferQtyNum Count: {transferQtyNum.Count}");
+            foreach (int i in disbItemId)
+                System.Diagnostics.Debug.WriteLine("disbItemId: " + i);
+
+            foreach (int i in transferQtyNum)
+                System.Diagnostics.Debug.WriteLine("transferQtyNum: " + i);
+
+            for (int i = 0; i < disbItemId.Count; i++)
+            {
+                System.Diagnostics.Debug.WriteLine("disbItemId: " + disbItemId[i]);
+            }
+            foreach (int i in disbItemIdDeptFrom)
+                System.Diagnostics.Debug.WriteLine("disbItemIdDeptFrom: " + i);
+            System.Diagnostics.Debug.WriteLine($"disbItemId Count: {disbItemId.Count}, transferQtyNum Count: {transferQtyNum.Count}, disbItemIdDeptFrom Count: {disbItemIdDeptFrom.Count}");*/
+            DisbursementItem DItoReceive;
+            DisbursementItem DItoGive;
+            int DIid;
+            int DIidDeptFrom;
+
+            for (int i = 0; i < disbItemId.Count; i++)
+            {
+                //System.Diagnostics.Debug.WriteLine("disbItemId: " + disbItemId[i]);
+                if(disbItemIdDeptFrom[i] != 0)
+                {
+                    DIid = disbItemId[i];
+                    DIidDeptFrom = disbItemIdDeptFrom[i];
+                    // 1. get the DI objects for DItoReceive and DItoGive
+                    DItoReceive = context.DisbursementItems.SingleOrDefault(di => di.IdDisbursementItem == DIid);
+                    DItoGive = context.DisbursementItems.SingleOrDefault(di => di.IdDisbursementItem == DIidDeptFrom);
+
+                    // 2. DItoGive.UnitIssued -= transferQtyNum[i]
+                    DItoGive.UnitIssued -= transferQtyNum[i];
+
+                    // 2a. Create reversal entry for StockRecord for the ItemId
+                    StockRecord reverseSr = new StockRecord
+                    {
+                        Date = DateTime.Now,
+                        IdOperation = 1,
+                        IdDepartment = DItoGive.Disbursement.CodeDepartment,
+                        IdStoreClerk = IdStoreClerk,
+                        IdItem = DItoGive.IdItem,
+                        Unit = transferQtyNum[i] // positive for the reversal entry as we are taking back the units from that dept
+                    };
+                    context.StockRecords.Add(reverseSr);
+
+                    // 3. DItoReceive.UnitIssued += transferQtyNum[i]
+                    DItoReceive.UnitIssued += transferQtyNum[i];
+
+                    // 3a. Create new entry for StockRecord for the ItemId
+                    StockRecord newSr = new StockRecord
+                    {
+                        Date = DateTime.Now,
+                        IdOperation = 1,
+                        IdDepartment = DItoReceive.Disbursement.CodeDepartment,
+                        IdStoreClerk = IdStoreClerk,
+                        IdItem = DItoReceive.IdItem,
+                        Unit = transferQtyNum[i] * -1 // negative for the new entry as we are disbursing more units to that dept
+                    };
+                    context.StockRecords.Add(newSr);
+
+                    // wrap this in a transaction or db.SaveChanges()
+                    context.SaveChanges();
+                }
+            }
+
+        }
+        
+        //James
+        internal List<DisbursementItem> FindCorrespondingDisbursementItems(ICollection<DisbursementItem> disbursementItems, int IdStoreClerk)
+        {
+            List<DisbursementItem> di = new List<DisbursementItem>();
+            // Check IdStoreClerk selected collection point
+            List<int> CPClerk = new List<int>();
+            CPClerk = context.CPClerks
+                      .Where(x => x.IdStoreClerk == IdStoreClerk)
+                      .Select(x => x.IdCollectionPt).ToList();
+
+            // for every disbItem, this will send along the list of other departments' items which are only "Prepared"
+            // this would be for the dynamic dropdownlist used in selecting which dept to take items from
+            foreach (DisbursementItem i in disbursementItems)
+            {
+                di.AddRange(context.DisbursementItems
+                    .Where(x => x.Disbursement.IdStatus == 9 && 
+                    x.IdDisbursement != i.IdDisbursement && 
+                    x.IdItem == i.IdItem &&
+                    CPClerk.Contains((int)x.Disbursement.IdCollectionPt))
+                    .ToList());
+            }
+
+            return di;
+        }
+
+        //James
+        internal void UpdateUnitIssued(IList<int> disbItemId, IList<int> qtyDisbursed)
+        {
+            DisbursementItem disbItem;
+            int DIiD;
+            for (int i = 0; i < disbItemId.Count; i++)
+            {
+                DIiD = disbItemId[i];
+                disbItem = context.DisbursementItems.Single(di => di.IdDisbursementItem == DIiD); ;
+                disbItem.UnitIssued = qtyDisbursed[i];
+            }
+
+            context.SaveChanges();
+        }
     }
 }

@@ -237,5 +237,47 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return po;
         }
+
+        public List<PurchaseOrder> FindHandledPO()
+        {
+            List<PurchaseOrder> handledPO = context.PurchaseOrders
+                .Where(x => x.Status.Label.Equals("Approved")
+                    || x.Status.Label.Equals("Rejected")
+                    || x.Status.Label.Equals("Delivered")
+                )
+                .Include(x => x.Supplier)
+                .Include(x => x.PurchaseOrderDetails)
+                .Include(x => x.PurchaseOrderDetails.Select(p => p.Item))
+                .Include(x => x.StoreClerk)
+                .Include(x => x.Status)
+                .ToList();
+
+            return handledPO;
+        }
+
+        public void UpdatePOToApproved(List<PurchaseOrder> POs)
+        {
+            foreach (PurchaseOrder po in POs)
+            {
+                PurchaseOrder temp = context.PurchaseOrders
+                    .Where(x => x.IdPurchaseOrder == po.IdPurchaseOrder)
+                    .FirstOrDefault();
+                temp.IdStatus = 3;
+                temp.ApprovedDate = DateTime.Now;
+                context.SaveChanges();
+            }
+        }
+
+        public void UpdatePOToRejected(List<PurchaseOrder> POs)
+        {
+            foreach (PurchaseOrder po in POs)
+            {
+                PurchaseOrder temp = context.PurchaseOrders
+                    .Where(x => x.IdPurchaseOrder == po.IdPurchaseOrder)
+                    .FirstOrDefault();
+                temp.IdStatus = 4;
+                context.SaveChanges();
+            }
+        }
     }
 }
