@@ -4,6 +4,8 @@
     string searchStr = (string)ViewBag.searchStr;
     var found = false;
 
+     var Emp = ViewData["Emp"] as Employee;
+
 }
 
 
@@ -45,48 +47,55 @@
                 </ul>
             </div>
         </div>
-      </nav>
+    </nav>
 
-        @Html.Partial("Catalog")
+    <div>
+        <h3> Hi, @Emp.Title @Emp.Name From @Emp.Department.Name !</h3>
+        <p style="font-size: 1.5rem;">Please Raise the Stationary Requisiton Here. </p>
+    </div>
+    <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+    <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+    @Html.Partial("Catalog")
 
-        <section class="container content-section">
-            <h2 class="section-header">Request Cart</h2>
+
+    <section class="container content-section">
+        <h2 class="section-header">Request Cart</h2>
+        <div class="cart-row">
+            <span class="cart-item cart-header cart-column">Description</span>
+            <span class="cart-price cart-header cart-column">Unit</span>
+            <span class="cart-quantity cart-header cart-column">Quantity</span>
+        </div>
+        <div class="cart-items">
             <div class="cart-row">
-                <span class="cart-item cart-header cart-column">Description</span>
-                <span class="cart-price cart-header cart-column">Unit</span>
-                <span class="cart-quantity cart-header cart-column">Quantity</span>
-            </div>
-            <div class="cart-items">
-                <div class="cart-row">
-                    <div class="cart-item cart-column">
-
-                    </div>
-
+                <div class="cart-item cart-column">
 
                 </div>
 
+
             </div>
 
-        </section>
+        </div>
+
+    </section>
 
 
-        @*<button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>*@
+    @*<button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>*@
 
-        @if (list.Count == 0 || list == null)
-        {
-            <button class="btn-primary btn-purchase" type="submit" disabled="disabled">Create Request</button>
-        }
-        else
-        {
-            <button class="btn-primary btn-purchase" type="submit">Create Request</button>
-        }
-
-
+    @if (list.Count == 0 || list == null)
+    {
+        <button class="btn-primary btn-purchase" type="submit" disabled="disabled">Create Request</button>
+    }
+    else
+    {
+        <button class="btn-primary btn-purchase" type="submit">Create Request</button>
+    }
 
 
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 </html>
 
