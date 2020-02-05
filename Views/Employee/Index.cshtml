@@ -4,12 +4,10 @@
     string searchStr = (string)ViewBag.searchStr;
     var found = false;
 
+    var Emp = ViewData["Emp"] as Employee;
+
 }
 
-
-
-<!DOCTYPE html>
-<html>
 
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -39,8 +37,16 @@
     </div>
 </div>
 
+<div style="margin-top:70px">
+    <h3> Hi, @Emp.Title @Emp.Name From @Emp.Department.Name !</h3>
+    <p>Please Raise the Stationary Requisiton Here. </p>
+</div>
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 @Html.Partial("Catalog")
 
+
+<!--This part is a bit ugly-->
 <section class="container content-section">
     <h2 class="section-header">Request Cart</h2>
     <div class="cart-row">
@@ -51,14 +57,9 @@
     <div class="cart-items">
         <div class="cart-row">
             <div class="cart-item cart-column">
-
             </div>
-
-
         </div>
-
     </div>
-
 </section>
 
 
@@ -72,6 +73,6 @@ else
 {
     <button class="btn-purchase" type="submit">Create Request</button>
 }
-</html>
+
 
 

@@ -14,13 +14,15 @@ namespace Team8ADProjectSSIS.Controllers
     [AuthorizeFilter]
     public class EmployeeController : Controller
     {
+
+        private readonly EmployeeDAO _employeeDAO;
+        public EmployeeController()
+        {
+            _employeeDAO = new EmployeeDAO();
+        }
         public static string connectionString = "Server=.;" +
               "Database=SSIS; Integrated Security=true;MultipleActiveResultSets=True ";
-        // GET: Employee
-
-
-
-
+        // GET: Employe
 
         public ActionResult Index(string cmd, int? id, string searchStr = " ")
         {
@@ -31,7 +33,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             ViewBag.items = ListProducts(searchStr);
             ViewBag.searchStr = searchStr;
-
+            ViewData["Emp"] = _employeeDAO.FindEmployeeById(idEmployee);
             return View();
         }
 
