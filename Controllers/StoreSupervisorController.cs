@@ -7,8 +7,6 @@ using System.Web.Mvc;
 using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
-using Team8ADProjectSSIS.DAO;
-using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Report;
 
 namespace Team8ADProjectSSIS.Controllers
