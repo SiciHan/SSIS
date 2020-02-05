@@ -110,7 +110,7 @@ namespace Team8ADProjectSSIS.DAO
         internal void UpdateUnits(Item i, int diff)
         {
             Item item = GetAllItems()
-                .Where(x => x.Equals(i))
+                .Where(x => x.IdItem == i.IdItem)
                 .FirstOrDefault();
 
             item.StockUnit -= diff;

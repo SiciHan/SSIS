@@ -122,6 +122,30 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        public ActionResult VoucherHistory()
+        {
+            List<StockRecord> vouchers = _stockRecordDAO.FindJudgedVoucher();
+            List<float> prices = new List<float>();
+            List<string> status = new List<string>();
+            foreach (StockRecord voucher in vouchers)
+            {
+                float price = _itemDAO.FindPriceById(voucher.IdItem);
+                prices.Add(price);
+                if(voucher.IdOperation == 7 || voucher.IdOperation == 9 || voucher.IdOperation == 12 || voucher.IdOperation == 14)
+                {
+                    status.Add("Approved");
+                }
+                else
+                {
+                    status.Add("Rejected");
+                }
+            }
+            ViewData["prices"] = prices;
+            ViewData["vouchers"] = vouchers;
+            ViewData["status"] = status;
+            return View();
+        }
+
         [HttpPost]
         public ActionResult JudgeAdjustment(string judge, List<StockRecord> vouchers)
         {

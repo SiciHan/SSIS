@@ -59,7 +59,68 @@ namespace Team8ADProjectSSIS.DAO
                 .Include("Supplier")
                 .Include("StoreClerk")
                 .Include("Item")
-                .Where(x => x.IdOperation == 3 || x.IdOperation == 4 || x.IdOperation == 5 || x.IdOperation == 6)
+                .Where(
+                    x => x.IdOperation == 3 || 
+                    x.IdOperation == 4 || 
+                    x.IdOperation == 5 || 
+                    x.IdOperation == 6 &&
+                    x.Supplier.SupplierItems.Where(y => y.IdItem == x.IdItem).Select(y => y.Price).FirstOrDefault() >= 250
+                )
+                .ToList();
+
+            return vouchers;
+        }
+
+        public List<StockRecord> FindJudgedVoucher()
+        {
+            List<StockRecord> vouchers = context.StockRecords
+                .Include("Operation")
+                .Include("Department")
+                .Include("Supplier")
+                .Include("StoreClerk")
+                .Include("Item")
+                .Where(
+                    x => x.IdOperation >= 7 &&
+                    x.IdOperation <= 14 && 
+                    x.Supplier.SupplierItems.Where(y => y.IdItem == x.IdItem).Select(y => y.Price).FirstOrDefault() >= 250
+                )
+                .ToList();
+
+            return vouchers;
+        }
+
+        public List<StockRecord> FindVoucherForSupervisor()
+        {
+            List<StockRecord> vouchers = context.StockRecords
+                .Include("Operation")
+                .Include("Department")
+                .Include("Supplier")
+                .Include("StoreClerk")
+                .Include("Item")
+                .Where(
+                    x => x.IdOperation == 3 ||
+                    x.IdOperation == 4 ||
+                    x.IdOperation == 5 ||
+                    x.IdOperation == 6
+                )
+                .ToList();
+
+            return vouchers;
+        }
+
+        public List<StockRecord> FindJudgedVoucherForSupervisor()
+        {
+            List<StockRecord> vouchers = context.StockRecords
+                .Include("Operation")
+                .Include("Department")
+                .Include("Supplier")
+                .Include("StoreClerk")
+                .Include("Item")
+                .Where(
+                    x => x.IdOperation >= 7 &&
+                    x.IdOperation <= 14
+                    //x.Supplier.SupplierItems.Where(y => y.IdItem == x.IdItem).Select(y => y.Price).FirstOrDefault() >= 250
+                )
                 .ToList();
 
             return vouchers;
