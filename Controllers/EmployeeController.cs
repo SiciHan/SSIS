@@ -296,8 +296,8 @@ namespace Team8ADProjectSSIS.Controllers
 
         public List<RequisitionItem> ListReqItems(int ReqID)
         {
-            List<RequisitionItem> items= _requisitionItemDAO.RetrieveRequisitionItemByReqId(ReqID);
-            /*List<RequisitionItem> items = new List<RequisitionItem>();
+            //List<RequisitionItem> items= _requisitionItemDAO.RetrieveRequisitionItemByReqId(ReqID);
+            List<RequisitionItem> items = new List<RequisitionItem>();
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -324,14 +324,14 @@ namespace Team8ADProjectSSIS.Controllers
                     items.Add(req);
                 };
             }
-*/            return items;
+            return items;
         }
 
         public String GetIdStatus(int ReqID)
         {
 
-            return _requisitionDAO.GetStatusLabel(ReqID);
-            /*string status = "";
+            //return _requisitionDAO.GetStatusLabel(ReqID);
+            string status = "";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -351,21 +351,21 @@ namespace Team8ADProjectSSIS.Controllers
                     status = (string)readerr["Label"];
 
                 };
-            }*/
-            //return status;
+            }
+            return status;
         }
 
         public List<String> GetDescription(int ReqID)
         {
-            List<String> description = new List<String>();
+            /*List<String> description = new List<String>();
             List<RequisitionItem> reqItemList=_requisitionItemDAO.RetrieveRequisitionItemByReqId(ReqID);
             
             foreach(RequisitionItem ri in reqItemList)
             {
                 description.Add(ri.Item.Description);
-            }
-           
-            /*
+            }*/
+
+            List<String> description = new List<String>();
             string des = "";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -382,13 +382,13 @@ namespace Team8ADProjectSSIS.Controllers
                 SqlDataReader readerr = chh.ExecuteReader();
                 while (readerr.Read())
                 {
-                   
+
                     des = (string)readerr["Description"];
-                  
+
                     description.Add(des);
                 };
-              
-            }*/
+
+            }
             return description;
         }
 
@@ -459,7 +459,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             // int idEmployee = 2;
 
-            int req = reqID.GetValueOrDefault();
+            int req = reqID.GetValueOrDefault(0);
             string status = "";
             List<String> des = new List<String>();
             Requisition requi = new Requisition();

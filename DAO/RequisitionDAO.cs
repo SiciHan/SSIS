@@ -103,7 +103,8 @@ namespace Team8ADProjectSSIS.DAO
 
         internal void DeleteRequisition(int? selectedId)
         {
-            Requisition requisition = context.Requisitions.OfType<Requisition>().Where(x => x.IdRequisition == selectedId.GetValueOrDefault()).FirstOrDefault();
+            int id = selectedId.GetValueOrDefault(0);
+            Requisition requisition = context.Requisitions.OfType<Requisition>().Where(x => x.IdRequisition == id).FirstOrDefault();
             context.Requisitions.Remove(requisition);
             context.SaveChanges();
         }

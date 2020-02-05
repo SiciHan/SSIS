@@ -15,6 +15,15 @@ namespace Team8ADProjectSSIS.DAO
             this.context = new SSISContext();
         }
 
+        public StockRecord FindById(int voucherId)
+        {
+            StockRecord voucher = context.StockRecords
+                .Where(x => x.IdStockRecord == voucherId)
+                .FirstOrDefault();
+
+            return voucher;
+        }
+
         public void UpdateStockRecord(int IdStoreClerk, List<int> IdDisbursementItem)
         {
             foreach (int x in IdDisbursementItem)
