@@ -6,18 +6,23 @@ using System.Web.Mvc;
 using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
+using Team8ADProjectSSIS.Filters;
 
 namespace Team8ADProjectSSIS.Controllers
 {
+
+    [AuthorizeFilter]
+    [AuthenticateFilter]
     public class StoreManagerController : Controller
     {
-        ItemDAO _itemDAO;
-        SupplierItemDAO _supplieritemDAO;
-        PurchaseOrderDAO _purchaseOrderDAO;
-        PurchaseOrderDetailsDAO _purchaseOrderDetailsDAO;
-        DisbursementDAO _disbursementDAO;
-        DisbursementItemDAO _disbursementItemDAO;
-        StockRecordDAO _stockRecordDAO;
+        private readonly ItemDAO _itemDAO;
+        private readonly SupplierItemDAO _supplieritemDAO;
+        private readonly PurchaseOrderDAO _purchaseOrderDAO;
+        private readonly PurchaseOrderDetailsDAO _purchaseOrderDetailsDAO;
+        private readonly DisbursementDAO _disbursementDAO;
+        private readonly DisbursementItemDAO _disbursementItemDAO;
+        private readonly StockRecordDAO _stockRecordDAO;
+        private readonly NotificationChannelDAO _notificationChannelDAO;
 
         public StoreManagerController()
         {
@@ -28,6 +33,7 @@ namespace Team8ADProjectSSIS.Controllers
             _disbursementDAO = new DisbursementDAO();
             _disbursementItemDAO = new DisbursementItemDAO();
             _stockRecordDAO = new StockRecordDAO();
+            _notificationChannelDAO = new NotificationChannelDAO();
         }
 
         // GET: StoreManager
@@ -36,7 +42,17 @@ namespace Team8ADProjectSSIS.Controllers
             
             return View();
         }
+        public ActionResult Notification()
+        {
+            int IdReceiver = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdReceiver = (int)Session["IdEmployee"];
+            }
+            ViewData["NCs"] = _notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
 
+            return View();
+        }
         public ActionResult Dashboard()
         {
             return View();
@@ -103,6 +119,30 @@ namespace Team8ADProjectSSIS.Controllers
             }
             ViewData["prices"] = prices;
             ViewData["vouchers"] = vouchers;
+            return View();
+        }
+
+        public ActionResult VoucherHistory()
+        {
+            List<StockRecord> vouchers = _stockRecordDAO.FindJudgedVoucher();
+            List<float> prices = new List<float>();
+            List<string> status = new List<string>();
+            foreach (StockRecord voucher in vouchers)
+            {
+                float price = _itemDAO.FindPriceById(voucher.IdItem);
+                prices.Add(price);
+                if(voucher.IdOperation == 7 || voucher.IdOperation == 9 || voucher.IdOperation == 12 || voucher.IdOperation == 14)
+                {
+                    status.Add("Approved");
+                }
+                else
+                {
+                    status.Add("Rejected");
+                }
+            }
+            ViewData["prices"] = prices;
+            ViewData["vouchers"] = vouchers;
+            ViewData["status"] = status;
             return View();
         }
 

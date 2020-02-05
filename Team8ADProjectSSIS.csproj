@@ -435,7 +435,8 @@
     <Content Include="Content\bootstrap\badges.less" />
     <Content Include="Content\bootstrap\alerts.less" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
-    <Content Include="Scripts\item.js" />
+    <Content Include="Scripts\CollectPO.js" />
+    <Content Include="Scripts\FormRetrieve.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -450,13 +451,19 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\MakePO.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
-    <Content Include="Scripts\store.js" />
-    <Content Include="Scripts\updateReq.js" />
+    <Content Include="Scripts\Notification.js" />
+    <Content Include="Scripts\POCart.js" />
+    <Content Include="Scripts\POList.js" />
+    <Content Include="Scripts\SignalR.js" />
+    <Content Include="Scripts\StoreClerkIndex.js" />
+    <Content Include="Scripts\DepartmentRepresentativeNotification.js" />
+    <Content Include="Scripts\StoreManagerNotification.js" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.min.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.css" />
@@ -471,8 +478,8 @@
     <Content Include="Scripts\vendor\jquery\jquery.min.js" />
     <Content Include="Scripts\vendor\jquery\jquery.slim.js" />
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.js" />
+    <Content Include="Styles\css\number-input.css" />
     <Content Include="Styles\css\simple-sidebar.css" />
-    <Content Include="Styles\styles.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -503,10 +510,10 @@
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.map" />
     <Content Include="Views\StoreManager\Home.cshtml" />
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
-    <Content Include="Views\Shared\_SupervisorLayout.cshtml" />
-    <Content Include="Views\StoreSupervisor\Index.cshtml" />
     <Content Include="Views\StoreManager\ItemsForSuppliers.cshtml" />
     <Content Include="Views\StoreManager\Suppliers.cshtml" />
+    <Content Include="Views\StoreClerk\Disbursement.cshtml" />
+    <Content Include="Views\StoreClerk\Redistribute.cshtml" />
     <Content Include="Views\Home\LogIn.cshtml" />
     <Content Include="Views\StoreClerk\PurchaseOrderList.cshtml" />
     <Content Include="Views\DepartmentRepresentative\Home.cshtml" />
@@ -528,12 +535,23 @@
     <Content Include="Views\Employee\Update.cshtml" />
     <Content Include="Views\Employee\UpdatereqId.cshtml" />
     <Content Include="Views\StoreClerk\CollectPO.cshtml" />
+    <Content Include="Views\StoreClerk\Index.cshtml" />
     <Content Include="Views\DepartmentRepresentative\History.cshtml" />
     <Content Include="Views\DepartmentRepresentative\Details.cshtml" />
     <Content Include="Views\DepartmentRepresentative\CollectionPoints.cshtml" />
     <Content Include="Views\DepartmentRepresentative\LocationMap.cshtml" />
     <Content Include="Views\StoreManager\Voucher.cshtml" />
-    <Content Include="Views\Employee\CreatePopup.cshtml" />
+    <Content Include="Views\StoreClerk\DisbursementDetails.cshtml" />
+    <Content Include="Views\StoreClerk\Stocktake.cshtml" />
+    <Content Include="Views\StoreClerk\ViewStocktake.cshtml" />
+    <Content Include="Views\StoreManager\VoucherHistory.cshtml" />
+    <Content Include="Views\StoreSupervisor\Voucher.cshtml" />
+    <Content Include="Views\StoreSupervisor\VoucherHistory.cshtml" />
+    <Content Include="Views\StoreSupervisor\PurchaseOrder.cshtml" />
+    <Content Include="Views\StoreSupervisor\POHistory.cshtml" />
+    <Content Include="Views\StoreSupervisor\PurchaseOrderDetail.cshtml" />
+    <Content Include="Views\StoreManager\Notification.cshtml" />
+    <Content Include="Views\DepartmentRepresentative\Notification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

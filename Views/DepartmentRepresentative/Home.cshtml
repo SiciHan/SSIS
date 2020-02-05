@@ -3,14 +3,14 @@
 
 @{
     ViewBag.Title = "Home";
-    var disbursement = ViewBag.disbursement;
+    var disbursement = ViewBag.disbursement as Disbursement;
     var status = ViewBag.status;
-    var storeClerk = ViewBag.storeClerk;
+    var storeClerk = ViewBag.storeClerk as Employee;
     var collectionPt = ViewBag.collectionPt;
     var disbursementItems = ViewBag.disbursementItems;
     int iterator = 0;
+    var Rep = ViewData["Rep"] as Employee;
 }
-
 
 
 <div class="navbar navbar-default navbar-fixed-top">
@@ -32,13 +32,23 @@
                 <li>@Html.ActionLink("Collection Point", "CollectionPoints", "DepartmentRepresentative")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li style="padding-right:8px">
+                    <a href="@Url.Action("Notification","DepartmentRepresentative")" style="padding-right:0px">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </div>
 </div>
-<h2 class="text-center">Dibursement Detail</h2>
+
+<h3> Hi, @Rep.Title @Rep.Name From @Rep.Department.Name !</h3>
+<h2 class="text-center">Disbursement Detail</h2>
+
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 @if (disbursement.IdDisbursement == 0)
 {
     <div class="row" style="margin: 15%">
@@ -68,25 +78,25 @@ else
 
 
     <div class="row">
-            <div class="col-md-2 col-md-offset-2">
-                <p>Collection Point: </p>
-            </div>
-            <select class="col-md-2" style="width: 15%; height:25px" align="left" id="collectionPt">
-                <option value=@collectionPt.IdCollectionPt>@collectionPt.Location</option>
-                <option value=1>Management School</option>
-                <option value=2>Stationery Store</option>
-                <option value=3>Medical School</option>
-                <option value=4>Engineering School</option>
-                <option value=5>Science School</option>
-                <option value=6>University Hospital</option>
-            </select>
+        <div class="col-md-2 col-md-offset-2">
+            <p>Collection Point: </p>
+        </div>
+        <select class="col-md-2" style="width: 15%; height:25px" align="left" id="collectionPt">
+            <option value=@collectionPt.IdCollectionPt>@collectionPt.Location</option>
+            <option value=1>Management School</option>
+            <option value=2>Stationery Store</option>
+            <option value=3>Medical School</option>
+            <option value=4>Engineering School</option>
+            <option value=5>Science School</option>
+            <option value=6>University Hospital</option>
+        </select>
 
-            <div class="form-group" style="margin-top: 0%">
-                <div class="input-group col-sm-3 col-xs-offset-6">
-                    <input type="button" style="height:25px" value="Comfirm" onclick="onCollectionPointChange()" />&nbsp;&nbsp;&nbsp;
-                    <button style="height:25px" onclick="onViewMapClick()">View Map</button>
-                </div>
-            </div> 
+        <div class="form-group" style="margin-top: 0%">
+            <div class="input-group col-sm-3 col-xs-offset-6">
+                <input type="button" style="height:25px" value="Comfirm" onclick="onCollectionPointChange()" />&nbsp;&nbsp;&nbsp;
+                <button style="height:25px" onclick="onViewMapClick()">View Map</button>
+            </div>
+        </div>
     </div>
 
     <div class="row" style="margin-left:30px; margin-right:30px;margin-top:20px">
@@ -142,6 +152,26 @@ else
         var options = $("#collectionPt");
         var value = options.val();
         console.log("value", value);
+
+        
+            var department = @Rep.CodeDepartment;
+            var data = {
+                    "role": "Clerk",
+                    "message":"Hi Store Clerk, the Represenative of the Department "+department+" has changed the Collection Point."
+            };
+            $.ajax({
+                    type: 'POST',
+                    url: '/Home/CreateNotificationsToGroup',
+                    data: data,
+                    success: function (response) {
+                        console.log("success");
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+        $.connection.chatHub.server.sendNotificationByGroupByRole(@Rep.IdEmployee,"Clerk",data["message"]); 
+
         self.location.href = 'UpdateCollectionPoint?idDisbursement=' + @disbursement.IdDisbursement +'&idCollectionPt=' + value;
     }
 
@@ -161,6 +191,29 @@ else
 	    if (prompt)
         {
             value = @disbursement.IdDisbursement;
+            var department = @Rep.CodeDepartment;
+            if (@storeClerk!=null) {
+                //send a notification here
+                var idreceiver = @storeClerk.IdEmployee;
+                var receiver=@storeClerk.Name;
+            } 
+            var data = {
+                    "idReceiver": idreceiver,
+                    "message":"Hi Store Clerk "+ receiver +", the Represenative of the Department "+department+" has acknowledged disbursement: "+value+"."
+            };
+            $.ajax({
+                    type: 'POST',
+                    url: '/Home/CreateNotificationsToIndividual',
+                    data: data,
+                    success: function (response) {
+                        console.log("success");
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            $.connection.chatHub.server.sendNotificationById(idreceiver); 
+            
     		self.location.href = 'AcknowledgeCollection?idDisbursement=' + value;
 	    }
 	    else
@@ -174,3 +227,9 @@ else
         self.location.href = 'LocationMap?idCollectionPt=' + value;
     }
 </script>
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/DepartmentRepresentativeNotification.js"></script>
+}

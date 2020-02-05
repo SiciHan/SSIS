@@ -237,5 +237,21 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return po;
         }
+
+        public List<PurchaseOrder> FindHandledPO()
+        {
+            List<PurchaseOrder> handledPO = context.PurchaseOrders
+                .Where(x => x.Status.Label.Equals("Approved")
+                    || x.Status.Label.Equals("Rejected")
+                    || x.Status.Label.Equals("Delivered")
+                )
+                .Include(x => x.Supplier)
+                .Include(x => x.PurchaseOrderDetails)
+                .Include(x => x.PurchaseOrderDetails.Select(p => p.Item))
+                .Include(x => x.StoreClerk)
+                .ToList();
+
+            return handledPO;
+        }
     }
 }

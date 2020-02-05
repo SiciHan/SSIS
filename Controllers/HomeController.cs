@@ -15,12 +15,13 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly CategoryDAO _categoryDAO;
         private readonly EmployeeDAO _employeeDAO;
         private readonly RoleDAO _roleDAO;
-
+        private readonly NotificationChannelDAO _notificationChannelDAO;
         public HomeController()
         {
             _categoryDAO = new CategoryDAO();
             _employeeDAO = new EmployeeDAO();
             _roleDAO = new RoleDAO();
+            _notificationChannelDAO = new NotificationChannelDAO();
         }
 /*        public HomeController(CategoryDAO categoryDAO)
         {
@@ -78,12 +79,12 @@ namespace Team8ADProjectSSIS.Controllers
                         case "Head":
                             return RedirectToAction("Dashboard", "DepartmentHead");
                         case "Representative":
-                            return RedirectToAction("Dashboard", "DepartmentRepresentative");
-                        case "StoreClerk":
-                            return RedirectToAction("Dashboard", "StoreClerk");
-                        case "StoreManager":
-                            return RedirectToAction("Dashboard", "StoreManager");
-                        case "StoreSupervisor":
+                            return RedirectToAction("Home", "DepartmentRepresentative");
+                        case "StockClerk":
+                            return RedirectToAction("Index", "StoreClerk");
+                        case "StockManager":
+                            return RedirectToAction("Home", "StoreManager");
+                        case "StockSupervisor":
                             return RedirectToAction("Dashboard", "StoreSupervisor");
                         case "ActingHead":
                             return RedirectToAction("Dashboard", "DepartmentActingHead");
@@ -130,5 +131,73 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return View();
         }
+
+        public JsonResult GetNotifications()
+        {
+            int IdReceiver = (int) Session["IdEmployee"];
+            //int IdReceiver = 1;
+            return Json(_notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult CreateNotificationsToGroup(string role,string message)
+        {
+            int IdSender= (int)Session["IdEmployee"];
+            //int IdSender = 2;
+            _notificationChannelDAO.CreateNotificationsToGroup(role,IdSender,message);
+            string status = "OK";
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult CreateNotificationsToIndividual(int idReceiver, string message)
+        {
+            int IdSender = (int)Session["IdEmployee"];
+            //int IdSender = 2;
+            _notificationChannelDAO.CreateNotificationsToIndividual(idReceiver, IdSender, message);
+            string status = "OK";
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult MarkNotificationChannelAsRead(int IdNC)
+        {
+            string status = null;
+            NotificationChannel nc= _notificationChannelDAO.MarkAsReadById(IdNC);
+            if (nc == null)
+            {
+                status = "Bad";
+
+            }
+            else
+            {
+                status = "OK";
+            }
+
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult MarkNotificationChannelAsUnread(int IdNC)
+        {
+
+            string status = null;
+            NotificationChannel nc=_notificationChannelDAO.MarkAsUnreadById(IdNC);
+            if (nc == null)
+            {
+                status = "Bad";
+
+            }
+            else
+            {
+                status = "OK";
+            }
+            
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetUnreadNotificationCount(int IdReceiver)
+        {
+            
+            int count = _notificationChannelDAO.GetUnreadNotificationCount(IdReceiver);
+            return Json(count, JsonRequestBehavior.AllowGet);
+        }
+        
     }
 }
