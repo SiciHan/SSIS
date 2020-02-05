@@ -1,7 +1,542 @@
-﻿
+﻿@using Team8ADProjectSSIS.Models
 @{
-    ViewBag.Title = "Create";
+    var list = ViewBag.items;
+    string searchStr = (string)ViewBag.searchStr;
+    var found = false;
+
 }
 
-<h2>Create</h2>
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="~/Styles/styles.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+
+    <script>
+        var previous = null;
+        var current = null;
+        function populateTable() {
+
+            $.get("UpdatereqId",
+                //      $.getJSON("UpdatereqId",
+                function (json) {
+                    current = JSON.stringify(json);
+                    console.log(current);
+                    //Append each row to html table
+                    for (var i = 0; i < json.length; i++) {
+
+                        current = $('<tr/>');
+                        current.append("<td>" + json[i].IdReqItem + "</td>");
+                        current.append("<td>" + json[i].IdRequisition + "</td>");
+                        current.append("<td>" + json[i].IdItem + "</td>");
+                        current.append("<td>" + json[i].Unit + "</td>");
+                        $('table').append(current);
+                    }
+
+                });
+        }
+
+
+        function getJson() {
+
+
+
+            //var results = document.getElementById("results");
+            //var hr = new XMLHttpRequest();
+            //hr.open("GET", "/Employee/UpdatereqId", true);
+            //hr.setRequestHeader("Content-type", "application/json", true);
+            //hr.onreadystatechange = function () {
+            //    if (hr.readyState == 4 && hr.status == 200) {
+            //        var data = JSON.parse(hr.responseText);
+            //        results.innerHTML = "";
+            //        for (var obj in data) {
+            //            results.innerHTML += data[obj].IdReqItem;
+            //        }
+            //    }
+            //}
+
+            //hr.send(null);
+            //results.innerHTML = "requesting...";
+
+
+        }
+
+
+        function sendJson(selectedId) {
+            //   $("select.req").change(function () {
+            //  var selectedId = $(this).children("option:selected").val();
+            var current = $('<tbody class="tItems">')
+            var g = {};
+            g.url = '/Employee/UpdatereqId';
+            g.type = "POST";
+            g.dataType = "json";
+            g.data = JSON.stringify({ reqID: selectedId });
+            g.contentType = "application/json";
+            g.success = function (response) {
+                console.log(response);
+                console.log(response.status);
+                console.log(response.descrip);
+
+
+                if (response.status != "Approved" && response.status != "Cancelled") {
+
+                    for (var i = 0; i < response.Items.length; i++) {
+
+
+                        current = $('<tr/>');
+                        current.append("<td>" + '<span class="req-item-id">' + response.Items[i].IdReqItem + "</td>");
+                        current.append("<td>" + response.Items[i].IdItem + "</td>");
+                        current.append("<td>" + '<span class="cart-item-title" value=' + i + '>' + response.descrip[i] + '</span>' + "</td>");
+                        current.append("<td>" + '<input class="cart-quantity-input" type="number" value=' + response.Items[i].Unit + '><button class="btn btn-danger" type="button" value=' + i + ' onclick="removeCartItem(' + i + ')">REMOVE</button>' + "</td>");
+
+                        $('table').append(current);
+
+
+
+
+                        //  console.log(response[i].IdReqItem );
+                    }
+
+                    document.getElementById("delete").style.visibility = 'visible';
+                    document.getElementById("submit").style.visibility = 'visible';
+                    document.getElementById("add").style.visibility = 'visible';
+
+
+                    //     var btn = document.createElement("BUTTON");
+                    //     btn.innerHTML = "Add Item"
+                    //     document.body.appendChild(btn);
+                }
+
+                else {
+                    for (var i = 0; i < response.Items.length; i++) {
+
+
+                        current = $('<tr/>');
+                        current.append("<td>" + response.Items[i].IdReqItem + "</td>");
+                        current.append("<td>" + response.Items[i].IdItem + "</td>");
+                        current.append("<td>" + response.descrip[i] + "</td>");
+                        current.append("<td>" + response.Items[i].Unit + "</td>");
+                        $('table').append(current);
+
+
+                        //  console.log(response[i].IdReqItem );
+                    }
+
+                    document.getElementById("delete").style.visibility = 'hidden';
+                    document.getElementById("submit").style.visibility = 'hidden';
+                    document.getElementById("add").style.visibility = 'hidden';
+
+
+                }
+
+                document.getElementsByClassName('remark')[0].innerText = response.Req.HeadRemark;
+                document.getElementsByClassName('status')[0].innerText = response.status;
+                console.log("Req Id write success");
+            };
+            g.error = function (response) {
+                console.log("Req Id write failed");
+            };
+            $.ajax(g);
+            console.log(g);
+        }
+
+
+
+
+        function clearTableData() {
+            $("select.req").change(function () {
+                console.log("It change!")
+                $('#table tbody').empty();
+                var selectedId = $(this).children("option:selected").val();
+                console.log(selectedId);
+
+
+            });
+        }
+        function newPopup(url) {
+            popupWindow = window.open(
+                url, 'popUpWindow',
+                'height=600,width=800,left=50,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes')
+        }
+
+
+        function UpdateReqitems(selectedId) {
+
+            var cartItems = document.getElementsByClassName('tItems')[0]
+            var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
+            var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
+            var cartRedIds = cartItems.getElementsByClassName('req-item-id');
+
+            if (cartItemNames.length > 0) {
+                //var f = {};
+                //f.url = '/Employee/updateReq';
+                //f.type = "POST";
+                //f.dataType = "json";
+                //f.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId });
+                //console.log(selectedId);
+                //f.contentType = "application/json";
+                //f.success = function (response) {
+                for (var i = 0; i < cartItemNames.length; i++) {
+                    console.log(cartRedIds[i].innerText);
+                    if (cartRedIds[i].innerText == "-") {
+
+                        var gg = {};
+                        gg.url = '/Employee/insertReq';
+                        gg.type = "POST";
+                        gg.dataType = "json";
+                        gg.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId, itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
+
+                        gg.contentType = "application/json";
+                        gg.success = function (response) {
+                            alert("Update New Req Items write success");
+                        };
+                        gg.error = function (response) {
+                            alert("Update New Req Items write failed");
+                        };
+                        $.ajax(gg);
+
+                    }
+
+
+
+                }
+
+
+                for (var i = 0; i < cartItemNames.length; i++) {
+
+
+                    var g = {};
+                    g.url = '/Employee/updateReq';
+                    g.type = "POST";
+                    g.dataType = "json";
+                    g.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId, itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
+                    console.log(cartItemNames[i].innerText);
+                    console.log(quantityInputs[i].value);
+                    g.contentType = "application/json";
+                    g.success = function (response) {
+                        alert("Update Old Req Items write success");
+                    };
+                    g.error = function (response) {
+                        alert("Update Old Req Items write failed");
+                    };
+                    $.ajax(g);
+                }
+            }
+            else {
+                alert("There is no stationery requests left in the form.\n Do you want to delete the reqest?");
+            }
+
+            //    alert("Red Id Write success");
+
+            //    // while (cartItems.hasChildNodes()) {
+            //    //   cartItems.removeChild(cartItems.firstChild)
+            //    //}
+
+            //};
+            //f.error = function (response) {
+            //    alert("Red Id Write failed");
+            //};
+            //$.ajax(f);
+
+
+        }
+
+        function DeleteReqitems(selectedId) {
+
+            var cartItems = document.getElementsByClassName('tItems')[0]
+            var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
+            var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
+
+            //var f = {};
+            //f.url = '/Employee/updateReq';
+            //f.type = "POST";
+            //f.dataType = "json";
+            //f.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId });
+            //console.log(selectedId);
+            //f.contentType = "application/json";
+            //f.success = function (response) {
+
+            var g = {};
+            g.url = '/Employee/deleteReq';
+            g.type = "POST";
+            g.dataType = "json";
+            g.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId });
+
+            g.contentType = "application/json";
+            g.success = function (response) {
+                alert("Req Items delete success");
+            };
+            g.error = function (response) {
+                alert("Req Items delete failed");
+            };
+            $.ajax(g);
+
+
+            //    alert("Red Id Write success");
+
+            //    // while (cartItems.hasChildNodes()) {
+            //    //   cartItems.removeChild(cartItems.firstChild)
+            //    //}
+
+            //};
+            //f.error = function (response) {
+            //    alert("Red Id Write failed");
+            //};
+            //$.ajax(f);
+
+
+        }
+
+        
+    function removeCart() {
+        var buttonClicked = document.getElementsByClassName('btn-remove')[0];
+        buttonClicked.parentElement.parentElement.remove()
+        // updateCartTotal()
+    }
+
+        function removeCartItem(selectedButton) {
+
+
+            var buttonClicked = document.getElementsByClassName('btn-danger')[selectedButton];
+            var value = document.getElementsByClassName('btn-danger')[selectedButton].value;
+            var redId = document.getElementsByClassName('req-item-id')[selectedButton].innerHTML;
+            var itemName = document.getElementsByClassName('cart-item-title')[selectedButton].innerHTML;
+            console.log(itemName);
+            var e = document.getElementById("mySelect");
+            var strSelected = e.options[e.selectedIndex].value;
+            console.log(strSelected);
+
+            document.getElementsByClassName('req-item-id')[selectedButton].innerText = "to delete";
+            console.log(document.getElementsByClassName('req-item-id')[selectedButton].innerText);
+            buttonClicked.parentElement.parentElement.remove();
+            console.log(value);
+
+            var gg = {};
+            gg.url = '/Employee/deleteReqItem';
+            gg.type = "POST";
+            gg.dataType = "json";
+            gg.data = JSON.stringify({ username: "Sam Worthington", selectedId: strSelected, itemName: itemName });
+
+            gg.contentType = "application/json";
+            gg.success = function (response) {
+                alert("Delete Req Items write success");
+            };
+            gg.error = function (response) {
+                alert("Delete Req Items write failed");
+            };
+            $.ajax(gg);
+
+
+
+
+        }
+
+
+
+        function removeCart() {
+            var buttonClicked = document.getElementsByClassName('btn-remove')[0];
+            buttonClicked.parentElement.parentElement.remove()
+            // updateCartTotal()
+        }
+
+
+
+        $(document).ready(function () {
+            $("select.req").change(function () {
+                var selectedId = $(this).children("option:selected").val();
+                console.log(selectedId);
+                sendJson(selectedId);
+                clearTableData();
+                //   populateTable();
+
+                //  getJsonData();
+
+                var e = document.getElementById("mySelect");
+                var strSelected = e.options[e.selectedIndex].value;
+                console.log(strSelected);
+            });
+            document.getElementsByClassName('btn-remove')[0].addEventListener('click', removeCart);
+
+
+
+
+
+            document.getElementsByClassName('add-item-button')[0].addEventListener('click', function () {
+
+                //   window.location.href = "https://localhost:44304/Employee/Update?cmd=update&reqID=" + selectedId;
+
+            });
+
+         document.getElementsByClassName('btn-purchase')[0].addEventListener('click', function () {
+
+                //      createReq();
+                createReqitems();
+                /*var cartItems = document.getElementsByClassName('cart-items')[0]
+                 var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
+                 var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
+
+
+
+                 for (var i = 0; i < cartItemNames.length; i++) {
+                     var f = {};
+                     f.url = '/Employee/OnJSON';
+                     f.type = "POST";
+                     f.dataType = "json";
+                     f.data = JSON.stringify({ itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
+                     f.contentType = "application/json";
+                     f.success = function (response) {
+                         alert("success");
+                     };
+                     f.error = function (response) {
+                         alert("failed");
+                     };
+                     $.ajax(f);
+                 }  */
+
+            });
+      
+        function createReqitems() {
+
+            var cartItems = document.getElementsByClassName('cart-items')[0]
+            var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
+            var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
+
+            var f = {};
+            f.url = '/Employee/reqId/';
+            f.type = "POST";
+            f.dataType = "json";
+            f.data = JSON.stringify({ username: "Sam Worthington" });
+            f.contentType = "application/json";
+            f.success = function (response) {
+
+
+
+                for (var i = 0; i < cartItemNames.length; i++) {
+                    var g = {};
+                    g.url = '/Employee/OnJSON';
+                    g.type = "POST";
+                    g.dataType = "json";
+                    g.data = JSON.stringify({ itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
+                    g.contentType = "application/json";
+                    g.success = function (response) {
+                        // alert("Req Items write success");
+                    };
+                    g.error = function (response) {
+                        // alert("Req Items write failed");
+                    };
+                    $.ajax(g);
+                }
+
+                alert("Requisition has been sucessfully created!");
+
+                while (cartItems.hasChildNodes()) {
+                    cartItems.removeChild(cartItems.firstChild)
+                }
+
+            };
+            f.error = function (response) {
+                alert("Requisition creation failed.Please try again!");
+            };
+            $.ajax(f);
+
+
+        }
+
+
+        });
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
+        <div class="container">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Dashboard", "Index", "Employee")</li>
+                    <li>@Html.ActionLink("Create", "Index", "Employee")</li>
+                    <li>@Html.ActionLink("Update", "Update", "Employee")</li>
+                    <li>@Html.ActionLink("Check Status", "Update", "Employee")</li>
+                    <li>@Html.ActionLink("History", "Update", "Employee")</li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" id="noti-logout">
+                    <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                    <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <button class="btn btn-primary add-item-button" id="add" onclick="newPopup('https://localhost:44304/Employee/CreatePopup')" style="margin-top: 50px;">Add Item</button>
+
+    <section class="container content-section">
+        <h2 class="section-header">Request Cart</h2>
+        <div class="cart-row">
+            <span class="cart-item cart-header cart-column">Description</span>
+            <span class="cart-price cart-header cart-column">Unit</span>
+            <span class="cart-quantity cart-header cart-column">Quantity</span>
+        </div>
+        <div class="cart-items">
+            <div class="cart-row">
+                <div class="cart-item cart-column">
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <table style="display: none;">
+        <tr>
+            <td> <span class="req-item-id">-</td>
+            <td> </td>
+            <td> <span class="cart-item-title">title</span> </td>
+            <td>
+                <input class="cart-quantity-input" type="number" value="1"><button class="btn btn-remove" onclick="removeCart()" type="button">REMOVE</button>
+            </td>
+        </tr>
+
+    </table>
+
+    @*<button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>*@
+
+    @if (list.Count == 0 || list == null)
+    {
+        <button class="btn-primary btn-purchase" type="submit" disabled="disabled">Create Request</button>
+    }
+    else
+    {
+        <button class="btn-primary btn-purchase" type="submit">Create Request</button>
+    }
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
+
 

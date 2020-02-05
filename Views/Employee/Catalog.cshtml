@@ -3,71 +3,81 @@
     var list = ViewBag.items;
     string searchStr = (string)ViewBag.searchStr;
     var found = false;
-
-
+     
 
 }
 
-<script src="~/Scripts/item.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#searchBox").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#myTable tr").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="~/Scripts/item.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#searchBox").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
             });
         });
-    });
-</script>
-<link href="~/Styles/styles.css" rel="stylesheet" />
+    </script>
+    <link href="~/Styles/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-<!--<div style="margin-top:70px">-->
+</head>
 
-<div>
-    <b>Search:</b>
-    <input class="form-control" id="searchBox" value="@searchStr" />
-    <br />
-</div>
+<body class="stationery-catalog">
+    <div class="catalog">
+        <form class="form-inline my-2 my-lg-0" style="margin-left: 50%;">
+            <b>Search:</b>
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" input id="searchBox" value="@searchStr">
+        </form>
 
-<div class="ex1">
-    <table border="1" class="ex2 table">
-        <tr>
-            <th></th>
-            <th>Description</th>
-            <th>UnitOfmeasure</th>
-            <th>Stock</th>
-        </tr>
-
-        @foreach (Item ite in list)
-        {
-
-            string des = ite.Description;
-
-            int id = ite.IdCategory;
-
-            string unit = ite.unitOfMeasure;
-
-            int aU = ite.AvailableUnit;
-
-            <tbody id="myTable">
+        <div class="ex1">
+            <table border="1" class="table">
                 <tr>
-
-                    <td><input type="checkbox" id="chkbox" value="@Html.Raw(id)"/>@Html.Raw(@id)</td>
-                    <td><span class="shop-item-title" value="itemName">@Html.Raw(@des)</span></td>
-                    <td><span class="shop-item-price" value="quantity"> @Html.Raw(@unit) </span></td>
-                    <td>@Html.Raw(@aU)</td>
+                    <th></th>
+                    <th>Description</th>
+                    <th>Unit</th>
+                    <th>Stock</th>
                 </tr>
 
+                @foreach (Item ite in list)
+                {
 
-            </tbody>
-        }
+                    string des = ite.Description;
 
-    </table>
+                    int id = ite.IdCategory;
 
-</div>
+                    string unit = ite.unitOfMeasure;
 
-<div class="add-to-request" align="right" style="margin-right:70px">
-    <button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>
-</div>
+                    int aU = ite.AvailableUnit;
 
+                    <tbody id="myTable">
+                        <tr>
+
+                            <td><input type="checkbox" id="chkbox" value="@Html.Raw(id)"></td>
+                            <td><span class="shop-item-title" value="itemName">@Html.Raw(@des)</td>
+                            <td> <span class="shop-item-price" value="quantity">@Html.Raw(@unit)</td>
+                            <td>@Html.Raw(@aU)</td>
+                        </tr>
+
+
+                    </tbody>
+                }
+
+            </table>
+
+        </div>
+
+        <div class="add-to-request">
+            <button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -22,35 +22,7 @@ html, body {
     min-height: 100%;
 }
 
-.nav ul {
-    margin: 0;
-}
 
-.nav li {
-    display: inline;
-}
-
-.nav a {
-    display: inline-block;
-    padding: .5em;
-    color: white;
-    text-decoration: none;
-}
-
-.main-nav {
-    text-align: center;
-    font-size: 1.1em;
-    font-weight: lighter;
-    border-bottom: 1px solid rgba(255, 255, 255, .3)
-}
-
-    .main-nav li {
-        padding: 0 5%;
-    }
-
-.nav a:hover {
-    background-color: rgba(255, 255, 255, .3)
-}
 
 .main-header {
     background-color: rgba(0, 0, 0, .6);
@@ -74,14 +46,43 @@ html, body {
 }
 
 div.ex1 {
-    width: 752.97px;
-    height: 434px;
-    overflow: scroll;
+    overflow: hidden;
+    overflow-y: scroll;
+    width : 752px;
+    height: 334px;
+   
 }
 
+p.catalog {
+    border-style: ridge;
+}
+
+.stationery-catalog {
+    margin-top: 70px;
+    font-family: "Avenir-Heavy";
+
+}
+
+.catalog {
+    width: 210px;
+    height: 27px;
+    color: #222222;
+    font-family: "Avenir-Heavy";
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 27px;
+    display:inline;
+}
 .ex2 {
     width: 752.97px;
 }
+
+span.search-filter {
+    float: right;
+    margin-right: 300px;
+    display: inline;
+}
+
 
 
 .content-section {
@@ -92,15 +93,17 @@ div.ex1 {
     max-width: 900px;
     margin: 0 auto;
     padding: 0 1.5em;
+    margin-top: 30px;
 }
 
 .section-header {
     font-family: "Avenir-Book";
-    font-size: 14px;
+    font-size: 20px;
     color: #333;
     text-align: center;
-    
+    font-weight: bold;
 }
+
 
 .about-band-image {
     float: left;
@@ -126,20 +129,89 @@ div.ex1 {
         text-align: end;
     }
 
-.footer-nav li {
-    padding: 0 .5em;
+.logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 36px;
 }
 
-.footer-nav img {
-    width: 30px;
-    height: 30px;
+.content {
+    padding: 16px;
 }
+
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+.navbar-nav > li > a {
+    padding-top: 16px;
+    padding-bottom: 15px;
+}
+
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #e60c0c;
+    border-radius: 10px;
+}
+
+.navbar-nav > li > a {
+    padding-top: px;
+    padding-bottom: 15px;
+    font-size: 15px;
+    color: black;
+}
+
+#noti-logout {
+    margin-left: auto;
+}
+
+#nav {
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    left: 0;
+    top: 0;
+    
+}
+
+#title{
+    margin-top:80px;
+}
+
+.navbar-nav {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 25px;
+    list-style: none;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    color: #555;
+    background-color: #e7e7e7;
+    height: 54px;
+}
+
 
 .btn {
     text-align: center;
     vertical-align: middle;
     padding: .67em .67em;
     cursor: pointer;
+    font-size: 1rem;
 }
 
 .btn-header {
@@ -170,17 +242,8 @@ div.ex1 {
     text-align: center;
 }
 
-.btn-primary {
-    color: white;
-    background-color: #56CCF2;
-    border: none;
-    border-radius: .3em;
-    font-weight: bold;
-}
 
-    .btn-primary:hover {
-        background-color: #2D9CDB;
-    }
+
 
 .tour-row {
     border-bottom: 1px solid black;
@@ -228,6 +291,16 @@ div.ex1 {
     margin-bottom: 15px;
 }
 
+.shop-item-button {
+    background: linear-gradient(135deg, #3FABFF, #006BFF);
+    z-index: 5;
+    width: 102px;
+    height: 40px;
+    border-radius: 6px;
+    margin-left: 58%;
+    margin-top: 20px;
+}
+
 .shop-item-image {
     height: 250px;
 }
@@ -258,22 +331,26 @@ div.ex1 {
 .cart-column {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid black;
     margin-right: 1.5em;
     padding-bottom: 10px;
     margin-top: 10px;
+    width: 15%
+    
 }
 
 .cart-row {
     display: flex;
+    border-bottom: 1px solid black;
+    font-size: 17px;
 }
 
-.cart-item {
-    width: 45%;
+.cart-items {
+    font-family: "Avenir-Heavy";
+    color: #2d2d2d;
+    font-size: 17px;
 }
 
 .cart-price {
-    width: 20%;
     font-size: 1.2em;
     color: #333;
 }
@@ -286,6 +363,14 @@ div.ex1 {
     color: #333;
     margin-left: .5em;
     font-size: 1.2em;
+    width: 31%;
+}
+
+.cart-item {
+    color: #333;
+    margin-left: .5em;
+    font-size: 1.2em;
+    width: 27%;
 }
 
 .cart-item-image {
@@ -296,8 +381,7 @@ div.ex1 {
 
 .btn-danger {
     color: white;
-    background-color: #EB5757;
-    border: none;
+    background: linear-gradient(135deg, #3FABFF, #006BFF);
     border-radius: .3em;
     font-weight: bold;
 }
@@ -354,7 +438,17 @@ div.ex1 {
 }
 
 .btn-purchase {
-    display: block;
-    margin: 40px auto 80px auto;
-    font-size: 1.75em;
+    background: linear-gradient(135deg, #3FABFF, #006BFF);
+    z-index: 5;
+    width: 102px;
+    height: 40px;
+    border-radius: 6px;
+    margin-left: 40%;
+    margin-top: 20px;
+}
+
+
+.stationery-header
+{
+    margin-top : 70px;
 }

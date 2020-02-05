@@ -10,8 +10,8 @@ using Team8ADProjectSSIS.Filters;
 //@phyu
 namespace Team8ADProjectSSIS.Controllers
 {
-    [AuthenticateFilter]
-    [AuthorizeFilter]
+   // [AuthenticateFilter]
+  //  [AuthorizeFilter]
     public class EmployeeController : Controller
     {
 
@@ -55,6 +55,21 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
         public ActionResult PopUp(string cmd, int? id, string searchStr = " ")
+        {
+
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
+
+            int idEmployee = (int)Session["IdEmployee"];
+
+            ViewBag.items = ListProducts(searchStr);
+            ViewBag.searchStr = searchStr;
+
+            return View();
+        }
+
+
+        public ActionResult CreatePopup(string cmd, int? id, string searchStr = " ")
         {
 
             if (Session["IdEmployee"] == null)
@@ -558,25 +573,135 @@ namespace Team8ADProjectSSIS.Controllers
                         WithdrawlDate = (readerr["WithdrawlDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["WithdrawlDate"],
 
                     };
+
+                  
                     reqs.Add(req);
                 };
             }*/
 
+            
+
             return reqs;
         }
 
-        public ActionResult CheckStatus()
+        public ActionResult CheckStatus(string username, string cmd, int? reqID)
         {
+
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
+
+            int idEmployee = (int)Session["IdEmployee"];
+
+            //  int idEmployee = 2;
+
+
+            int req = reqID.GetValueOrDefault();
+            username = "Sam Worthington";
+
+            List<Requisition> reqs = ListReqID(idEmployee);
+            List<RequisitionItem> reqq = ListReqItems(req);
+
+            ViewBag.ReqItems = ListReqItems(req);
+            ViewData["reqq"] = reqq;
+            ViewData["reqs"] = reqs;
+
+            if (cmd == "delete")
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+
+                    string RequisitionItems = @"DELETE from RequisitionItems WHERE IdRequisiton =" + reqID + "";
+
+                    SqlCommand reqItems = new SqlCommand(RequisitionItems, conn);
+
+                    reqItems.ExecuteNonQuery();
+                }
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+
+                    string Requisitions = @"DELETE from Requisitions WHERE IdRequisition = " + reqID + "";
+
+                    SqlCommand reqId = new SqlCommand(Requisitions, conn);
+
+                    reqId.ExecuteNonQuery();
+                }
+            }
+            if (cmd == "update")
+            {
+
+
+            }
             return View();
         }
 
-        public ActionResult History()
+        public ActionResult History(string username, string cmd, int? reqID)
         {
+
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
+
+            int idEmployee = (int)Session["IdEmployee"];
+
+            //  int idEmployee = 2;
+
+
+            int req = reqID.GetValueOrDefault();
+            username = "Sam Worthington";
+
+            List<Requisition> reqs = ListReqID(idEmployee);
+            List<RequisitionItem> reqq = ListReqItems(req);
+
+            ViewBag.ReqItems = ListReqItems(req);
+            ViewData["reqq"] = reqq;
+            ViewData["reqs"] = reqs;
+
+            if (cmd == "delete")
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+
+                    string RequisitionItems = @"DELETE from RequisitionItems WHERE IdRequisiton =" + reqID + "";
+
+                    SqlCommand reqItems = new SqlCommand(RequisitionItems, conn);
+
+                    reqItems.ExecuteNonQuery();
+                }
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+
+                    string Requisitions = @"DELETE from Requisitions WHERE IdRequisition = " + reqID + "";
+
+                    SqlCommand reqId = new SqlCommand(Requisitions, conn);
+
+                    reqId.ExecuteNonQuery();
+                }
+            }
+            if (cmd == "update")
+            {
+
+
+            }
             return View();
         }
 
-        public ActionResult CheckOut()
+        public ActionResult Create(string cmd, int? id, string searchStr = " ")
         {
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
+
+            int idEmployee = (int)Session["IdEmployee"];
+
+            ViewBag.items = ListProducts(searchStr);
+            ViewBag.searchStr = searchStr;
+
             return View();
         }
     }
