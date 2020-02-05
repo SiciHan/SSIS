@@ -489,8 +489,6 @@
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.map" />
     <Content Include="Views\StoreManager\Home.cshtml" />
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
-    <Content Include="Views\Shared\_SupervisorLayout.cshtml" />
-    <Content Include="Views\StoreSupervisor\Index.cshtml" />
     <Content Include="Views\StoreManager\ItemsForSuppliers.cshtml" />
     <Content Include="Views\StoreManager\Suppliers.cshtml" />
     <Content Include="Views\Home\LogIn.cshtml" />
@@ -519,6 +517,12 @@
     <Content Include="Views\DepartmentRepresentative\CollectionPoints.cshtml" />
     <Content Include="Views\DepartmentRepresentative\LocationMap.cshtml" />
     <Content Include="Views\StoreManager\Voucher.cshtml" />
+    <Content Include="Views\StoreManager\VoucherHistory.cshtml" />
+    <Content Include="Views\StoreSupervisor\Voucher.cshtml" />
+    <Content Include="Views\StoreSupervisor\VoucherHistory.cshtml" />
+    <Content Include="Views\StoreSupervisor\PurchaseOrder.cshtml" />
+    <Content Include="Views\StoreSupervisor\POHistory.cshtml" />
+    <Content Include="Views\StoreSupervisor\PurchaseOrderDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
