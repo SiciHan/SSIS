@@ -47,7 +47,7 @@ namespace Team8ADProjectSSIS.DAO
         }
         public List<PurchaseOrderDetail> FindDetailPO(int IdPurchaseOrder)
         {
-            return context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>()
+            return context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().Include("Item")
                                                .Where(pod => pod.IdPurchaseOrder == IdPurchaseOrder)
                                                .ToList<PurchaseOrderDetail>();
         }

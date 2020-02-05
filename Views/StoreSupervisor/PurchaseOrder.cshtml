@@ -1,7 +1,98 @@
-﻿
+﻿@using Team8ADProjectSSIS.Models;
 @{
-    ViewBag.Title = "PurchaseOrder";
+    ViewBag.Title = "PurchaseOrder - Supervisor";
+    List<PurchaseOrder> pendingPOs = (List<PurchaseOrder>)ViewData["pengding"];
 }
 
-<h2>PurchaseOrder</h2>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
 
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Dashboard", "Dashboard", "StoreSupervisor")</li>
+                <li class="active">@Html.ActionLink("Purchase Order", "PurchaseOrder", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Purchase Order History", "POHistory", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Adjustment Voucher", "Voucher", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Adjustment Voucher History", "VoucherHistory", "StoreSupervisor")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h2>PurchaseOrder</h2>
+@using (Html.BeginForm("HandlePO", "StoreSupervisor", FormMethod.Post))
+{
+    <div class="container">
+        <table>
+            <tr>
+                <th>
+                    <input type="checkbox" name="select_all" onclick="SelectAll(this.checked)" />Select All
+                </th>
+                <th>Order Date</th>
+                <th>Ordered By</th>
+                <th>Supplier</th>
+                <th>Total Item</th>
+                <th>Details</th>
+            </tr>
+            @foreach (PurchaseOrder po in pendingPOs)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="purchase_ordersId" value="@po.IdPurchaseOrder" />
+                    </td>
+                    <td>@po.OrderDate</td>
+                    <td>@po.StoreClerk.Name</td>
+                    <td>@po.Supplier.Name</td>
+                    <td>@po.PurchaseOrderDetails.Count</td>
+                    <td>
+                        @Html.ActionLink("Detail", "PurchaseOrderDetail", "StoreSupervisor", new { idPurchaseOrder = po.IdPurchaseOrder }, null)
+                    </td>
+                </tr>
+            }
+        </table>
+        <input type="button" class="btn btn-primary" value="History" onclick="location.href='@Url.Action("POHistory", "StoreSupervisor")'" style="margin-top:24px" />
+
+        <input type="submit" class="btn btn-danger" name="handle" value="Reject" style="float:right; margin-top:24px" />
+        <input type="submit" class="btn btn-success" name="handle" value="Approve" style="float:right; margin-right:24px; margin-top:24px" />
+    </div>
+}
+
+<script type="text/javascript">
+    function SelectAll(isChecked) {
+        var po = document.getElementsByName("purchase_ordersId");
+        //var selectall = document.getElementsByName("select_all");
+        for (var i = 0; i < po.length; i++) {
+            po[i].checked = isChecked;
+        }
+    }
+</script>
+
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
