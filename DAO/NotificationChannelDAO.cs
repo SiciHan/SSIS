@@ -23,10 +23,10 @@ namespace Team8ADProjectSSIS.DAO
         public List<NotificationChannel> FindAllNotificationsByIdReceiver(int idReceiver)
         {
             List<NotificationChannel> nclist=context.NotificationChannels.OfType<NotificationChannel>().Where(x=>x.IdTo==idReceiver).Include(x => x.Notification).Include(x=>x.From).ToList();
-            foreach(NotificationChannel nc in nclist)
+/*            foreach(NotificationChannel nc in nclist)
             {
                 nc.IsRead = true;
-            }
+            }*/
             context.SaveChanges();
             return nclist;
         }
@@ -39,7 +39,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
 
             //find list of recievers by role
-            List<Employee> receivers = context.Employees.OfType<Employee>().Where(x => x.Role.Label.Equals(role)).ToList();
+            List<Employee> receivers = context.Employees.OfType<Employee>().Where(x => x.Role.Label.Contains(role)|| x.Role.Label.Equals(role)).ToList();
 
             foreach(Employee e in receivers)
             {
@@ -89,6 +89,29 @@ namespace Team8ADProjectSSIS.DAO
             };
 
             context.NotificationChannels.Add(NC);
+            context.SaveChanges();
+        }
+
+        internal int GetUnreadNotificationCount(int idReceiver)
+        {
+            List<NotificationChannel> ncs = context.NotificationChannels.OfType<NotificationChannel>().Where(x => x.IdTo == idReceiver && x.IsRead == false).ToList();
+            return ncs.Count;
+        }
+
+        internal void CreateNotificationsToIndividual(int idReceiver, int idSender, string message)
+        {
+            Notification noti = new Notification();
+            noti.Text = message;
+            context.Notifications.Add(noti);
+            context.SaveChanges();
+
+            NotificationChannel nc = new NotificationChannel();
+            nc.IdNotification = noti.IdNotification;
+            nc.IdFrom = idSender;
+            nc.IdTo = idReceiver;
+            nc.Date = DateTime.Now;
+            nc.IsRead = false;
+            context.NotificationChannels.Add(nc);
             context.SaveChanges();
         }
     }

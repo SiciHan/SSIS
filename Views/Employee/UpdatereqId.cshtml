@@ -127,9 +127,10 @@
 
 
             }
-
+            
             document.getElementsByClassName('remark')[0].innerText = response.Req.HeadRemark;
             document.getElementsByClassName('status')[0].innerText = response.status;
+          //  document.getElementsByClassName('dateCreated')[0].innerText = formatDate(response.Req.RaiseDate);
             console.log("Req Id write success");
         };
         g.error = function (response) {
@@ -139,7 +140,7 @@
         console.log(g);
     }
 
-
+    
 
 
     function clearTableData() {
@@ -187,10 +188,10 @@
 
                     gg.contentType = "application/json";
                     gg.success = function (response) {
-                        alert("Update New Req Items write success");
+                        console.log("Update New Req Items write success");
                     };
                     gg.error = function (response) {
-                        alert("Update New Req Items write failed");
+                        console.log("Update New Req Items write failed");
                     };
                     $.ajax(gg);
 
@@ -213,10 +214,10 @@
                 console.log(quantityInputs[i].value);
                 g.contentType = "application/json";
                 g.success = function (response) {
-                    alert("Update Old Req Items write success");
+                    console.log("Requisition form updated!");
                 };
                 g.error = function (response) {
-                    alert("Update Old Req Items write failed");
+                    console.log("Update Fail.Pls try again");
                 };
                 $.ajax(g);
             }
@@ -236,7 +237,7 @@
         //    alert("Red Id Write failed");
         //};
         //$.ajax(f);
-
+         alert("Requisition form updated!");
 
     }
 
@@ -389,8 +390,7 @@
 
 
 
-<div class="container" style="margin-top:70px">
-    <h2>Update Requisition Form</h2>
+<div class="container" style="margin-top:20px;font-size: 1.5rem" >
     <form>
         <div class="select-status"
         <div class="form-group">
@@ -416,15 +416,9 @@
                 <span class="remark">Remark</span>
             </div>
 
-            <div>
-                <label>Item Name:</label>
-                <span class="itemName">Test</span>
-            </div>
+   
 
-            <div>
-                <label>Item Price:</label>
-                <span class="itemPrice">Test</span>
-            </div>
+         
 
         </div>
         </div>
@@ -473,7 +467,7 @@
     </tbody>
 </table>
 
-<button class="btn btn-primary delete-req-button" id="delete">Delete</button>
+
 
 <table style="display: none;">
     <tr>
@@ -486,14 +480,16 @@
     </tr>
 
 </table>
+<div class="del-up-add">
+    <button class="btn btn-primary delete-req-button" id="delete">Delete</button>
 
-<button class="btn btn-primary update-item-button" id="submit">Update</button>
+    <button class="btn btn-primary update-item-button" id="submit">Update</button>
 
-@*<button href="JavaScript:newPopup('https://localhost:44304/Employee/Catalog');" class="btn btn-primary add-item-button" id="add">Add Item</button>*@
+    @*<button href="JavaScript:newPopup('https://localhost:44304/Employee/Catalog');" class="btn btn-primary add-item-button" id="add">Add Item</button>*@
 
 
-<button class="btn btn-primary add-item-button" id="add" onclick="newPopup('https://localhost:44304/Employee/PopUp')">Add Item</button>
-
+    <button class="btn btn-primary add-item-button" id="add" onclick="newPopup('https://localhost:44304/Employee/PopUp')">Add Item</button>
+</div>
 @*<p><a href="JavaScript:newPopup('https://localhost:44304/Employee/PopUp');" >Add Item</a></p>*@
 
 

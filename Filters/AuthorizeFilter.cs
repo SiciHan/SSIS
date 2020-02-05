@@ -70,15 +70,17 @@ namespace Team8ADProjectSSIS.Filters
                     }
                 }
             }
-            
+
             if (!isAuthOk)
+            {
+                HttpContext.Current.Session.Clear();
                 filterContext.Result = new RedirectToRouteResult(
-                    new RouteValueDictionary
-                    {
+                        new RouteValueDictionary
+                        {
                         {"controller","Home" },
                         {"action","Login" }
-                    });
-
+                        });
+            }
         }
     }
 }

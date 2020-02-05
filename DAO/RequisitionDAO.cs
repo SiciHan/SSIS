@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
@@ -14,6 +15,19 @@ namespace Team8ADProjectSSIS.DAO
         public RequisitionDAO()
         {
             this.context = new SSISContext();
+        }
+
+        public void CreateRequisition(int IdEmployee)
+        {
+            Requisition requisition = new Requisition();
+            requisition.IdEmployee = IdEmployee;
+            requisition.StatusCurrent = context.Status.OfType<Status>().Where(x => x.Label.Equals("Incomplete")).FirstOrDefault();
+            requisition.RaiseDate = DateTime.Now;
+            requisition.ApprovedDate = DateTime.Parse("01/01/1900");
+            requisition.WithdrawlDate = DateTime.Parse("01/01/1900");
+            context.Requisitions.Add(requisition);
+            context.SaveChanges();
+
         }
 
         public List<Retrieval> RetrieveRequisition(List<string> DClerk, DateTime StartDate, DateTime EndDate)
@@ -84,6 +98,31 @@ namespace Team8ADProjectSSIS.DAO
             }
 
             return RetrievalItem;
+
+        }
+
+        internal void DeleteRequisition(int? selectedId)
+        {
+            int id = selectedId.GetValueOrDefault(0);
+            Requisition requisition = context.Requisitions.OfType<Requisition>().Where(x => x.IdRequisition == id).FirstOrDefault();
+            context.Requisitions.Remove(requisition);
+            context.SaveChanges();
+        }
+
+        internal string GetStatusLabel(int reqID)
+        {
+            Requisition requisition=context.Requisitions.OfType<Requisition>().Where(x => x.IdRequisition == reqID).Include(x=>x.StatusCurrent).FirstOrDefault();
+            return requisition.StatusCurrent.Label;
+        }
+
+        internal List<Requisition> RetrieveRequisitionByEmpId(int idEmployee)
+        {
+            return context.Requisitions.OfType<Requisition>().Where(x => x.IdEmployee == idEmployee).ToList();
+        }
+
+        internal Requisition RetrieveRequisitionByReqId(int ReqId)
+        {
+            return context.Requisitions.OfType<Requisition>().Where(x => x.IdRequisition == ReqId).FirstOrDefault();
 
         }
     }

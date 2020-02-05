@@ -4,6 +4,8 @@
     string searchStr = (string)ViewBag.searchStr;
     var found = false;
 
+     var Emp = ViewData["Emp"] as Employee;
+
 }
 
 
@@ -11,67 +13,90 @@
 <!DOCTYPE html>
 <html>
 
-<div class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
+<head>
 
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="~/Styles/styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
+        <div class="container">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Dashboard", "Index", "Employee")</li>
+                    <li>@Html.ActionLink("Create", "Create", "Employee")</li>
+                    <li>@Html.ActionLink("Update", "Update", "Employee")</li>
+                    <li>@Html.ActionLink("Check Status", "CheckStatus", "Employee")</li>
+                    <li>@Html.ActionLink("History", "History", "Employee")</li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" id="noti-logout">
+                    <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                    <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+            </div>
         </div>
+    </nav>
 
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li>@Html.ActionLink("Dashboard", "Index", "Employee")</li>
-                <li>@Html.ActionLink("Create", "Index", "Employee")</li>
-                <li>@Html.ActionLink("Update", "Update", "Employee")</li>
-                <li>@Html.ActionLink("Check Status", "Update", "Employee")</li>
-                <li>@Html.ActionLink("History", "Update", "Employee")</li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
-                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            </ul>
-        </div>
+    <div>
+        <h3> Hi, @Emp.Title @Emp.Name From @Emp.Department.Name !</h3>
+        <p style="font-size: 1.5rem;">Please Raise the Stationary Requisiton Here. </p>
     </div>
-</div>
+    <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+    <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+    @Html.Partial("Catalog")
 
-@Html.Partial("Catalog")
 
-<section class="container content-section">
-    <h2 class="section-header">Request Cart</h2>
-    <div class="cart-row">
-        <span class="cart-item cart-header cart-column">Description</span>
-        <span class="cart-price cart-header cart-column">Unit</span>
-        <span class="cart-quantity cart-header cart-column">Quantity</span>
-    </div>
-    <div class="cart-items">
+    <section class="container content-section">
+        <h2 class="section-header">Request Cart</h2>
         <div class="cart-row">
-            <div class="cart-item cart-column">
+            <span class="cart-item cart-header cart-column">Description</span>
+            <span class="cart-price cart-header cart-column">Unit</span>
+            <span class="cart-quantity cart-header cart-column">Quantity</span>
+        </div>
+        <div class="cart-items">
+            <div class="cart-row">
+                <div class="cart-item cart-column">
+
+                </div>
+
 
             </div>
 
-
         </div>
 
-    </div>
-
-</section>
+    </section>
 
 
-@*<button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>*@
+    @*<button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>*@
 
-@if (list.Count == 0 || list == null)
-{
-    <button class="btn-purchase" type="submit" disabled="disabled">Create Request</button>
-}
-else
-{
-    <button class="btn-purchase" type="submit">Create Request</button>
-}
+    @if (list.Count == 0 || list == null)
+    {
+        <button class="btn-primary btn-purchase" type="submit" disabled="disabled">Create Request</button>
+    }
+    else
+    {
+        <button class="btn-primary btn-purchase" type="submit">Create Request</button>
+    }
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
 </html>
 
 

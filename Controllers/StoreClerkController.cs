@@ -71,7 +71,7 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult FormRetrieve()
         {
             // Assume ClerkID
-            int IdStoreClerk = 3;
+            int IdStoreClerk = (int)Session["IdEmployee"];
 
             // Get Department that seleceted same collection point as store clerk
             List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
@@ -110,7 +110,7 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult FormRetrieve(int[] idCPs, string StartDate, string EndDate)
         {
             // Assume ClerkID
-            int IdStoreClerk = 3;
+            int IdStoreClerk = (int)Session["IdEmployee"];
             if (idCPs != null)
             {
                 foreach(int id in idCPs)
@@ -207,7 +207,7 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult SaveDisbursement(int[] IdItemRetrieved) 
         {
             // Assume ClerkID
-            int IdStoreClerk = 3;
+            int IdStoreClerk = (int)Session["IdEmployee"];
 
             // Get Department that seleceted same collection point as store clerk
             List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
@@ -245,7 +245,7 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult PrintPdf(string StartDate, string EndDate)
         {
             // Assume ClerkID
-            int IdStoreClerk = 3;
+            int IdStoreClerk = (int)Session["IdEmployee"];
 
             List<string> DClerk = _disbursementDAO.ReturnStoreClerkCP(IdStoreClerk);
             DateTime SDate = DateTime.ParseExact(StartDate, "dd-MM-yyyy",
@@ -301,7 +301,7 @@ namespace Team8ADProjectSSIS.Controllers
                     //check if there is any exisitng incomplete PO that is for this current supplier
                     if (!_purchaseOrderDAO.IsIncompletePOExist(codeSupplier))
                     {
-                        po = _purchaseOrderDAO.Create(codeSupplier,1);
+                        po = _purchaseOrderDAO.Create(codeSupplier, (int)Session["IdEmployee"]);
                     }
                     else
                     {
@@ -426,6 +426,7 @@ namespace Team8ADProjectSSIS.Controllers
             _purchaseOrderDAO.UpdateStatusToDelivered(id);
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+        //@Shutong
         public ActionResult Schedule(int IdPO, string deliverDate)
         {
             //2222 - 02 - 01T00: 12

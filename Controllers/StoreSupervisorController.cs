@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +7,9 @@ using System.Web.Mvc;
 using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
+using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.Models;
+using Team8ADProjectSSIS.Report;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -22,11 +26,6 @@ namespace Team8ADProjectSSIS.Controllers
             this._itemDAO = new ItemDAO();
             this._purchaseOrderDAO = new PurchaseOrderDAO();
             this._purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
-        }
-
-        public ActionResult Dashboard()
-        {
-            return View();
         }
 
         public ActionResult Voucher()
@@ -87,6 +86,24 @@ namespace Team8ADProjectSSIS.Controllers
             PurchaseOrder po = _purchaseOrderDAO.FindPOById(idPurchaseOrder);
             ViewData["POD"] = PODetails;
             ViewBag.po = po;
+            return View();
+        }
+        public ActionResult DashBoard()
+        {
+            return View();
+        }
+
+        public ActionResult ExportExcel()
+        {
+
+            List<Item> DownloadableData = _itemDAO.GetDownloadableData();
+            ExcelReport excelReport = new ExcelReport();
+            byte[] ExcelData = excelReport.GenerateExcelReport(DownloadableData);
+
+            return File(ExcelData, "application/xlsx", "Ordered Data.xlsx");
+        }   
+        public ActionResult PrintPDF()
+        {
             return View();
         }
 

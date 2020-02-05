@@ -10,17 +10,23 @@ using Team8ADProjectSSIS.Filters;
 //@phyu
 namespace Team8ADProjectSSIS.Controllers
 {
-    [AuthenticateFilter]
-    [AuthorizeFilter]
+   // [AuthenticateFilter]
+  //  [AuthorizeFilter]
     public class EmployeeController : Controller
     {
+
+        private readonly EmployeeDAO _employeeDAO;
+        private readonly RequisitionDAO _requisitionDAO;
+        private readonly RequisitionItemDAO _requisitionItemDAO;
+        public EmployeeController()
+        {
+            _employeeDAO = new EmployeeDAO();
+            _requisitionDAO = new RequisitionDAO();
+            _requisitionItemDAO = new RequisitionItemDAO();
+        }
         public static string connectionString = "Server=.;" +
               "Database=SSIS; Integrated Security=true;MultipleActiveResultSets=True ";
-        // GET: Employee
-
-
-
-
+        // GET: Employe
 
         public ActionResult Index(string cmd, int? id, string searchStr = " ")
         {
@@ -31,7 +37,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             ViewBag.items = ListProducts(searchStr);
             ViewBag.searchStr = searchStr;
-
+            ViewData["Emp"] = _employeeDAO.FindEmployeeById(idEmployee);
             return View();
         }
 
@@ -62,6 +68,21 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+
+        public ActionResult CreatePopup(string cmd, int? id, string searchStr = " ")
+        {
+
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
+
+            int idEmployee = (int)Session["IdEmployee"];
+
+            ViewBag.items = ListProducts(searchStr);
+            ViewBag.searchStr = searchStr;
+
+            return View();
+        }
+
         public JsonResult reqId(string username)
         {
 
@@ -70,11 +91,10 @@ namespace Team8ADProjectSSIS.Controllers
 
             int idEmployee = (int)Session["IdEmployee"];
 
-            // int idEmployee = 2;
+            _requisitionDAO.CreateRequisition(idEmployee);
+            //replace with below
 
-
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+/*            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
@@ -87,7 +107,7 @@ namespace Team8ADProjectSSIS.Controllers
                 SqlCommand cmdd = new SqlCommand(sql, conn);
 
                 cmdd.ExecuteNonQuery();
-            }
+            }*/
 
             return Json(new
             {
@@ -99,14 +119,17 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult OnJSON(string username, string itemName, int quantity)
         {
-           
-            int length = itemName.Length;
 
-            if (itemName.EndsWith("\""))
-            {
-                itemName.Remove(length - 1);
-                itemName.Remove(length - 2);
-            }
+            /*            int length = itemName.Length;
+
+                        if (itemName.EndsWith("\""))
+                        {
+                            itemName.Remove(length - 1);
+                            itemName.Remove(length - 2);
+                        }
+            */
+            int idEmployee = (int)Session["IdEmployee"];
+            //_requisitionItemDAO.CreateRequisitionItem(idEmployee,itemName, quantity);//add requisitonitem to incomplete requisition
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -131,7 +154,11 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult updateReq(string username,int? selectedId,string itemName, int? quantity)
         {
-            int length = itemName.Length;
+
+            int idEmployee = (int)Session["IdEmployee"];
+            _requisitionItemDAO.UpdateRequisitionItemUnit(selectedId, itemName, quantity);//add requisitonitem to incomplete requisition
+
+            /*int length = itemName.Length;
 
             if (itemName.EndsWith("\""))
             {
@@ -153,7 +180,7 @@ namespace Team8ADProjectSSIS.Controllers
                 SqlCommand cmddd = new SqlCommand(details, conn);
 
                 cmddd.ExecuteNonQuery();
-            }
+            }*/
 
             return Json(new
             {
@@ -164,29 +191,30 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult insertReq(string username, int? selectedId, string itemName, int? quantity)
         {
-            int length = itemName.Length; 
+            _requisitionItemDAO.CreateRequisitionItemByReqID(selectedId, itemName, quantity);
+            /* int length = itemName.Length; 
 
-            if (itemName.EndsWith("\""))
-            {
-                itemName.Remove(length-1);
-                itemName.Remove(length - 2);
-            }
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
+             if (itemName.EndsWith("\""))
+             {
+                 itemName.Remove(length-1);
+                 itemName.Remove(length - 2);
+             }
+             using (SqlConnection conn = new SqlConnection(connectionString))
+             {
+                 conn.Open();
 
-                Random rand = new Random();
-                int orderNum = rand.Next(10000000, 100000000);
+                 Random rand = new Random();
+                 int orderNum = rand.Next(10000000, 100000000);
 
-                string details = @"INSERT INTO RequisitionItems VALUES (" + selectedId + ",(SELECT IdItem from Items WHERE Description ='"
-                                  + itemName + "'),"+ quantity + ")";
+                 string details = @"INSERT INTO RequisitionItems VALUES (" + selectedId + ",(SELECT IdItem from Items WHERE Description ='"
+                                   + itemName + "'),"+ quantity + ")";
 
 
-                SqlCommand cmddd = new SqlCommand(details, conn);
+                 SqlCommand cmddd = new SqlCommand(details, conn);
 
-                cmddd.ExecuteNonQuery();
-            }
-
+                 cmddd.ExecuteNonQuery();
+             }*/
+            
             return Json(new
             {
                 result = "OK"
@@ -195,7 +223,9 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult deleteReqItem(string username, int? selectedId, string itemName)
         {
-            int length = itemName.Length;
+
+            _requisitionItemDAO.DeleteRequisitionItem(selectedId, itemName);
+           /* int length = itemName.Length;
 
             if (itemName.EndsWith("\""))
             {
@@ -218,7 +248,7 @@ namespace Team8ADProjectSSIS.Controllers
 
                 cmddd.ExecuteNonQuery();
             }
-
+*/
             return Json(new
             {
                 result = "OK"
@@ -231,6 +261,9 @@ namespace Team8ADProjectSSIS.Controllers
         public JsonResult deleteReq(string username, int? selectedId)
         {
 
+            _requisitionItemDAO.DeleteRequisitionItemByReqId(selectedId);
+            _requisitionDAO.DeleteRequisition(selectedId);
+/*
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
@@ -241,8 +274,8 @@ namespace Team8ADProjectSSIS.Controllers
                 SqlCommand reqItems = new SqlCommand(RequisitionItems, conn);
 
                 reqItems.ExecuteNonQuery();
-            }
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            }*/
+/*            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
@@ -252,7 +285,7 @@ namespace Team8ADProjectSSIS.Controllers
                 SqlCommand reqId = new SqlCommand(Requisitions, conn);
 
                 reqId.ExecuteNonQuery();
-            }
+            }*/
 
             return Json(new
             {
@@ -261,15 +294,10 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
 
-
-
-
-
-
-
         public List<RequisitionItem> ListReqItems(int ReqID)
         {
-            List<RequisitionItem> items = new List<RequisitionItem>();
+            List<RequisitionItem> items= _requisitionItemDAO.RetrieveRequisitionItemByReqId(ReqID);
+            /*List<RequisitionItem> items = new List<RequisitionItem>();
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -296,14 +324,14 @@ namespace Team8ADProjectSSIS.Controllers
                     items.Add(req);
                 };
             }
-            return items;
+*/            return items;
         }
 
         public String GetIdStatus(int ReqID)
         {
 
-
-            string status = "";
+            return _requisitionDAO.GetStatusLabel(ReqID);
+            /*string status = "";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -323,14 +351,21 @@ namespace Team8ADProjectSSIS.Controllers
                     status = (string)readerr["Label"];
 
                 };
-            }
-            return status;
+            }*/
+            //return status;
         }
 
         public List<String> GetDescription(int ReqID)
         {
             List<String> description = new List<String>();
-
+            List<RequisitionItem> reqItemList=_requisitionItemDAO.RetrieveRequisitionItemByReqId(ReqID);
+            
+            foreach(RequisitionItem ri in reqItemList)
+            {
+                description.Add(ri.Item.Description);
+            }
+           
+            /*
             string des = "";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -353,7 +388,7 @@ namespace Team8ADProjectSSIS.Controllers
                     description.Add(des);
                 };
               
-            }
+            }*/
             return description;
         }
 
@@ -417,12 +452,12 @@ namespace Team8ADProjectSSIS.Controllers
 
         public JsonResult UpdatereqId(int? reqID)
         {
-           //  if (Session["IdEmployee"] == null)
-           //        return RedirectToAction("Login", "Home");
+            //  if (Session["IdEmployee"] == null)
+            //        return RedirectToAction("Login", "Home");
 
-               int idEmployee = (int)Session["IdEmployee"];
+            int idEmployee = (int)Session["IdEmployee"];
 
-           // int idEmployee = 2;
+            // int idEmployee = 2;
 
             int req = reqID.GetValueOrDefault();
             string status = "";
@@ -436,20 +471,20 @@ namespace Team8ADProjectSSIS.Controllers
             des = GetDescription(req);
             List<Requisition> reqs = ListReqID(idEmployee);
             List<RequisitionItem> reqq = ListReqItems(req);
-         
+
 
             ViewData["reqq"] = reqq;
             ViewData["reqs"] = reqs;
             ViewData["status"] = status;
-          
 
-            var result = new { Req= requi, Items = reqq, status = status, descrip = des };
+
+            var result = new { Req = requi, Items = reqq, status = status, descrip = des };
             return Json(result, JsonRequestBehavior.AllowGet);
 
             //  return View();
         }
 
- 
+
 
 
 
@@ -476,7 +511,9 @@ namespace Team8ADProjectSSIS.Controllers
 
             if (cmd == "delete")
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                _requisitionItemDAO.DeleteRequisitionItemByReqId(reqID);
+                _requisitionDAO.DeleteRequisition(reqID);
+                /*using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
 
@@ -497,7 +534,7 @@ namespace Team8ADProjectSSIS.Controllers
                     SqlCommand reqId = new SqlCommand(Requisitions, conn);
 
                     reqId.ExecuteNonQuery();
-                }
+                }*/
             }
             if (cmd == "update")
             {
@@ -510,10 +547,8 @@ namespace Team8ADProjectSSIS.Controllers
         public List<Requisition> ListReqID(int idEmployee)
         {
           
-            List<Requisition> reqs = new List<Requisition>();
-
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            List<Requisition> reqs = _requisitionDAO.RetrieveRequisitionByEmpId(idEmployee);
+           /* using (SqlConnection conn = new SqlConnection(connectionString))
             {
 
                 conn.Open();
@@ -538,25 +573,132 @@ namespace Team8ADProjectSSIS.Controllers
                         WithdrawlDate = (readerr["WithdrawlDate"] == DBNull.Value) ? DateTime.MinValue : (DateTime)readerr["WithdrawlDate"],
 
                     };
+
+                  
                     reqs.Add(req);
                 };
-            }
-
+            }*/
             return reqs;
         }
 
-        public ActionResult CheckStatus()
+        public ActionResult CheckStatus(string username, string cmd, int? reqID)
         {
+
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
+
+            int idEmployee = (int)Session["IdEmployee"];
+
+            //  int idEmployee = 2;
+
+
+            int req = reqID.GetValueOrDefault();
+            //username = "Sam Worthington";
+
+            List<Requisition> reqs = ListReqID(idEmployee);
+            List<RequisitionItem> reqq = ListReqItems(req);
+
+            ViewBag.ReqItems = ListReqItems(req);
+            ViewData["reqq"] = reqq;
+            ViewData["reqs"] = reqs;
+
+            if (cmd == "delete")
+            {
+                _requisitionItemDAO.DeleteRequisitionItemByReqId(reqID);
+                _requisitionDAO.DeleteRequisition(reqID);
+/*                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+
+                    string RequisitionItems = @"DELETE from RequisitionItems WHERE IdRequisiton =" + reqID + "";
+
+                    SqlCommand reqItems = new SqlCommand(RequisitionItems, conn);
+
+                    reqItems.ExecuteNonQuery();
+                }
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+
+                    string Requisitions = @"DELETE from Requisitions WHERE IdRequisition = " + reqID + "";
+
+                    SqlCommand reqId = new SqlCommand(Requisitions, conn);
+
+                    reqId.ExecuteNonQuery();
+                }*/
+            }
+            if (cmd == "update")
+            {
+
+
+            }
             return View();
         }
 
-        public ActionResult History()
+        public ActionResult History(string username, string cmd, int? reqID)
         {
+
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
+
+            int idEmployee = (int)Session["IdEmployee"];
+            int req = reqID.GetValueOrDefault();
+            //username = "Sam Worthington";
+
+            List<Requisition> reqs = ListReqID(idEmployee);
+            List<RequisitionItem> reqq = ListReqItems(req);
+
+            ViewBag.ReqItems = ListReqItems(req);
+            ViewData["reqq"] = reqq;
+            ViewData["reqs"] = reqs;
+
+            if (cmd == "delete")
+            {
+                _requisitionItemDAO.DeleteRequisitionItemByReqId(reqID);
+                _requisitionDAO.DeleteRequisition(reqID);/*
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+
+                    string RequisitionItems = @"DELETE from RequisitionItems WHERE IdRequisiton =" + reqID + "";
+
+                    SqlCommand reqItems = new SqlCommand(RequisitionItems, conn);
+
+                    reqItems.ExecuteNonQuery();
+                }
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+
+                    string Requisitions = @"DELETE from Requisitions WHERE IdRequisition = " + reqID + "";
+
+                    SqlCommand reqId = new SqlCommand(Requisitions, conn);
+
+                    reqId.ExecuteNonQuery();
+                }*/
+            }
+            if (cmd == "update")
+            {
+
+
+            }
             return View();
         }
 
-        public ActionResult CheckOut()
+        public ActionResult Create(string cmd, int? id, string searchStr = " ")
         {
+            if (Session["IdEmployee"] == null)
+                return RedirectToAction("Login", "Home");
+
+            int idEmployee = (int)Session["IdEmployee"];
+
+            ViewBag.items = ListProducts(searchStr);
+            ViewBag.searchStr = searchStr;
+
             return View();
         }
     }

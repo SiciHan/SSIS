@@ -21,6 +21,17 @@
         }
     };
 
+    $.ajax({
+        type: 'GET',
+        url: '/Home/GetUnreadNotificationCount?IdReceiver=' + $("#hdnSession1").val(),
+        success: function (response) {
+            $('#noti-count').html(response);
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    })
+
 });
 
 

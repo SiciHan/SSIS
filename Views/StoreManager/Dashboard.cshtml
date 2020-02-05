@@ -12,3 +12,41 @@
 </div>
 
 <!--You can start your code here ^ ^-->
+<div class="box">
+    @using (Html.BeginForm("ExportExcel", "StoreSupervisor", FormMethod.Post))
+    {
+        <button class="download"><i class="fa fa-download"></i></button>
+    }
+    @using (Html.BeginForm("PrintPDF", "StoreSupervisor", FormMethod.Post))
+    {
+        <button class="print"><i class="fa fa-print"></i></button>
+    }
+</div>
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+    .box {
+        float: right;
+    }
+
+        .box button {
+            font-size: 24px;
+            background-color: white;
+            border: none;
+        }
+
+    .download {
+        color: red;
+    }
+
+    .print {
+        color: blue;
+    }
+    .box form {
+        display:inline-block;
+    }
+</style>

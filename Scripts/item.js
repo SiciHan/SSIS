@@ -81,15 +81,15 @@ function createReqitems() {
             g.data = JSON.stringify({ itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
             g.contentType = "application/json";
             g.success = function (response) {
-                alert("Req Items write success");
+               // alert("Req Items write success");
             };
             g.error = function (response) {
-                alert("Req Items write failed");
+               // alert("Req Items write failed");
             };
             $.ajax(g);
         }
 
-        alert("Red Id Write success");
+        alert("Requisition has been sucessfully created!");
         
         while (cartItems.hasChildNodes()) {
             cartItems.removeChild(cartItems.firstChild)
@@ -97,7 +97,7 @@ function createReqitems() {
        
     };
     f.error = function (response) {
-        alert("Red Id Write failed");
+        alert("Requisition creation failed.Please try again!");
     };
     $.ajax(f);
 
@@ -283,7 +283,7 @@ function addItemToCart(title, price) {
         <span class="cart-title cart-column">${price}</span>      
         <div class="cart-quantity cart-column">
             <input class="cart-quantity-input" type="number" value="1">
-            <button class="btn btn-danger" type="button">REMOVE</button>
+            <button class="btn btn-primary btn-danger" type="button">REMOVE</button>
         </div>`
     cartRow.innerHTML = cartRowContents
     cartItems.append(cartRow)
