@@ -7,7 +7,11 @@
     var selectedId = "";
 
 }
-
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/EmployeeNotification.js"></script>
+}
 
 
 
@@ -51,7 +55,12 @@
                 <li>@Html.ActionLink("History", "History", "Employee")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="noti-logout">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li style="padding-right:8px">
+                    <a href="@Url.Action("Notification","Employee")" style="padding-right:0px">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
@@ -60,59 +69,61 @@
 
 <div class="title">
     <h2>Requisition Forms' Status</h2>
+    <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+    <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 </div>
-    @Html.Partial("UpdatereqId")
+@Html.Partial("UpdatereqId")
 
-    <body>
+<body>
 
-        @*<div class="container">
-                <h2>Update Requisition Form</h2>
-                <form>
-                    <div class="form-group">
-                        <label for="sel1">Form ID</label>
-                        <select class="req">
-                            @foreach (var q in reqs)
-                            {
-                                <option>@q.IdRequisition</option>
+    @*<div class="container">
+            <h2>Update Requisition Form</h2>
+            <form>
+                <div class="form-group">
+                    <label for="sel1">Form ID</label>
+                    <select class="req">
+                        @foreach (var q in reqs)
+                        {
+                            <option>@q.IdRequisition</option>
 
-                            }
-                        </select>
+                        }
+                    </select>
 
-                    </div>
-                </form>
-            </div>*@
-
-
-    </body>
+                </div>
+            </form>
+        </div>*@
 
 
+</body>
 
 
-    @*<section class="container content-section">
-            <h2 class="section-header">Request Cart</h2>
+
+
+@*<section class="container content-section">
+        <h2 class="section-header">Request Cart</h2>
+        <div class="cart-row">
+            <span class="cart-item cart-header cart-column">Description</span>
+            <span class="cart-price cart-header cart-column">Unit</span>
+            <span class="cart-quantity cart-header cart-column">Quantity</span>
+        </div>
+
+
+        <div class="cart-items">
             <div class="cart-row">
-                <span class="cart-item cart-header cart-column">Description</span>
-                <span class="cart-price cart-header cart-column">Unit</span>
-                <span class="cart-quantity cart-header cart-column">Quantity</span>
-            </div>
-
-
-            <div class="cart-items">
-                <div class="cart-row">
-                    <div class="cart-item cart-column">
-
-                    </div>
-
+                <div class="cart-item cart-column">
 
                 </div>
 
+
             </div>
 
-        </section>*@
+        </div>
 
-    <script>
+    </section>*@
 
-    </script>
+<script>
+
+</script>
 
 
 </html>
