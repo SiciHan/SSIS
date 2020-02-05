@@ -14,61 +14,69 @@ namespace Team8ADProjectSSIS.Filters
         {
             string role = (string)HttpContext.Current.Session["Role"];
             string controllerName = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;
-            if (controllerName.Contains("DepartmentActingHead"))
+
+            if (String.IsNullOrEmpty(role))
             {
-                if (role.Contains("ActingHead"))
+                isAuthOk = false;
+            }
+            else {
+                if (controllerName.Contains("DepartmentActingHead"))
                 {
-                    isAuthOk = true;
+                    if (role.Contains("ActingHead"))
+                    {
+                        isAuthOk = true;
+                    }
+                }
+                if (controllerName.Contains("DepartmentHead"))
+                {
+                    if (role.Contains("Head"))
+                    {
+                        isAuthOk = true;
+                    }
+                }
+                if (controllerName.Contains("DepartmentRepresentative"))
+                {
+                    if (role.Contains("Representative"))
+                    {
+                        isAuthOk = true;
+                    }
+                }
+                if (controllerName.Contains("Employee"))
+                {
+                    if(role.Contains("Employee") || role.Contains("Representative"))
+                    {
+                        isAuthOk = true;
+                    }
+                }
+                if (controllerName.Contains("StoreClerk"))
+                {
+                    if (role.Contains("Clerk"))
+                    {
+                        isAuthOk = true;
+                    }
+                }
+                if (controllerName.Contains("StoreManager"))
+                {
+                    if (role.Contains("Manager"))
+                    {
+                        isAuthOk = true;
+                    }
+                }
+                if (controllerName.Contains("StoreSupervisor"))
+                {
+                    if (role.Contains("Manager")||role.Contains("Supervisor"))
+                    {
+                        isAuthOk = true;
+                    }
                 }
             }
-            if (controllerName.Contains("DepartmentHead"))
-            {
-                if (role.Contains("Head"))
-                {
-                    isAuthOk = true;
-                }
-            }
-            if (controllerName.Contains("DepartmentRepresentative"))
-            {
-                if (role.Contains("Representative"))
-                {
-                    isAuthOk = true;
-                }
-            }
-            if (controllerName.Contains("Employee"))
-            {
-                if(role.Contains("Employee") || role.Contains("Representative"))
-                {
-                    isAuthOk = true;
-                }
-            }
-            if (controllerName.Contains("StoreClerk"))
-            {
-                if (role.Contains("StoreClerk"))
-                {
-                    isAuthOk = true;
-                }
-            }
-            if (controllerName.Contains("StoreManager"))
-            {
-                if (role.Contains("StoreManager"))
-                {
-                    isAuthOk = true;
-                }
-            }
-            if (controllerName.Contains("StoreSupervisor"))
-            {
-                if (role.Contains("StoreManager")||role.Contains("StoreSupervisor"))
-                {
-                    isAuthOk = true;
-                }
-            }
+            
             if (!isAuthOk)
                 filterContext.Result = new RedirectToRouteResult(
                     new RouteValueDictionary
                     {
                         {"controller","Home" },
-                        {"action","Logout" }
+                        {"action","Login" }
                     });
 
         }

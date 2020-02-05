@@ -26,5 +26,6 @@ namespace Team8ADProjectSSIS.DAO
 
             return notif.IdNotification;
         }
+      
     }
 }

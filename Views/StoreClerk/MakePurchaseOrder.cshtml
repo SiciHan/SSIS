@@ -18,13 +18,17 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
-                <li>@Html.ActionLink("Retrieval", "Index", "StoreClerk")</li>
-                <li>@Html.ActionLink("Disbursement", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
+                <li>@Html.ActionLink("Disbursement", "Disbursement", "StoreClerk")</li>
                 <li class="active">@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
-                <li>@Html.ActionLink("Stock Take", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Stock Take", "Stocktake", "StoreClerk")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li>
+                    <a href="@Url.Action("Index","StoreClerk")">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
@@ -32,6 +36,9 @@
 </div>
 
 <h2>Make Purchase Order</h2>
+
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 <!--Display the Low stock items-->
 @using Team8ADProjectSSIS.Models
 @{
@@ -46,7 +53,7 @@
 
 <h3>Manually Search Item and Add To Cart</h3>
 <input id="searchStr" type="text" placeholder="e.g. Clip" value="@searchStr" />
-<button onclick="findItems()" class="btn btn-info">Find Items</button>
+<button id="findItems" class="btn btn-info">Find Items</button>
 
 
 <div>
@@ -55,12 +62,12 @@
         {
             <p>Search Results:</p>
             ////display all searched results and add to cart button
-            using (Html.BeginForm("AddToCart", "StoreClerk", FormMethod.Post, new { @onsubmit = "addToCart()" }))
+            using (Html.BeginForm("AddToCart", "StoreClerk", FormMethod.Post, new { @id = "addToCart1" }))
             {
 
                 <table class="table">
                     <tr>
-                        <th><input type="checkbox" name="select-all" id="select-all" onclick="toggle(this)"></th>
+                        <th><input type="checkbox" name="@searchResult.Count" id="select-all1"></th>
                         <th>Item</th>
                         <th>Reorder Level</th>
                         <th>Available Units</th>
@@ -118,12 +125,12 @@
         //display all the items
 
 
-        using (Html.BeginForm("AddToCart", "StoreClerk", FormMethod.Post, new { @onsubmit = "addToCart()" }))
+        using (Html.BeginForm("AddToCart", "StoreClerk", FormMethod.Post, new { @id = "addToCart2" }))
         {
 
             <table class="table">
                 <tr>
-                    <th><input type="checkbox" name="select-all" id="select-all" onclick="toggle(this)"></th>
+                    <th><input type="checkbox" name="@lowStock.Count" id="select-all2"></th>
                     <th>Item</th>
                     <th>Reorder Level</th>
                     <th>Available Units</th>
@@ -159,7 +166,7 @@
                 }
             </table>
             <div class="form-group" align="right">
-                <input type="submit" class="btn btn-primary" value="Add to Cart" />
+                <input type="submit" class="btn btn-primary" value="Add Low Stock Item to Cart" />
             </div>
         }//end of form
     }//end of if
@@ -169,29 +176,11 @@
     }
 }
 
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/MakePO.js"></script>
+}
 
-
-
-
-
-
-
-<script>
-    function findItems() {
-        var searchStr = document.getElementById("searchStr").value;
-        window.location.href = window.location.href.split('?')[0] + "?searchStr=" + searchStr;
-    }
-
-    function toggle(source) {
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        for (var i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i] != source)
-                checkboxes[i].checked = source.checked;
-        }
-    }
-    function addToCart() {
-        alert("you have added something to the cart");
-    }
-</script>
 
 

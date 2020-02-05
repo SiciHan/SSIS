@@ -18,25 +18,31 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
         </div>
 
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
                 <li class="active">@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
-                <li>@Html.ActionLink("Disbursement", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Disbursement", "Disbursement", "StoreClerk")</li>
                 <li>@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
-                <li>@Html.ActionLink("StockTake", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Stock Take", "Stocktake", "StoreClerk")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
-                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                <li>
+                    <a href="@Url.Action("Index","StoreClerk")">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
+                    </a>
+                </li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </div>
 </div>
 <h2>Form Retrieve</h2>
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 @if (!NoDisbursement)
 {
 
@@ -90,7 +96,7 @@
     {
         <div style="display: inline" float="right">
             <input type="submit" value="Print" style="padding: 10px 15px; cursor:pointer; background-color:aquamarine" />
-            <input type="hidden" name="StartDate" value="@(ViewBag.LastThu ?? String.Empty)"/>
+            <input type="hidden" name="StartDate" value="@(ViewBag.LastThu ?? String.Empty)" />
             <input type="hidden" name="EndDate" value="@(ViewBag.Today ?? String.Empty)" />
         </div>
     }
@@ -119,6 +125,10 @@ else
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 @section Scripts{
+
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/FormRetrieve.js"></script>
     <script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script type="text/javascript">
         var Today = new Date();
