@@ -426,6 +426,7 @@ namespace Team8ADProjectSSIS.Controllers
             _purchaseOrderDAO.UpdateStatusToDelivered(id);
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+        //@Shutong
         public ActionResult Schedule(int IdPO, string deliverDate)
         {
             //2222 - 02 - 01T00: 12
