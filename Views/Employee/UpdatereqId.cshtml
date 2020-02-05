@@ -99,6 +99,8 @@
                 document.getElementById("delete").style.visibility = 'visible';
                 document.getElementById("submit").style.visibility = 'visible';
                 document.getElementById("add").style.visibility = 'visible';
+              //  document.getElementsByClassName('status')[0].innerText = response.status;
+               //  document.getElementsByClassName('status')[0]. = response.status;
 
 
                 //     var btn = document.createElement("BUTTON");
@@ -264,10 +266,10 @@
 
         g.contentType = "application/json";
         g.success = function (response) {
-            alert("Req Items delete success");
+            console.log("Requisition has been deleted");
         };
         g.error = function (response) {
-            alert("Req Items delete failed");
+            console.log("Req Items delete failed");
         };
         $.ajax(g);
 
@@ -313,10 +315,10 @@
 
         gg.contentType = "application/json";
         gg.success = function (response) {
-            alert("Delete Req Items write success");
+            console.log("Delete Req Items write success");
         };
         gg.error = function (response) {
-            alert("Delete Req Items write failed");
+            console.log("Delete Req Items write failed");
         };
         $.ajax(gg);
 
