@@ -23,12 +23,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     @*<script src="~/Scripts/item.js"></script>*@
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="~/Styles/styles.css" rel="stylesheet" />
 
 
 </head>
-
-<div class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
     <div class="container">
 
         <div class="navbar-header">
@@ -43,18 +45,20 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Dashboard", "Index", "Employee")</li>
-                <li>@Html.ActionLink("Create", "Index", "Employee")</li>
+                <li>@Html.ActionLink("Create", "Create", "Employee")</li>
                 <li>@Html.ActionLink("Update", "Update", "Employee")</li>
-                <li>@Html.ActionLink("Check Status", "Update", "Employee")</li>
-                <li>@Html.ActionLink("History", "Update", "Employee")</li>
+                <li>@Html.ActionLink("Check Status", "CheckStatus", "Employee")</li>
+                <li>@Html.ActionLink("History", "History", "Employee")</li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right" id="noti-logout">
                 <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
                 <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
     </div>
-</div>
+</nav>
+
+<h2 id="title">Update Requisition Form</h2>
 
 @Html.Partial("UpdatereqId")
 
