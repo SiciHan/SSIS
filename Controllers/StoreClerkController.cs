@@ -5,11 +5,14 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.Filters;
 using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Report;
 
 namespace Team8ADProjectSSIS.Controllers
 {
+    [AuthorizeFilter]
+    [AuthenticateFilter]
     public class StoreClerkController : Controller
     {
         private readonly DisbursementDAO _disbursementDAO;
@@ -23,6 +26,11 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly CollectionPointDAO _collectionpointDAO;
         private readonly EmployeeDAO _employeeDAO;
         private readonly StatusDAO _statusDAO;
+        private readonly NotificationChannelDAO _notificationChannelDAO;
+        private readonly NotificationDAO _notificationDAO;
+        private readonly SupplierItemDAO _supplierItemDAO;
+
+        //private readonly NotificationChannelDAO _notificationChannelDAO;
         //private readonly EmployeeDAO _employeeDAO;
         public StoreClerkController()
         {
@@ -37,15 +45,28 @@ namespace Team8ADProjectSSIS.Controllers
             this._purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
             this._employeeDAO = new EmployeeDAO();
             this._collectionpointDAO = new CollectionPointDAO();
+            this._notificationChannelDAO = new NotificationChannelDAO();
+            this._notificationDAO = new NotificationDAO();
+            this._supplierItemDAO = new SupplierItemDAO();
+            //this._notificationChannelDAO = new NotificationChannelDAO();
             //this._employeeDAO = new EmployeeDAO();
         }
-        
+
 
         // GET: StoreClerk
         public ActionResult Index()
         {
+            int IdReceiver = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdReceiver= (int)Session["IdEmployee"];
+            }
+            ViewData["NCs"]=_notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
+
             return View();
+            
         }
+
         // Get: FormRetrieve Method
         public ActionResult FormRetrieve()
         {
@@ -374,11 +395,15 @@ namespace Team8ADProjectSSIS.Controllers
 
         //@Shutong
         [HttpGet]
-        public ActionResult CollectPO(int id)
+        public ActionResult CollectPO(int? id)
         {
-
-            ViewData["PurchaseOrder"] = _purchaseOrderDAO.FindPOById(id);
-            ViewData["pod"] = _purchaseOrderDetailsDAO.FindPODetailsByPOId(id);
+            if (!id.HasValue)
+            {
+                return RedirectToAction("PurchaseOrderList", "StoreClerk");
+            }
+            
+            ViewData["PurchaseOrder"] = _purchaseOrderDAO.FindPOById(id.Value);
+            ViewData["pod"] = _purchaseOrderDetailsDAO.FindPODetailsByPOId(id.Value);
             return View();
         }
 
@@ -387,6 +412,10 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult CollectPO(FormCollection form)
         {
             var IdPO = form["IdPO"];
+            if (IdPO == null || String.IsNullOrEmpty(IdPO)||IdPO.Contains("undefine"))
+            {
+                return RedirectToAction("PurchaseOrderList", "StoreClerk");
+            }
             int id = Int32.Parse(IdPO);
             foreach (PurchaseOrderDetail pod in _purchaseOrderDetailsDAO.FindPODetailsByPOId(id))
             {
@@ -403,6 +432,412 @@ namespace Team8ADProjectSSIS.Controllers
             _purchaseOrderDAO.UpdateSchedule(IdPO, deliverDate);
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
 
+        }
+
+
+        // James: Disbursement overview
+        public ActionResult Disbursement()
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                            return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            // retrieve 2 lists of Disbursement Lists which are "Prepared" and "Scheduled" under the same Coll Point
+            // find by Status and Clerk's Collection Points
+            List<Disbursement> prepList = _disbursementDAO.FindByStatus("Prepared", IdStoreClerk);
+            List<Disbursement> scheList = _disbursementDAO.FindByStatus("Scheduled", IdStoreClerk);
+            scheList.AddRange(_disbursementDAO.FindByStatus("Received", IdStoreClerk));
+            scheList.AddRange(_disbursementDAO.FindByStatus("Disbursed", IdStoreClerk));
+
+            ViewBag.prepList = prepList;
+            ViewBag.scheList = scheList;
+
+            // Finds Next Monday
+            DateTime NextMon = DateTime.Now;
+            while (NextMon.DayOfWeek != DayOfWeek.Monday)
+                NextMon = NextMon.AddDays(1);
+
+            ViewBag.NextMon = NextMon.ToString("yyyy-MM-dd");
+
+            return View();
+        }
+
+        // James: Selecting multiple disbursements to schedule for collection
+        [HttpPost]
+        public ActionResult Schedule(IEnumerable<int> disbIdsToSchedule, String pickDate)
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                            return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            if (disbIdsToSchedule != null)
+            {
+                // schedule for selected date by setting the date from the form
+                DateTime SDate = DateTime.ParseExact(pickDate, "yyyy-MM-dd",
+                                System.Globalization.CultureInfo.InvariantCulture);
+
+                _disbursementDAO.UpdateStatus(disbIdsToSchedule, 10, SDate, null);
+
+                // add in notification here upon updating status
+                foreach (var disbId in disbIdsToSchedule)
+                {
+                    Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
+                    // Get Dep Rep
+                    Employee depRep = targetDisbursement.Department.Employees
+                        .Where(emp => emp.IdRole == 3)
+                        .FirstOrDefault();
+
+                    String message = (targetDisbursement.DisbursementItems.ToList().All(i => i.UnitIssued >= i.UnitRequested)) ?
+                        $"Your department's request will be ready for collection on {SDate.ToString("dd/MM/yyyy")}." :
+                        $"Your department's request will be ready for collection on {SDate.ToString("dd/MM/yyyy")}. " +
+                            $"We are currently unable to prepare the full quantity of requested items from your department.";
+
+                    int notifId = _notificationDAO.CreateNotification(message);
+                    _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+                }
+            }
+
+            return RedirectToAction("Disbursement");
+        }
+
+        // James: Scheduling a single disbursement with redistribution if necessary
+        [HttpPost]
+        public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, String pickDate)
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                            return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            // give and take from disbursement Item and creates the reversal entry and new entry for stock records
+            _disbursementItemDAO.GiveAndTake(disbItemId, transferQtyNum, disbItemIdDeptFrom, IdStoreClerk);
+
+            // schedule for selected date by setting the date from the form
+            DateTime SDate = DateTime.ParseExact(pickDate, "yyyy-MM-dd",
+                System.Globalization.CultureInfo.InvariantCulture);
+
+            // add in notification here upon updating status and notify on shortfall (if any)
+            foreach (var di in disbId)
+            {
+                Disbursement targetDisbursement = _disbursementDAO.FindById(di);
+                // Get Dep Rep
+                Employee depRep = targetDisbursement.Department.Employees
+                    .Where(emp => emp.IdRole == 3)
+                    .FirstOrDefault();
+
+                String message = (targetDisbursement.DisbursementItems.ToList().All(i => i.UnitIssued >= i.UnitRequested)) ?
+                    $"Your department's request will be ready for collection on {SDate.ToString("dd/MM/yyyy")}." :
+                    $"Your department's request will be ready for collection on {SDate.ToString("dd/MM/yyyy")}. " +
+                        $"We are currently unable to prepare the full quantity of requested items from your department.";
+
+                int notifId = _notificationDAO.CreateNotification(message);
+                _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+            }
+
+            _disbursementDAO.UpdateStatus(disbId, 10, SDate, null);
+            return RedirectToAction("Disbursement");
+        }
+
+        // James: Opens page to redistribute qty from other disbursements
+        public ActionResult Redistribute(int disbId)
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                            return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
+            ViewBag.disb = targetDisbursement;
+
+            ViewBag.dropdownDisbursementItems = _disbursementItemDAO.FindCorrespondingDisbursementItems(targetDisbursement.DisbursementItems, IdStoreClerk);
+
+            // Finds Next Monday
+            DateTime NextMon = DateTime.Now;
+            while (NextMon.DayOfWeek != DayOfWeek.Monday)
+                NextMon = NextMon.AddDays(1);
+
+            ViewBag.NextMon = NextMon.ToString("yyyy-MM-dd");
+
+            // Get Dep Rep
+            Employee depRep = targetDisbursement.Department.Employees
+                .ToList()
+                .Where(emp => emp.IdRole == 3)
+                .FirstOrDefault();
+
+            ViewBag.depRep = depRep;
+
+            return PartialView("Redistribute", targetDisbursement);
+        }
+
+        //James: Opens page to handle disbursement with Dep Rep
+        public ActionResult DisbursementDetails(int disbId)
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                 return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
+            ViewBag.disb = targetDisbursement;
+
+            // Get Dep Rep
+            Employee depRep = targetDisbursement.Department.Employees
+                .Where(emp => emp.IdRole == 3)
+                .FirstOrDefault();
+
+            ViewBag.depRep = depRep;
+
+            return PartialView("DisbursementDetails");
+        }
+
+        //James: Refresh Disbursement page and updates the unitIssued to the QtyDisbursed
+        [HttpPost]
+        public ActionResult RefreshDisbursement(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                 return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            
+
+            Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
+            ViewBag.disb = targetDisbursement;
+            List<DisbursementItem> targetList = targetDisbursement.DisbursementItems.ToList();
+
+            // if qtyDisbursed < disbItem.UnitIssued then raise a SA-broken and a reversal entry to qtyDisbursed
+            for (int i = 0; i < targetList.Count; i++)
+            {
+                if (qtyDisbursed[i] < targetList[i].UnitIssued)
+                {
+                    _stockRecordDAO.StockAdjustmentDuringDisbursement(qtyDisbursed[i], targetList[i], IdStoreClerk);
+                    _itemDAO.UpdateUnits(targetList[i].Item, -(targetList[i].UnitIssued - qtyDisbursed[i]));
+                }
+            }
+
+            // updates the disbitemId's unitissued to the qtyDisbursed
+            _disbursementItemDAO.UpdateUnitIssued(disbItemId, qtyDisbursed);
+
+            return RedirectToAction("Disbursement");
+        }
+
+        //James: For clerk to sign, raises SA in case of discrepancy and email out a copy of the disbursement details
+        [HttpPost]
+        public ActionResult ClerkSign(IEnumerable<int> disbId)
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                            return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            // updates the disb's status to "Disbursed" or 7
+            _disbursementDAO.UpdateStatus(disbId, 7, DateTime.Now, IdStoreClerk);
+
+            // emails a copy / sends notification to DR and Clerk
+            foreach (var di in disbId)
+            {
+                Disbursement targetDisbursement = _disbursementDAO.FindById(di);
+                // Get Dep Rep
+                Employee depRep = targetDisbursement.Department.Employees
+                    .Where(emp => emp.IdRole == 3)
+                    .FirstOrDefault();
+
+                String message = $"Attached a copy of the acknolwedged Disbursement for {targetDisbursement.CodeDepartment} on {targetDisbursement.Date.ToString("dd/MM/yyyy")}.";
+
+                int notifId = _notificationDAO.CreateNotification(message);
+                _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+                _notificationChannelDAO.SendNotification(IdStoreClerk, IdStoreClerk, notifId, DateTime.Now);
+            }
+
+            return RedirectToAction("Disbursement");
+        }
+
+        //James: Stocktake overview
+        public ActionResult Stocktake()
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                   return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            ViewBag.allItems = _itemDAO.GetAllItems();
+
+            ViewBag.mth1 = DateTime.Now.ToString("yyyy-MM");
+            ViewBag.mth2 = DateTime.Now.AddMonths(-1).ToString("yyyy-MM");
+            ViewBag.mth3 = DateTime.Now.AddMonths(-2).ToString("yyyy-MM");
+            ViewBag.mth4 = DateTime.Now.AddMonths(-3).ToString("yyyy-MM");
+
+            return View();
+        }
+
+
+        //James: Save the created stocktake into individual stockrecords
+        [HttpPost]
+        public ActionResult SaveStocktake(IList<int> itemId, IList<int> actualQty, IList<int> missingQty, IList<int> wrongQty, IList<int> brokenQty, IList<int> giftQty)
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                    return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            Debug.WriteLine($"actual: {actualQty.Count}, missing: {missingQty.Count}, wrong: {wrongQty.Count}, broken: {brokenQty.Count}, gift: {giftQty.Count}");
+            Debug.WriteLine($"actual: {actualQty[0]}, missing: {missingQty[0]}, wrong: {wrongQty[0]}, broken: {brokenQty[0]}, gift: {giftQty[0]}");
+
+            List<Item> allItems = _itemDAO.GetAllItems();
+
+            Item item;
+            int diff;
+            DateTime now = DateTime.Now;
+            Employee man = _employeeDAO.FindByRole(6).FirstOrDefault();
+            Employee sup = _employeeDAO.FindByRole(7).FirstOrDefault();
+
+            //update the Item's stock and available unit as well as create stock records
+            for (int i = 0; i < actualQty.Count; i++)
+            {
+                // find Item
+                item = allItems[i];
+
+                // check if stockunit == actualQty
+                if (item.StockUnit != actualQty[i])
+                {
+                    // get difference to be applied
+                    diff = item.StockUnit - actualQty[i];
+
+                    // apply difference to both Stock and Available units
+                    //_itemDAO.UpdateUnits(item, diff); // Clerk shouldn't be changing the units freely. Should raise SA instead
+
+                    // Raise SA instead
+                    //_stockRecordDAO.RaiseSA(now, 3, null, null, IdStoreClerk, item.IdItem, -diff);
+                    RaiseSAandNotifyBoss(now, 3, null, null, IdStoreClerk, item, -diff, sup, man);
+
+                    // if < Reorder level, send low stock alert
+
+
+                }
+
+                // Create stockRecord
+                if (missingQty[i] > 0)
+                {
+                    //_stockRecordDAO.RaiseSA(now, 3, null, null, IdStoreClerk, item.IdItem, -missingQty[i]);
+                    RaiseSAandNotifyBoss(now, 3, null, null, IdStoreClerk, item, -missingQty[i], sup, man);
+
+                }
+                if(wrongQty[i] > 0)
+                {
+                    //_stockRecordDAO.RaiseSA(now, 4, null, null, IdStoreClerk, item.IdItem, -wrongQty[i]);
+                    RaiseSAandNotifyBoss(now, 4, null, null, IdStoreClerk, item, -wrongQty[i], sup, man);
+                }
+                if(brokenQty[i] > 0)
+                {
+                    //_stockRecordDAO.RaiseSA(now, 5, null, null, IdStoreClerk, item.IdItem, -brokenQty[i]);
+                    RaiseSAandNotifyBoss(now, 5, null, null, IdStoreClerk, item, -brokenQty[i], sup, man);
+
+                }
+                if (giftQty[i] > 0)
+                {
+                    //_stockRecordDAO.RaiseSA(now, 6, null, null, IdStoreClerk, item.IdItem, giftQty[i]);
+                    RaiseSAandNotifyBoss(now, 6, null, null, IdStoreClerk, item, giftQty[i], sup, man);
+                }
+
+            }
+
+            return RedirectToAction("Stocktake");
+        }
+
+        public void RaiseSAandNotifyBoss(DateTime date, int IdOperation, String IdDepartment, String IdSupplier, int IdStoreClerk, Item item, int qty, 
+            Employee supervisor, Employee manager)
+        {
+            String message = $"Stock adjustment raised for Item ({item.Description}). Please approve/reject.";
+            _stockRecordDAO.RaiseSA(date, IdOperation, IdDepartment, IdSupplier, IdStoreClerk, item.IdItem, qty);
+            int notifId = _notificationDAO.CreateNotification(message);
+
+            SupplierItem si = _supplierItemDAO.FindByItem(item);
+            if (Math.Abs(qty * si.Price) > 250)
+                _notificationChannelDAO.SendNotification(IdStoreClerk, manager.IdEmployee, notifId, date);
+            else
+                _notificationChannelDAO.SendNotification(IdStoreClerk, supervisor.IdEmployee, notifId, date);
+
+        }
+
+        //James: View past stocktake based on time
+        public ActionResult ViewStocktake(String targetMonth)
+        {
+            /*            if (Session["IdEmployee"] == null || (String)Session["Role"] != "StockClerk")
+                return RedirectToAction("Login", "Home");*/
+
+            int IdStoreClerk = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdStoreClerk = (int)Session["IdEmployee"];
+            }
+
+
+
+            DateTime month = DateTime.ParseExact(targetMonth, "yyyy-MM",
+                System.Globalization.CultureInfo.InvariantCulture);
+            List<StockRecord> SRbyMonth = _stockRecordDAO.FindByMonthAndYear(month);
+
+            ViewBag.SRbyMonth = SRbyMonth;
+
+            ViewBag.targetMonth = month;
+
+            return PartialView("ViewStocktake");
         }
     }
 }
