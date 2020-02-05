@@ -8,9 +8,12 @@ using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Report;
+using Team8ADProjectSSIS.Filters;
 
 namespace Team8ADProjectSSIS.Controllers
 {
+    [AuthorizeFilter]
+    [AuthenticateFilter]
     public class StoreSupervisorController : Controller
     {
         StockRecordDAO _stockRecordDAO;
