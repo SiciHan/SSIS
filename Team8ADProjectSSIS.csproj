@@ -560,11 +560,16 @@
     <Content Include="Views\DepartmentRepresentative\Notification.cshtml" />
     <Content Include="Views\StoreSupervisor\DashBoard.cshtml" />
     <Content Include="Views\Employee\Notification.cshtml" />
+    <Content Include="Views\DepartmentHead\PendingLists.cshtml" />
+    <Content Include="Views\DepartmentActingHead\Pending.cshtml" />
+    <Content Include="Views\DepartmentHead\PendingDetail.cshtml" />
+    <Content Include="Views\DepartmentHead\CurrentRepCP.cshtml" />
+    <Content Include="Views\DepartmentHead\ChangeRepCP.cshtml" />
+    <Content Include="Views\DepartmentHead\Delegation.cshtml" />
+    <Content Include="Views\Shared\_HeadLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\DepartmentActingHead\" />
-    <Folder Include="Views\DepartmentHead\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

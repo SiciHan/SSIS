@@ -16,6 +16,26 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
+        //SH
+        public Requisition FindRequisitionByRequisionId(int idRequisition)
+        {
+            // here there is something wrong, does not display those req with only idstatusCurrent==1. if i add in && r.IdStatusCurrent==1--> display error
+            return context.Requisitions.Include("Employee").Where(r => r.IdRequisition == idRequisition ).FirstOrDefault();
+        }
+        //SH
+        public void UpdateApproveStatus(int idRequisition)
+        {
+            Requisition r = FindRequisitionByRequisionId(idRequisition);
+            r.IdStatusCurrent = 3;
+            context.SaveChanges();
+        }
+        //SH
+        public void UpdateRejectStatus(int idRequisition)
+        {
+            Requisition r = FindRequisitionByRequisionId(idRequisition);
+            r.IdStatusCurrent = 4;
+            context.SaveChanges();
+        }
 
         public void CreateRequisition(int IdEmployee)
         {

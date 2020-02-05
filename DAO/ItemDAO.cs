@@ -16,7 +16,15 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
-
+        //SH
+        public List<RequisitionItem> GetItemListRequisition(int idRequisition)
+        {
+            RequisitionDAO _requisitionDAO = new RequisitionDAO();
+            Requisition requisition = _requisitionDAO.FindRequisitionByRequisionId(idRequisition); // find requisitionItemList by reqId
+            // compare idtem with Item to retrieve list of Requested Item
+            return context.RequisitionItems.Where(r => r.IdRequisiton == requisition.IdRequisition).ToList(); // gives list of RequisitionItems
+            //return context.Items.Where(i => i.IdItem == requisition.IdRequisition).ToList();
+        }
         public List<Item> GetAllItems()
         {
             List<Item> items = context.Items
@@ -24,7 +32,7 @@ namespace Team8ADProjectSSIS.DAO
                     .ToList();
             return items;
         }
-
+        
         public List<Item> FindLowStockItems()
         {
             SSISContext context = new SSISContext();
