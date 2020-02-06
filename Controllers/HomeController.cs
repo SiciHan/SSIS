@@ -102,7 +102,7 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult Logout()
         {
             Session.Clear();
-            return Content("You are logged out. Please try to log in again.");
+            return View();
         }
         public ActionResult SessionExpired()
         {

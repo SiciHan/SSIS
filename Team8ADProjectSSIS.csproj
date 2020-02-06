@@ -575,6 +575,7 @@
     <Content Include="Views\DepartmentHead\Notification.cshtml" />
     <Content Include="Views\DepartmentActingHead\Notification.cshtml" />
     <Content Include="Views\StoreClerk\ViewSupplierItem.cshtml" />
+    <Content Include="Views\Home\Logout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
