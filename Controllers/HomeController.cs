@@ -106,7 +106,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
         public ActionResult SessionExpired()
         {
-            return Content("Your session is expired. Please try to log in again.");
+            return View();
         }
 
         public ActionResult About()
