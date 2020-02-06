@@ -113,11 +113,17 @@ namespace Team8ADProjectSSIS.DAO
                 Disbursement disbursement = context.Disbursements
                                                     .Where(d => d.IdDisbursement == id)
                                                     .FirstOrDefault();
+
+                Department department = context.Departments
+                                                .Where(dpt => dpt.CodeDepartment.Equals(disbursement.CodeDepartment))
+                                                .FirstOrDefault();
+
                 if (disbursement != null && disbursement.IdDisbursement != 9) 
                 {
                     Status status = context.Status.Where(s => s.IdStatus == 9).FirstOrDefault();
                     disbursement.IdStatus = 9;
                     disbursement.Status = status;
+                    disbursement.IdCollectionPt = department.IdCollectionPt;
                     context.SaveChanges();
                 }
             }
