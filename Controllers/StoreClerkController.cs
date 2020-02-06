@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.SignalR;
 using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.Filters;
+using Team8ADProjectSSIS.Hubs;
 using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Report;
 
@@ -234,9 +237,24 @@ namespace Team8ADProjectSSIS.Controllers
 
                 // check if stock unit is less reorder level
                 bool IsLowerThanReorderLevel = _itemDAO.CheckIfLowerThanReorderLevel(IdItemRetrieved);
+         
                 if (IsLowerThanReorderLevel)
                 {
-                    // raise alert
+                    // raise alert to all stockclerks
+                    Employee storeclerk1=_employeeDAO.FindEmployeeById(1);
+                    Employee storeclerk2 = _employeeDAO.FindEmployeeById(2);
+                    Employee storeclerk3 = _employeeDAO.FindEmployeeById(3);
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(1);
+                    hub.Clients.All.receiveNotification(2);
+                    hub.Clients.All.receiveNotification(3);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "The stock levels of some items are running low!";
+                    _notificationChannelDAO.CreateNotificationsToGroup("Clerk",IdStoreClerk, message);
+                    emailClass.SendTo(storeclerk1.Email, "SSIS System Email", message);
+                    emailClass.SendTo(storeclerk2.Email, "SSIS System Email", message);
+                    emailClass.SendTo(storeclerk3.Email, "SSIS System Email", message);
+
                 }
             }
             else
@@ -395,9 +413,16 @@ namespace Team8ADProjectSSIS.Controllers
         //@Shutong
         public ActionResult WithdrawPO(int id)
         {
-
+            int idEmployee = (int)Session["IdEmployee"];
             _purchaseOrderDAO.UpdateStatusToIncomplete(id);
-
+            //raise notification
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            int idsupervisor = _employeeDAO.FindIdByRole("Supervisor")[0];
+            hub.Clients.All.receiveNotification(idsupervisor);//5 is supervisor
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi Supervisor, your store clerk "+_employeeDAO.FindEmployeeById(idEmployee).Name+ " has withdrawed the PO "+id;
+            _notificationChannelDAO.CreateNotificationsToGroup("Supervisor", idEmployee, message);
+            emailClass.SendTo(_employeeDAO.FindEmailsByRole("Supervisor")[0], "SSIS System Email", message);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
          
@@ -535,6 +560,12 @@ namespace Team8ADProjectSSIS.Controllers
 
                     int notifId = _notificationDAO.CreateNotification(message);
                     _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(depRep.IdEmployee);
+                    EmailClass emailClass = new EmailClass();
+                    emailClass.SendTo(depRep.Email, "SSIS System Email", message);
+
+
                 }
             }
 
@@ -579,6 +610,10 @@ namespace Team8ADProjectSSIS.Controllers
 
                 int notifId = _notificationDAO.CreateNotification(message);
                 _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+                var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(depRep.IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                emailClass.SendTo(depRep.Email, "SSIS System Email", message);
             }
 
             _disbursementDAO.UpdateStatus(disbId, 10, SDate, null);
@@ -700,8 +735,6 @@ namespace Team8ADProjectSSIS.Controllers
                 IdStoreClerk = (int)Session["IdEmployee"];
             }
 
-
-
             // updates the disb's status to "Disbursed" or 7
             _disbursementDAO.UpdateStatus(disbId, 7, DateTime.Now, IdStoreClerk);
 
@@ -714,11 +747,20 @@ namespace Team8ADProjectSSIS.Controllers
                     .Where(emp => emp.IdRole == 3)
                     .FirstOrDefault();
 
-                String message = $"Attached a copy of the acknolwedged Disbursement for {targetDisbursement.CodeDepartment} on {targetDisbursement.Date.ToString("dd/MM/yyyy")}.";
+                String message = $"Attached a copy of the acknolwedged Disbursement for {targetDisbursement.CodeDepartment} on {targetDisbursement.Date.ToString("dd/MM/yyyy")}./n" +
+                    $"Department Rep: " + depRep.Name + "/n" +
+                    $"Store Clerk: " + _employeeDAO.FindEmployeeById(IdStoreClerk).Name +
+                $"Both achknowledged.";
 
                 int notifId = _notificationDAO.CreateNotification(message);
                 _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
                 _notificationChannelDAO.SendNotification(IdStoreClerk, IdStoreClerk, notifId, DateTime.Now);
+                var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(depRep.IdEmployee);
+                hub.Clients.All.receiveNotification(IdStoreClerk);
+                EmailClass emailClass = new EmailClass();
+                emailClass.SendTo(depRep.Email, "SSIS System Email", message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdStoreClerk).Email, "SSIS System Email", message);
             }
 
             return RedirectToAction("Disbursement");
@@ -735,8 +777,6 @@ namespace Team8ADProjectSSIS.Controllers
             {
                 IdStoreClerk = (int)Session["IdEmployee"];
             }
-
-
 
             ViewBag.allItems = _itemDAO.GetAllItems();
 
@@ -831,16 +871,31 @@ namespace Team8ADProjectSSIS.Controllers
         public void RaiseSAandNotifyBoss(DateTime date, int IdOperation, String IdDepartment, String IdSupplier, int IdStoreClerk, Item item, int qty, 
             Employee supervisor, Employee manager)
         {
+
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
             String message = $"Stock adjustment raised for Item ({item.Description}). Please approve/reject.";
             _stockRecordDAO.RaiseSA(date, IdOperation, IdDepartment, IdSupplier, IdStoreClerk, item.IdItem, qty);
             int notifId = _notificationDAO.CreateNotification(message);
+            
 
             SupplierItem si = _supplierItemDAO.FindByItem(item);
             if (Math.Abs(qty * si.Price) > 250)
+            {
                 _notificationChannelDAO.SendNotification(IdStoreClerk, manager.IdEmployee, notifId, date);
-            else
-                _notificationChannelDAO.SendNotification(IdStoreClerk, supervisor.IdEmployee, notifId, date);
+                //var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(manager.IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                emailClass.SendTo(manager.Email, "SSIS System Email", message);
+            }
 
+            else
+            {
+                _notificationChannelDAO.SendNotification(IdStoreClerk, supervisor.IdEmployee, notifId, date);
+                hub.Clients.All.receiveNotification(supervisor.IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                emailClass.SendTo(supervisor.Email, "SSIS System Email", message);
+            }
+                
         }
        
         //James: View past stocktake based on time
