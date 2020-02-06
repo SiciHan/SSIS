@@ -770,10 +770,8 @@ namespace Team8ADProjectSSIS.Controllers
         //James: Print Disbursement Details' PDF
         [HttpGet]
         public ActionResult PrintDisbursementPdf(IEnumerable<int> disbId)
-        //public ActionResult PrintDisbursementPdf(int disbId)
         {
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
-            //Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
             List<DisbursementItem> targetList = targetDisbursement.DisbursementItems.ToList();
 
             // Get Dep Rep
