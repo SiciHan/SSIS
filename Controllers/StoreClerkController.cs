@@ -434,7 +434,7 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
 
         }
-
+        //@Shutong
         public ActionResult ViewSupplierItem(int Iditem,string codesupplier)
         {
             SupplierItem supplierItem=_supplierItemDAO.FindSupplierItemByIditemAndCodesupplier(Iditem, codesupplier);
