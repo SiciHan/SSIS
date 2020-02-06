@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.SignalR;
 using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.Filters;
+using Team8ADProjectSSIS.Hubs;
 using Team8ADProjectSSIS.Models;
 
 namespace Team8ADProjectSSIS.Controllers
@@ -71,12 +74,39 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult Approve(int idRequisition)
         {
             _requisitionDAO.UpdateApproveStatus(idRequisition);
-            
+
+            //@Shutong: send notification here
+            Requisition req = _requisitionDAO.FindRequisitionByRequisionId(idRequisition);
+            int IdEmployee = req.IdEmployee;
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            hub.Clients.All.receiveNotification(IdEmployee);
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi," + _employeeDAO.FindEmployeeById(IdEmployee).Name 
+                + " your requisition: "+req.IdRequisition + " raised on " + req.RaiseDate + " has been approved.";
+
+            _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+            //end of notification sending 
+
             return RedirectToAction("PendingLists", "DepartmentHead");
         }
         public ActionResult Reject(int idRequisition)
         {
             _requisitionDAO.UpdateRejectStatus(idRequisition);
+
+            //@Shutong: send notification here
+            Requisition req = _requisitionDAO.FindRequisitionByRequisionId(idRequisition);
+            int IdEmployee = req.IdEmployee;
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            hub.Clients.All.receiveNotification(IdEmployee);
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi," + _employeeDAO.FindEmployeeById(IdEmployee).Name
+                + " your requisition: " + req.IdRequisition + " raised on " + req.RaiseDate + " has been rejected.";
+
+            _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+            //end of notification sending 
+
             return RedirectToAction("PendingLists", "DepartmentHead");
         }
 
