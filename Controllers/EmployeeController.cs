@@ -6,6 +6,9 @@ using System.Web.Mvc;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Filters;
+using Microsoft.AspNet.SignalR;
+using Team8ADProjectSSIS.Hubs;
+using Team8ADProjectSSIS.EmailModel;
 
 //@phyu
 namespace Team8ADProjectSSIS.Controllers
@@ -110,7 +113,28 @@ namespace Team8ADProjectSSIS.Controllers
 
             int idEmployee = (int)Session["IdEmployee"];
 
-            _requisitionDAO.CreateRequisition(idEmployee);
+            Requisition req=_requisitionDAO.CreateRequisition(idEmployee);
+
+            //@Shutong: send notification here
+            int IdHead = _employeeDAO.FindHeadIdByIdEmployee(idEmployee);
+            int IdActingHead = _employeeDAO.FindActingHeadIdByIdEmployee(idEmployee);
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            hub.Clients.All.receiveNotification(IdHead);
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi Department Head," + _employeeDAO.FindEmployeeById(idEmployee).Name
+                + "has raised a stationery requisition: " + req.IdRequisition + " on " + req.RaiseDate + ". Please kindly approve or reject it.";
+            _notificationChannelDAO.CreateNotificationsToIndividual(IdHead, (int)Session["IdEmployee"], message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdHead).Email, "SSIS System Email", message);
+            if (IdActingHead != 0)
+            {
+                message = "Hi Department Acting Head," + _employeeDAO.FindEmployeeById(idEmployee).Name
+               + "has raised a stationery requisition: " + req.IdRequisition + " on " + req.RaiseDate + ". Please kindly approve or reject it.";
+                hub.Clients.All.receiveNotification(IdActingHead);
+                _notificationChannelDAO.CreateNotificationsToIndividual(IdHead, (int)Session["IdEmployee"], message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdHead).Email, "SSIS System Email", message);
+            }
+            //end of notification sending 
+
             //replace with below
 
             /*            using (SqlConnection conn = new SqlConnection(connectionString))

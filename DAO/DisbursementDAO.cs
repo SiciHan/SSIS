@@ -121,7 +121,7 @@ namespace Team8ADProjectSSIS.DAO
                 if (disbursement != null && disbursement.IdDisbursement != 9) 
                 {
                     Status status = context.Status.Where(s => s.IdStatus == 9).FirstOrDefault();
-                    disbursement.IdStatus = 9;
+                    disbursement.IdStatus = 9;//Prepared
                     disbursement.Status = status;
                     disbursement.IdCollectionPt = department.IdCollectionPt;
                     context.SaveChanges();

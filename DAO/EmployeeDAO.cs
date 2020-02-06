@@ -85,5 +85,26 @@ namespace Team8ADProjectSSIS.DAO
             return ids;
          
         }
+
+
+        internal int FindHeadIdByIdEmployee(int idEmployee)
+        {
+            Employee e = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Department).FirstOrDefault();
+            string codeDepartment = e.Department.CodeDepartment;
+            return context.Employees.OfType<Employee>().Where(x => x.CodeDepartment == codeDepartment && x.Role.Label.Equals("Head")).FirstOrDefault().IdEmployee;
+        }
+
+        internal int FindActingHeadIdByIdEmployee(int idEmployee)
+        {
+            Employee e = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Department).FirstOrDefault();
+            string codeDepartment = e.Department.CodeDepartment;
+            Employee ah=context.Employees.OfType<Employee>().Where(x => x.CodeDepartment == codeDepartment && x.Role.Label.Equals("ActingHead")).FirstOrDefault();
+            if (ah != null)
+            {
+                return ah.IdEmployee;
+            }
+            return 0; 
+            
+        }
     }
 }
