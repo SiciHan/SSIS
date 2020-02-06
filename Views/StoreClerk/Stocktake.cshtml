@@ -46,13 +46,15 @@
 
 <hr />
 
-<br />
+<h3>Discrepancy Report</h3>
+<h4>Select Month</h4>
 
-<input type="month" name="targetMonth" id="targetMonth" value="@ViewBag.mth1" />
+<input type="month" name="targetMonth" id="targetMonth" value="@ViewBag.mth1" placeholder="YYYY-MM" />
 <button type="button" class="btn btn-outline-success" onclick="ViewStocktake(targetMonth.value)">Fetch</button>
 
 <br />
 <br />
+<h4>Last 3 months</h4>
 
 <button type="button" class="btn btn-outline-success" onclick="ViewStocktake('@ViewBag.mth2')">@ViewBag.mth2</button>
 <button type="button" class="btn btn-outline-success" onclick="ViewStocktake('@ViewBag.mth3')">@ViewBag.mth3</button>
@@ -151,7 +153,7 @@
 
             </div>
             <div class="modal-footer" id="modalBodyDivViewStocktake">
-                <input type="month" name="targetMonth" id="newMonth" />
+                <input type="month" name="targetMonth" id="newMonth" placeholder="YYYY-MM" />
                 <button type="button" class="btn btn-outline-success" onclick="ViewStocktake(newMonth.value)">Fetch</button>
             </div>
         </div>

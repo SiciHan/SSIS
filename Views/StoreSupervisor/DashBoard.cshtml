@@ -3,38 +3,38 @@
     ViewBag.Title = "DashBoard";
 }
 
-<div class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
 
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-        </div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
 
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li class="active">@Html.ActionLink("Dashboard", "Dashboard", "StoreSupervisor")</li>
-                <li>@Html.ActionLink("Stock Adjustment Voucher", "Index", "StoreSupervisor")</li>
-                <li>@Html.ActionLink("Purchase Order History", "POHistory", "StoreSupervisor")</li>
-                <li>@Html.ActionLink("Adjustment Voucher", "Voucher", "StoreSupervisor")</li>
-                <li>@Html.ActionLink("Adjustment Voucher History", "VoucherHistory", "StoreSupervisor")</li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li style="padding-right:8px">
-                    <a href="@Url.Action("Notification","StoreSupervisor")" style="padding-right:0px">
-                        <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active">@Html.ActionLink("Dashboard", "Dashboard", "StoreSupervisor")</li>
+                    <li>@Html.ActionLink("Purchase Order", "PurchaseOrder", "StoreSupervisor")</li>
+                    <li>@Html.ActionLink("Purchase Order History", "POHistory", "StoreSupervisor")</li>
+                    <li>@Html.ActionLink("Adjustment Voucher", "Voucher", "StoreSupervisor")</li>
+                    <li>@Html.ActionLink("Adjustment Voucher History", "VoucherHistory", "StoreSupervisor")</li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li style="padding-right:8px">
+                        <a href="@Url.Action("Notification","StoreSupervisor")" style="padding-right:0px">
+                            <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
 
-                    </a>
-                </li>
-                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-            </ul>
+                        </a>
+                    </li>
+                    <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 <h2>DashBoard</h2>
 
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />

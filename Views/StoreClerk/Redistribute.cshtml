@@ -88,7 +88,9 @@
 </div>
 
     <input type="hidden" name="disbId" value="@Model.IdDisbursement" />
-    <input type="date" class="form-control" id="pickDate" name="pickDate" value="@ViewBag.NextMon" min="@ViewBag.NextMon" />
-    <br />
-    <input type="submit" class="btn btn-success" value="Redistribute and Schedule Delivery" />
+    <div align="right">
+        <input type="date" class="form-control" id="pickDate" name="pickDate" value="@ViewBag.NextMon" min="@ViewBag.NextMon" />
+        <br />
+        <input type="submit" class="btn btn-success" value="Redistribute and Schedule Delivery" />
+    </div>
 }
