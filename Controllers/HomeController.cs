@@ -1,4 +1,7 @@
-﻿using System;
+﻿/*
+ Author: Shutong
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -11,6 +14,7 @@ using Team8ADProjectSSIS.Models;
 
 namespace Team8ADProjectSSIS.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly CategoryDAO _categoryDAO;
@@ -24,20 +28,12 @@ namespace Team8ADProjectSSIS.Controllers
             _roleDAO = new RoleDAO();
             _notificationChannelDAO = new NotificationChannelDAO();
         }
-/*        public HomeController(CategoryDAO categoryDAO)
-        {
-            _categoryDAO = categoryDAO;
-        }*/
-
         public ActionResult Chat()
         {
             return View();
         }
-
-
         public ActionResult Index()
         {
-
             return View();
         }
         [HttpGet]
@@ -112,24 +108,12 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-            Category c = new Category();
-            c.Label = "pen";
-            _categoryDAO.Create(c);
-           // DAO method
             return View();
         }
 
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-            using (SSISContext context = new SSISContext())
-            {
-                // Context method
-                Role c = new Role();
-                c.Label = "Manager";
-                context.Roles.Add(c);
-                context.SaveChanges();
-            }
             return View();
         }
 
