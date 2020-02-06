@@ -1,12 +1,16 @@
-﻿@model Team8ADProjectSSIS.Models.JoinDandDI
-@using Team8ADProjectSSIS.Models;
+﻿@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "DisbursementHistory";
-    List<JoinDandDI> AllDisbursement = (List<JoinDandDI>)ViewData["AllDisbursement"];
+    List<Disbursement> AllDisbursement = (List<Disbursement>)ViewData["AllDisbursement"];
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
 
-<h2>Disbursement History</h2>
+    <div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+        <div class="container">
+            <h2><b>Disbursement History</b></h2>
+            <p>You can view the details of each disbursement here!</p>
+        </div>
+    </div>
 
 <table>
     <tr>
@@ -14,13 +18,29 @@
         <th>Date</th>
         <th colspan="2">Status</th>
     </tr>
-    @foreach (JoinDandDI i in AllDisbursement)
+    @foreach (Disbursement i in AllDisbursement)
     {
-        <tr>
-            <td>@i.department.Name</td>
-            <td>@i.disbursement.Date</td>
-            <td>@i.status.Label</td>
-            <td>@Html.ActionLink("View", "DisbursementDetails", "StoreManager", new { IdDisbursement = i.disbursement.IdDisbursement }, null)</td>
-        </tr>
+<tr>
+    <td>@i.Department.Name</td>
+    <td>@i.Date.ToString("dd-MM-yyyy")</td>
+    <td>@i.Status.Label</td>
+    <td>@Html.ActionLink("View", "DisbursementDetails", "StoreManager", new { IdDisbursement = i.IdDisbursement }, null)</td>
+</tr>
     }
 </table>
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>

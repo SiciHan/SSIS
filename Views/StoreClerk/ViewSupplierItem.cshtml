@@ -1,0 +1,73 @@
+﻿@using Team8ADProjectSSIS.Models
+@{
+    ViewBag.Title = "View Supplier Item";
+    var supplierItem = ViewData["supplierItem"] as SupplierItem;
+}
+
+<!--Please copy paste this div-->
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Dashboard", "Index", "StoreClerk")</li>
+                <li>@Html.ActionLink("Retrieval", "FormRetrieve", "StoreClerk")</li>
+                <li>@Html.ActionLink("Disbursement", "Disbursement", "StoreClerk")</li>
+                <li class="active">@Html.ActionLink("Purchase Order", "PurchaseOrderList", "StoreClerk")</li>
+                <li>@Html.ActionLink("Stock Take", "Stocktake", "StoreClerk")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="@Url.Action("Index","StoreClerk")">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell"><span id="noti-count" class="badge badge-pill badge-primary badge-danger">&nbsp;</span></span>
+                    </a>
+                </li>
+                <li><a href="@Url.Action("Logout", "Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h2>View Supplier Item</h2>
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+
+
+<div>
+    <p>Item :<span>@supplierItem.Item.Description</span></p>
+    <p>Available Stock: <span>@supplierItem.Item.AvailableUnit</span> <span>@supplierItem.Item.unitOfMeasure</span></p>
+    <p>In Stock: <span>@supplierItem.Item.StockUnit</span> <span>@supplierItem.Item.unitOfMeasure</span></p>
+    <p>Reorder Level: <span>@supplierItem.Item.ReorderLevel</span> <span>@supplierItem.Item.unitOfMeasure</span></p>
+    <p>Minimun Order: <span>@supplierItem.Item.ReorderUnit</span> <span>@supplierItem.Item.unitOfMeasure</span></p>
+    <p>Supplier :<span>@supplierItem.Supplier.Name</span></p>
+    <p>Item Price : $<span>@supplierItem.Price</span></p>
+    <p>Supplier Contact: <span>@supplierItem.Supplier.ContactTitle @supplierItem.Supplier.ContactName</span></p>
+    <p>Supplier Tel: <span>@supplierItem.Supplier.Tel</span></p>
+    <p>Supplier Fax: <span>@supplierItem.Supplier.Fax</span></p>
+    <p>Supplier Address: <span>@supplierItem.Supplier.Address</span></p>
+    <p>Number of Processing Days: <span>@supplierItem.Supplier.SupplyDelay</span> </p>
+</div>
+
+<div align="right">
+    <a href="@Url.Action("MakePurchaseOrder","StoreClerk")" class="btn btn-primary">>>>Continue Shopping</a>
+</div>
+
+
+@section scripts{
+
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/POCart.js"></script>
+
+}
+
+

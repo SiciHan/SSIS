@@ -1,0 +1,48 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "RequisitionHistory";
+    List<Requisition> AllRequisitions = (List<Requisition>)ViewData["AllRequisition"];
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+}
+
+    <div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+        <div class="container">
+            <h2><b>Requisition History</b></h2>
+            <p>You can view the details of each requisition here!</p>
+        </div>
+    </div>
+<table>
+    <tr>
+        <th>Requisition No</th>
+        <th>Department</th>
+        <th>Approved Date</th>
+        <th colspan="2">Remark</th>
+    </tr>
+    @foreach (Requisition i in AllRequisitions)
+    {
+        <tr>
+            <td>@i.IdRequisition</td>
+            <td>@i.Employee.CodeDepartment</td>
+            <td>@i.ApprovedDate</td>
+            <td>@i.HeadRemark</td>
+            <td>@Html.ActionLink("View", "RequisitionDetails", "StoreManager", new { IdRequisition = i.IdRequisition }, null)</td>
+        </tr>
+    }
+</table>
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
+

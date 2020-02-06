@@ -561,6 +561,8 @@
     <Content Include="Views\StoreManager\Notification.cshtml" />
     <Content Include="Views\DepartmentRepresentative\Notification.cshtml" />
     <Content Include="Views\StoreSupervisor\DashBoard.cshtml" />
+    <Content Include="Views\StoreManager\RequisitionHistory.cshtml" />
+    <Content Include="Views\StoreManager\RequisitionDetails.cshtml" />
     <Content Include="Views\Employee\Notification.cshtml" />
     <Content Include="Views\DepartmentHead\PendingLists.cshtml" />
     <Content Include="Views\DepartmentActingHead\Pending.cshtml" />
@@ -572,6 +574,9 @@
     <Content Include="Views\StoreSupervisor\Notification.cshtml" />
     <Content Include="Views\DepartmentHead\Notification.cshtml" />
     <Content Include="Views\DepartmentActingHead\Notification.cshtml" />
+    <Content Include="Views\StoreClerk\ViewSupplierItem.cshtml" />
+    <Content Include="Views\Home\Logout.cshtml" />
+    <Content Include="Views\Home\SessionExpired.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

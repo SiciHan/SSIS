@@ -45,61 +45,66 @@
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 @if (!NoDisbursement)
 {
-
-    using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
-    {
-        <div width="513" onclick="choicetest();">
-            <input type="checkbox" name="idCPs" id="CPs" value="1" />Management School
-            <input type="checkbox" name="idCPs" id="CPs" value="2" />Stationery Store
-            <input type="checkbox" name="idCPs" id="CPs" value="3" />Medical School
-            <p></p>
-            <input type="checkbox" name="idCPs" id="CPs" value="4" />Engineering School
-            <input type="checkbox" name="idCPs" id="CPs" value="5" />Science School
-            <input type="checkbox" name="idCPs" id="CPs" value="6" />University Hospital
-        </div>
-        <input type="hidden" name="StartDate" value=@ViewBag.LastThu />
-        <input type="hidden" name="EndDate" value=@ViewBag.Today />
-        <input type="submit" name="ChangeButton" value="Change" onclick="ConfirmChange()" class="btn btn-primary" />
-    }
-    using (Html.BeginForm("SaveDisbursement", "StoreClerk", FormMethod.Post))
-    {
-        <table>
-            <thead>
-                <tr class="table100-head">
-                    <th class="col-1"></th>
-                    <th class="col-2">Description</th>
-                    <th class="col-3">Total Needed</th>
-                    <th class="col-4">Total Available</th>
-                    <th class="col-5">Location</th>
-                </tr>
-            </thead>
-            @foreach (var retrievalform in RetrievalForm)
-            {
-                <tbody>
-                    <tr>
-                        <td class="col-1">
-                            <input type="checkbox" name="IdItemRetrieved" value="@retrievalform.IdItem" />
-                        </td>
-                        <td class="col-2">@retrievalform.Description </td>
-                        <td class="col-3">@retrievalform.Unit</td>
-                        <td class="col-4">@retrievalform.StockUnit</td>
-                        <td class="col-5">@retrievalform.Location</td>
+    <div class="form">
+        @using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
+        {
+            <div width="513" onclick="choicetest();">
+                <input type="checkbox" name="idCPs" id="CPs" value="1" />Management School
+                <input type="checkbox" name="idCPs" id="CPs" value="2" />Stationery Store
+                <input type="checkbox" name="idCPs" id="CPs" value="3" />Medical School
+                <p></p>
+                <input type="checkbox" name="idCPs" id="CPs" value="4" />Engineering School
+                <input type="checkbox" name="idCPs" id="CPs" value="5" />Science School
+                <input type="checkbox" name="idCPs" id="CPs" value="6" />University Hospital
+            </div>
+            <div>
+                <input type="hidden" name="StartDate" value=@ViewBag.LastThu />
+                <input type="hidden" name="EndDate" value=@ViewBag.Today />
+                <input type="submit" class="btn btn-primary" value="Change" onclick="ConfirmChange()" class="btn btn-primary" />
+            </div>
+        }
+    </div>
+    <br />
+    <div class="form">
+        @using (Html.BeginForm("SaveDisbursement", "StoreClerk", FormMethod.Post))
+        {
+            <table>
+                <thead>
+                    <tr class="table100-head">
+                        <th class="col-1"></th>
+                        <th class="col-2">Description</th>
+                        <th class="col-3">Total Needed</th>
+                        <th class="col-4">Total Available</th>
+                        <th class="col-5">Location</th>
                     </tr>
-                </tbody>
-            }
-        </table>
-        <div style="display: inline" float="right">
-            <input type="submit" value="Retrieve" style="padding: 10px 15px; cursor:pointer; background-color:cornflowerblue" />
-        </div>
-    }
-    using (Html.BeginForm("PrintPdf", "StoreClerk", FormMethod.Post))
-    {
-        <div style="display: inline" float="right">
-            <input type="submit" value="Print" style="padding: 10px 15px; cursor:pointer; background-color:aquamarine" />
+                </thead>
+                @foreach (var retrievalform in RetrievalForm)
+                {
+                    <tbody>
+                        <tr>
+                            <td class="col-1">
+                                <input type="checkbox" name="IdItemRetrieved" value="@retrievalform.IdItem" />
+                            </td>
+                            <td class="col-2">@retrievalform.Description </td>
+                            <td class="col-3">@retrievalform.Unit</td>
+                            <td class="col-4">@retrievalform.StockUnit</td>
+                            <td class="col-5">@retrievalform.Location</td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+            <button type="submit" class="btn btn-primary" style="padding: 10px 20px; cursor:pointer">Retrieve</button>
+        }
+    </div>
+    <div class="form">
+        @using (Html.BeginForm("PrintPdf", "StoreClerk", FormMethod.Post))
+        {
+            <button type="submit" class="btn btn-info" style="padding: 10px 20px; cursor:pointer">Print</button>
             <input type="hidden" name="StartDate" value="@(ViewBag.LastThu ?? String.Empty)" />
             <input type="hidden" name="EndDate" value="@(ViewBag.Today ?? String.Empty)" />
-        </div>
-    }
+        }
+        <br />
+    </div>
 
 }
 else
@@ -110,25 +115,31 @@ else
     }
     else
     {
-        <div>
-            @using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
-            {
-                @Html.Editor("StartDate", new { htmlAttributes = new { @class = "startdate", @readonly = "readonly", placeholder = "Start Date..." } })
-                @Html.Editor("EndDate", new { htmlAttributes = new { @class = "enddate", @readonly = "readonly", placeholder = "End Date..." } })
-                <input type="submit" name="FormRetrieve" value="Get Retrieval Form" />
-            }
-        </div>
+<div class="form-inline">
+    @using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post, new { @class="DateSubmit", onsubmit="return DateValidation();"}))
+    {
+        @Html.Editor("StartDate", new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", placeholder = "Start Date..." } })
+        @:&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.Editor("EndDate", new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", placeholder = "End Date..." } })
+        @:&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="submit" class="btn btn-primary" name="FormRetrieve" value="Get Retrieval Form" />
+
+    }
+</div>
     }
 }
 
 <link rel="stylesheet" href="~/Content/themes/base/jquery-ui.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
 @section Scripts{
 
     <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
     <script src="~/signalr/hubs"></script>
     <script src="~/Scripts/FormRetrieve.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script type="text/javascript">
         var Today = new Date();
@@ -137,23 +148,30 @@ else
         var LastThu = new Date(parts[2], parts[1] - 1, parts[0]);
 
         $(function () {
-            $(".startdate").datepicker({
+            $("#StartDate").datepicker({
                 dateFormat: "dd-mm-yy",
                 minDate: LastThu,
                 maxDate: Today,
                 autohide: true,
-                showOn: "both",
-                buttonText: "<i class='fa fa-calendar'></i>",
             });
-            $(".enddate").datepicker({
+            $("#EndDate").datepicker({
                 dateFormat: "dd-mm-yy",
                 minDate: LastThu,
                 maxDate: Today,
                 autohide: true,
-                showOn: "both",
-                buttonText: "<i class='fa fa-calendar'></i>",
             });
         });
+
+        function DateValidation() {
+            if ($("#StartDate").datepicker("getDate") === null) {
+                alert("No Start Date Selected");
+            }
+            if ($("#EndDate").datepicker("getDate") === null) {
+                alert("No End Date Selected");
+            }
+        }
+        
+
 
         function choicetest() {
             var choicearr = document.getElementsByName("idCPs");
@@ -220,7 +238,6 @@ else
         border-spacing: 1px;
         border-collapse: collapse;
         background: white;
-        border-radius: 10px;
         overflow: hidden;
         width: 100%;
         margin: 0 auto;
@@ -249,6 +266,7 @@ else
         color: #000000;
         line-height: 1.2;
         font-weight: unset;
+        background-color: gray;
     }
 
     tbody tr:nth-child(even) {
@@ -286,6 +304,15 @@ else
     .col-5 {
         width: 10%;
         text-align: center;
+    }
+
+    .form Button {
+        float: right;
+        margin: 10px
+    }
+
+    .form div {
+        display: inline-block;
     }
 </style>
 

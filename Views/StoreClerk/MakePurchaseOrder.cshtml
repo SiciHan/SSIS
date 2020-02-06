@@ -94,9 +94,9 @@
                                 <td>@item.AvailableUnit</td>
                                 <td>@item.ReorderUnit</td>
                                 <td>@item.PurchaseOrderDetails.Where(x => x.PurchaseOrder.IdStatus == 1 || x.PurchaseOrder.IdStatus == 2 || x.PurchaseOrder.IdStatus == 3 || x.PurchaseOrder.IdStatus == 4).Sum(x => x.OrderUnit).ToString()</td>
-                                <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier1" checked /> @item.CodeSupplier1</td>
-                                <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier2" />@item.CodeSupplier2</td>
-                                <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier3" />@item.CodeSupplier3</td>
+                                <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier1" checked /><a href="/StoreClerk/ViewSupplierItem?Iditem=@item.IdItem&codesupplier=@item.CodeSupplier1">@item.CodeSupplier1</a></td>
+                                <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier2" /><a href="/StoreClerk/ViewSupplierItem?Iditem=@item.IdItem&codesupplier=@item.CodeSupplier2">@item.CodeSupplier2</a></td>
+                                <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier3" /><a href="/StoreClerk/ViewSupplierItem?Iditem=@item.IdItem&codesupplier=@item.CodeSupplier3">@item.CodeSupplier3</a></td>
                             </tr>
 
                         }
@@ -157,9 +157,9 @@
                             <td>@item.AvailableUnit</td>
                             <td>@item.ReorderUnit</td>
                             <td>@item.PurchaseOrderDetails.Where(x => x.PurchaseOrder.IdStatus == 1 || x.PurchaseOrder.IdStatus == 2 || x.PurchaseOrder.IdStatus == 3 || x.PurchaseOrder.IdStatus == 4).Sum(x => x.OrderUnit).ToString()</td>
-                            <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier1" checked /> @item.CodeSupplier1</td>
-                            <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier2" />@item.CodeSupplier2</td>
-                            <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier3" />@item.CodeSupplier3</td>
+                            <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier1" checked /> <a href="/StoreClerk/ViewSupplierItem?Iditem=@item.IdItem&codesupplier=@item.CodeSupplier1">@item.CodeSupplier1</a></td>
+                            <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier2" /><a href="/StoreClerk/ViewSupplierItem?Iditem=@item.IdItem&codesupplier=@item.CodeSupplier1">@item.CodeSupplier2</a></td>
+                            <td><input type="radio" name="orderFor-@item.IdItem.ToString()" value="@item.CodeSupplier3" /><a href="/StoreClerk/ViewSupplierItem?Iditem=@item.IdItem&codesupplier=@item.CodeSupplier1">@item.CodeSupplier3</a></td>
                         </tr>
 
                     }
