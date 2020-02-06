@@ -7,6 +7,11 @@
 }
 
 
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/EmployeeNotification.js"></script>
+}
 
 <!DOCTYPE html>
 <html>
@@ -294,12 +299,12 @@
 
         }
 
-        
-    function removeCart() {
-        var buttonClicked = document.getElementsByClassName('btn-remove')[0];
-        buttonClicked.parentElement.parentElement.remove()
-        // updateCartTotal()
-    }
+
+        function removeCart() {
+            var buttonClicked = document.getElementsByClassName('btn-remove')[0];
+            buttonClicked.parentElement.parentElement.remove()
+            // updateCartTotal()
+        }
 
         function removeCartItem(selectedButton) {
 
@@ -374,7 +379,7 @@
 
             });
 
-         document.getElementsByClassName('btn-purchase')[0].addEventListener('click', function () {
+            document.getElementsByClassName('btn-purchase')[0].addEventListener('click', function () {
 
                 //      createReq();
                 createReqitems();
@@ -401,53 +406,53 @@
                  }  */
 
             });
-      
-        function createReqitems() {
 
-            var cartItems = document.getElementsByClassName('cart-items')[0]
-            var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
-            var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
+            function createReqitems() {
 
-            var f = {};
-            f.url = '/Employee/reqId/';
-            f.type = "POST";
-            f.dataType = "json";
-            f.data = JSON.stringify({ username: "Sam Worthington" });
-            f.contentType = "application/json";
-            f.success = function (response) {
+                var cartItems = document.getElementsByClassName('cart-items')[0]
+                var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
+                var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
 
-
-
-                for (var i = 0; i < cartItemNames.length; i++) {
-                    var g = {};
-                    g.url = '/Employee/OnJSON';
-                    g.type = "POST";
-                    g.dataType = "json";
-                    g.data = JSON.stringify({ itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
-                    g.contentType = "application/json";
-                    g.success = function (response) {
-                        // alert("Req Items write success");
-                    };
-                    g.error = function (response) {
-                        // alert("Req Items write failed");
-                    };
-                    $.ajax(g);
-                }
-
-                alert("Requisition has been sucessfully created!");
-
-                while (cartItems.hasChildNodes()) {
-                    cartItems.removeChild(cartItems.firstChild)
-                }
-
-            };
-            f.error = function (response) {
-                alert("Requisition creation failed.Please try again!");
-            };
-            $.ajax(f);
+                var f = {};
+                f.url = '/Employee/reqId/';
+                f.type = "POST";
+                f.dataType = "json";
+                f.data = JSON.stringify({ username: "Sam Worthington" });
+                f.contentType = "application/json";
+                f.success = function (response) {
 
 
-        }
+
+                    for (var i = 0; i < cartItemNames.length; i++) {
+                        var g = {};
+                        g.url = '/Employee/OnJSON';
+                        g.type = "POST";
+                        g.dataType = "json";
+                        g.data = JSON.stringify({ itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
+                        g.contentType = "application/json";
+                        g.success = function (response) {
+                            // alert("Req Items write success");
+                        };
+                        g.error = function (response) {
+                            // alert("Req Items write failed");
+                        };
+                        $.ajax(g);
+                    }
+
+                    alert("Requisition has been sucessfully created!");
+
+                    while (cartItems.hasChildNodes()) {
+                        cartItems.removeChild(cartItems.firstChild)
+                    }
+
+                };
+                f.error = function (response) {
+                    alert("Requisition creation failed.Please try again!");
+                };
+                $.ajax(f);
+
+
+            }
 
 
         });
@@ -476,12 +481,20 @@
                     <li>@Html.ActionLink("History", "Update", "Employee")</li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" id="noti-logout">
-                    <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                    <li style="padding-right:8px">
+                        <a href="@Url.Action("Notification","Employee")" style="padding-right:0px">
+                            <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
+                        </a>
+                    </li>
                     <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
+
+    <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+    <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
     <button class="btn btn-primary add-item-button" id="add" onclick="newPopup('https://localhost:44304/Employee/CreatePopup')" style="margin-top: 120px;">Add Item</button>
 

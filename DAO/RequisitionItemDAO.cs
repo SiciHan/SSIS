@@ -16,7 +16,20 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
-
+        //SH
+        public List<RequisitionItem> FindRequisitionItem(int idRequisition)
+        {
+            return context.RequisitionItems.Include("Item").Where(r => r.IdRequisiton == idRequisition).ToList();
+        }
+        //SH --> 
+        public List<RequisitionItem> GetItemListRequisition(int idRequisition)
+        {
+            RequisitionDAO _requisitionDAO = new RequisitionDAO();
+            Requisition requisition = _requisitionDAO.FindRequisitionByRequisionId(idRequisition); // find requisitionItemList by reqId
+            // compare idtem with Item to retrieve list of Requested Item
+            return context.RequisitionItems.Where(r => r.IdRequisiton == requisition.IdRequisition).ToList(); // gives list of RequisitionItems
+            //return context.Items.Where(i => i.IdItem == requisition.IdRequisition).ToList();
+        }
         public List<Retrieval> RetrieveRequisitionItem(List<Retrieval> RetrievalItem)
         {
             var RetrievalForm = RetrievalItem.GroupBy(x => x.IdItem)
@@ -48,8 +61,11 @@ namespace Team8ADProjectSSIS.DAO
 
         internal void UpdateRequisitionItemUnit(int? selectedId, string itemName, int? quantity)
         {
-            RequisitionItem requisitionItem = context.RequisitionItems.OfType<RequisitionItem>().Where(x => x.Item.Description.Equals(itemName) && x.IdRequisiton == (selectedId.GetValueOrDefault())).FirstOrDefault();
-            requisitionItem.Unit = quantity.GetValueOrDefault();
+            int id = selectedId.GetValueOrDefault(0);
+            int qty = quantity.GetValueOrDefault(0);
+
+            RequisitionItem requisitionItem = context.RequisitionItems.OfType<RequisitionItem>().Where(x => x.Item.Description.Equals(itemName) && x.IdRequisiton == id).FirstOrDefault();
+            requisitionItem.Unit = qty;
             context.SaveChanges();
 
         }
@@ -58,23 +74,25 @@ namespace Team8ADProjectSSIS.DAO
         {
             RequisitionItem requisitionItem = new RequisitionItem();
             Item item = context.Items.OfType<Item>().Where(x => x.Description.Equals(itemName)).FirstOrDefault();
-            requisitionItem.IdRequisiton = selectedId.GetValueOrDefault();
+            requisitionItem.IdRequisiton = selectedId.GetValueOrDefault(0);
             requisitionItem.Item = item;
-            requisitionItem.Unit = quantity.GetValueOrDefault();
+            requisitionItem.Unit = quantity.GetValueOrDefault(0);
             context.RequisitionItems.Add(requisitionItem);
             context.SaveChanges();
         }
 
         internal void DeleteRequisitionItem(int? selectedId, string itemName)
         {
-            RequisitionItem requisitionItem = context.RequisitionItems.OfType<RequisitionItem>().Where(x => x.Item.Description.Equals(itemName) && x.IdRequisiton == (selectedId.GetValueOrDefault())).FirstOrDefault();
+            int id = selectedId.GetValueOrDefault(0);
+            RequisitionItem requisitionItem = context.RequisitionItems.OfType<RequisitionItem>().Where(x => x.Item.Description.Equals(itemName) && x.IdRequisiton == id).FirstOrDefault();
             context.RequisitionItems.Remove(requisitionItem);
             context.SaveChanges();
         }
 
         internal void DeleteRequisitionItemByReqId(int? selectedId)
         {
-            List<RequisitionItem> reqItemList = context.RequisitionItems.OfType<RequisitionItem>().Where(x => x.IdRequisiton == selectedId.GetValueOrDefault()).ToList();
+            int id = selectedId.GetValueOrDefault(0);
+            List<RequisitionItem> reqItemList = context.RequisitionItems.OfType<RequisitionItem>().Where(x => x.IdRequisiton == id).ToList();
             context.RequisitionItems.RemoveRange(reqItemList);
             context.SaveChanges();
         }

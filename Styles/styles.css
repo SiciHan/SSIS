@@ -188,6 +188,7 @@ span.search-filter {
     margin-top:70px;
 }
 
+
 .navbar-nav {
     display: -ms-flexbox;
     display: flex;
@@ -387,8 +388,7 @@ span.search-filter {
 
 .btn-remove {
     color: white;
-    background-color: #EB5757;
-    border: none;
+    background: linear-gradient(135deg, #3FABFF, #006BFF);
     border-radius: .3em;
     font-weight: bold;
 }

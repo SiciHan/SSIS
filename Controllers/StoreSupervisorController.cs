@@ -7,25 +7,39 @@ using System.Web.Mvc;
 using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
-using Team8ADProjectSSIS.DAO;
-using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Report;
+using Team8ADProjectSSIS.Filters;
 
 namespace Team8ADProjectSSIS.Controllers
 {
+    [AuthorizeFilter]
+    [AuthenticateFilter]
     public class StoreSupervisorController : Controller
     {
         StockRecordDAO _stockRecordDAO;
         ItemDAO _itemDAO;
         PurchaseOrderDAO _purchaseOrderDAO;
         PurchaseOrderDetailsDAO _purchaseOrderDetailsDAO;
-
+        NotificationChannelDAO _notificationChannelDAO;
         public StoreSupervisorController()
         {
             this._stockRecordDAO = new StockRecordDAO();
             this._itemDAO = new ItemDAO();
             this._purchaseOrderDAO = new PurchaseOrderDAO();
             this._purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
+            _notificationChannelDAO = new NotificationChannelDAO();
+        }
+
+        public ActionResult Notification()
+        {
+            int IdReceiver = 1;
+            if (Session["IdEmployee"] != null)
+            {
+                IdReceiver = (int)Session["IdEmployee"];
+            }
+            ViewData["NCs"] = _notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver);
+
+            return View();
         }
 
         public ActionResult Voucher()
@@ -83,7 +97,9 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult PurchaseOrderDetail(int idPurchaseOrder)
         {
             List<PurchaseOrderDetail> PODetails = _purchaseOrderDetailsDAO.FindDetailPO(idPurchaseOrder);
+            PurchaseOrder po = _purchaseOrderDAO.FindPOById(idPurchaseOrder);
             ViewData["POD"] = PODetails;
+            ViewBag.po = po;
             return View();
         }
         public ActionResult DashBoard()
@@ -104,5 +120,46 @@ namespace Team8ADProjectSSIS.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public ActionResult HandlePO(string handle, List<int> purchase_ordersId)
+        {
+            List<PurchaseOrder> purchaseOrders = new List<PurchaseOrder>();
+            foreach (int id in purchase_ordersId)
+            {
+                PurchaseOrder po = _purchaseOrderDAO.FindPOById(id);
+                purchaseOrders.Add(po);
+            }
+            if (handle == "Approve")
+            {
+                _purchaseOrderDAO.UpdatePOToApproved(purchaseOrders);
+            }
+            else
+            {
+                _purchaseOrderDAO.UpdatePOToRejected(purchaseOrders);
+            }
+            return RedirectToAction("PurchaseOrder", "StoreSupervisor");
+        }
+
+        [HttpPost]
+        public ActionResult Handlejustment(string handle, List<int> vouchersId)
+        {
+            List<StockRecord> vouchers = new List<StockRecord>();
+            foreach (int id in vouchersId)
+            {
+                StockRecord voucher = _stockRecordDAO.FindById(id);
+                vouchers.Add(voucher);
+            }
+            if (handle == "Approve")
+            {
+                _stockRecordDAO.UpdateVoucherToApproved(vouchers);
+            }
+            else
+            {
+                _stockRecordDAO.UpdateVoucherToRejected(vouchers);
+            }
+            return RedirectToAction("Voucher", "StoreSupervisor");
+        }
+
     }
 }

@@ -1,6 +1,7 @@
-﻿
+﻿@using Team8ADProjectSSIS.Models;
 @{
-    ViewBag.Title = "DashBoard";
+    ViewBag.Title = "Notification";
+    var NCs = ViewData["NCs"] as IList<NotificationChannel>;
 }
 
 <div class="navbar navbar-default navbar-fixed-top">
@@ -17,8 +18,8 @@
 
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active">@Html.ActionLink("Dashboard", "Dashboard", "StoreSupervisor")</li>
-                <li>@Html.ActionLink("Stock Adjustment Voucher", "Index", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Dashboard", "Dashboard", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Purchase Order", "PurchaseOrder", "StoreSupervisor")</li>
                 <li>@Html.ActionLink("Purchase Order History", "POHistory", "StoreSupervisor")</li>
                 <li>@Html.ActionLink("Adjustment Voucher", "Voucher", "StoreSupervisor")</li>
                 <li>@Html.ActionLink("Adjustment Voucher History", "VoucherHistory", "StoreSupervisor")</li>
@@ -35,51 +36,56 @@
         </div>
     </div>
 </div>
-<h2>DashBoard</h2>
+
+<h2>Notification</h2>
 
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
 
-<div class="box">
-    @using (Html.BeginForm("ExportExcel", "StoreSupervisor", FormMethod.Post))
+<button id="Unread" class="btn">Unread</button>
+<button id="Read" class="btn">Read</button>
+<button id="All" class="btn">All Notifications</button>
+
+
+<div id="UnreadNC">
+    @foreach (NotificationChannel nc in NCs)
     {
-        <button class="download"><i class="fa fa-download"></i></button>
-    }
-    @using (Html.BeginForm("PrintPDF", "StoreSupervisor", FormMethod.Post))
-    {
-        <button class="print"><i class="fa fa-print"></i></button>
+        if (nc.IsRead == false)
+        {
+
+            <div>
+                <p><span>Date: @nc.Date   </span><span><button class="btn" name="markasread" id="@nc.IdNC">Mark as Read</button></span></p>
+                <p>@nc.Notification.Text</p>
+            </div>
+        }
     }
 </div>
 
 
-
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-    .box {
-        float: right;
-    }
-
-        .box button {
-            font-size: 24px;
-            background-color: white;
-            border: none;
+<div id="ReadNC">
+    @foreach (NotificationChannel nc in NCs)
+    {
+        if (nc.IsRead == true)
+        {
+            <div>
+                <p><span>Date: @nc.Date   </span><span><button class="btn" name="markasunread" id="@nc.IdNC">Mark as Unread</button></span></p>
+                <p>@nc.Notification.Text</p>
+            </div>
         }
-
-    .download {
-        color: red;
     }
+</div>
 
-    .print {
-        color: blue;
-    }
 
-    .box form {
-        display: inline-block;
+<div id="AllNC">
+    @foreach (NotificationChannel nc in NCs)
+    {
+        <div>
+            <p><span>Date: @nc.Date   </span></p>
+            <p>@nc.Notification.Text</p>
+        </div>
     }
-</style>
+</div>
 
 @section scripts{
     <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
