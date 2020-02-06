@@ -1,7 +1,7 @@
 ﻿@model Team8ADProjectSSIS.Models.PurchaseOrder
 @using Team8ADProjectSSIS.Models;
 @{
-    ViewBag.Title = "POHistory";
+    ViewBag.Title = "POHistory - Manager";
     List<PurchaseOrder> AllPO = (List<PurchaseOrder>)ViewData["AllPO"];
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
@@ -21,6 +21,7 @@
         <th>Order Date</th>
         <th>DeliverDate</th>
         <th colspan="2">Status</th>
+        <th>Remarks</th>
     </tr>
     @foreach (PurchaseOrder i in AllPO)
     {
@@ -31,6 +32,7 @@
             <td>@i.OrderDate</td>
             <td>@i.DeliverDate</td>
             <td>@i.Status.Label</td>
+            <td>@i.PurchaseRemarks</td>
             <td>@Html.ActionLink("View", "PODetails", "StoreManager", new { IdPurchaseOrder = i.IdPurchaseOrder }, null)</td>
         </tr>
     }

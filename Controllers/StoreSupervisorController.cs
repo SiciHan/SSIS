@@ -126,7 +126,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
           
         [HttpPost]
-        public ActionResult HandlePO(string handle, List<int> purchase_ordersId)
+        public ActionResult HandlePO(string handle, List<int> purchase_ordersId, string remarks)
         {
             List<PurchaseOrder> purchaseOrders = new List<PurchaseOrder>();
             foreach (int id in purchase_ordersId)
@@ -140,7 +140,7 @@ namespace Team8ADProjectSSIS.Controllers
             }
             else
             {
-                _purchaseOrderDAO.UpdatePOToRejected(purchaseOrders);
+                _purchaseOrderDAO.UpdatePOToRejected(purchaseOrders, remarks);
             }
             return RedirectToAction("PurchaseOrder", "StoreSupervisor");
         }
@@ -164,6 +164,5 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return RedirectToAction("Voucher", "StoreSupervisor");
         }
-
     }
 }
