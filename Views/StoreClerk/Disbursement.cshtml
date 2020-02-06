@@ -39,10 +39,10 @@
     </div>
 </div>
 
-<h2>Disbursement</h2>
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
+<h3>Disbursement to Schedule</h3>
 @using (Html.BeginForm("Schedule", "StoreClerk", FormMethod.Post))
 {
     <table class="table table-hover redistribute_table">
@@ -87,8 +87,8 @@
     </table>
     if (prepList.Count > 0)
     {
-        <div class="form-group">
-            <input type="date" class="form-control" id="pickDate" name="pickDate" value="@ViewBag.NextMon" min="@ViewBag.NextMon" />
+        <div class="form-group" align="right">
+            <input type="date" class="form-control" id="pickDate" name="pickDate" value="@ViewBag.NextMon" min="@ViewBag.NextMon" placeholder="dd/mm/yyyy"/>
             <br />
             <input type="submit" value="Schedule" class="btn btn-primary" />
         </div>
@@ -97,6 +97,7 @@
 
 <hr />
 
+<h3>Disbursement History</h3>
 <table class="table table-hover">
     <thead>
         <tr>
@@ -106,13 +107,22 @@
             <th scope="col"></th>
         </tr>
     </thead>
-    @foreach (Disbursement d in scheList)
+    @if (scheList.Count > 0)
     {
-        <tr>
-            <td>@d.Department.Name</td>
-            <td>@d.Date.ToString("dd-MM-yyyy")</td>
-            <td>@d.Status.Label</td>
-            <td><button type="button" class="btn btn-info" onclick="Disbursement(@d.IdDisbursement)" id="disb@(d.IdDisbursement)"><i class="glyphicon glyphicon-list"></i></button></td>
+        foreach (Disbursement d in scheList)
+        {
+            <tr>
+                <td>@d.Department.Name</td>
+                <td>@d.Date.ToString("dd-MM-yyyy")</td>
+                <td>@d.Status.Label</td>
+                <td><button type="button" class="btn btn-info" onclick="Disbursement(@d.IdDisbursement)" id="disb@(d.IdDisbursement)"><i class="glyphicon glyphicon-list"></i></button></td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr class="info">
+            <td colspan="4" align="center">No disbursements!</td>
         </tr>
     }
 </table>
@@ -142,8 +152,8 @@
 
             </div>
             <div class="modal-footer" id="modalFootDivDisbursement">
-                <button type="button" class="btn btn-default" onclick="RefreshDisb()">Refresh</button>
                 <label for="confirmDel" id="confirmDelLabel" class="btn btn-success" visible="false">Disburse</label>
+                <button type="button" class="btn btn-default" onclick="RefreshDisb()">Refresh</button>
             </div>
         </div>
     </div>
@@ -152,22 +162,8 @@
 
 <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
 <script src="~/signalr/hubs"></script>
+<script src="~/Scripts/FormRetrieve.js"></script>
 <script>
-    //copy paste this to all pages.
-    $.connection.hub.start()
-        .done()
-        .fail();
-
-    $.connection.chatHub.client.receiveNotification = function (IdReceiver) {
-        //if the notification is sent to me
-        if (parseInt($("#hdnSession1").val()) == IdReceiver) {
-            var count = 0;
-            count = parseInt($('#noti-count').html()) || 0;
-            count++;
-            alert("There is a notification");
-            $('#noti-count').html(count);
-        }
-    };
 
     var Redistribute = function (disbId) {
         var url = "/StoreClerk/Redistribute?disbId=" + disbId;

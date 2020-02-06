@@ -46,13 +46,15 @@
 
 <hr />
 
-<br />
+<h3>Discrepancy Report</h3>
+<h4>Select Month</h4>
 
-<input type="month" name="targetMonth" id="targetMonth" value="@ViewBag.mth1" />
+<input type="month" name="targetMonth" id="targetMonth" value="@ViewBag.mth1" placeholder="YYYY-MM" />
 <button type="button" class="btn btn-outline-success" onclick="ViewStocktake(targetMonth.value)">Fetch</button>
 
 <br />
 <br />
+<h4>Last 3 months</h4>
 
 <button type="button" class="btn btn-outline-success" onclick="ViewStocktake('@ViewBag.mth2')">@ViewBag.mth2</button>
 <button type="button" class="btn btn-outline-success" onclick="ViewStocktake('@ViewBag.mth3')">@ViewBag.mth3</button>
@@ -151,7 +153,7 @@
 
             </div>
             <div class="modal-footer" id="modalBodyDivViewStocktake">
-                <input type="month" name="targetMonth" id="newMonth" />
+                <input type="month" name="targetMonth" id="newMonth" placeholder="YYYY-MM" />
                 <button type="button" class="btn btn-outline-success" onclick="ViewStocktake(newMonth.value)">Fetch</button>
             </div>
         </div>
@@ -160,22 +162,8 @@
 
 <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
 <script src="~/signalr/hubs"></script>
+<script src="~/Scripts/FormRetrieve.js"></script>
 <script>
-    //copy paste this to all pages.
-    $.connection.hub.start()
-        .done()
-        .fail();
-
-    $.connection.chatHub.client.receiveNotification = function (IdReceiver) {
-        //if the notification is sent to me
-        if (parseInt($("#hdnSession1").val()) == IdReceiver) {
-            var count = 0;
-            count = parseInt($('#noti-count').html()) || 0;
-            count++;
-            alert("There is a notification");
-            $('#noti-count').html(count);
-        }
-    };
     var NewStocktake = function () {
         $("#modalStocktake").modal({
             backdrop: "static",
