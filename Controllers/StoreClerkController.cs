@@ -750,7 +750,8 @@ namespace Team8ADProjectSSIS.Controllers
                 String message = $"Attached a copy of the acknolwedged Disbursement for {targetDisbursement.CodeDepartment} on {targetDisbursement.Date.ToString("dd/MM/yyyy")}./n" +
                     $"Department Rep: " + depRep.Name + "/n" +
                     $"Store Clerk: " + _employeeDAO.FindEmployeeById(IdStoreClerk).Name +
-                $"Both achknowledged.";
+                $"Both achknowledged. " +
+                "Download report at https://localhost:44304/StoreClerk/PrintDisbursementPdf?disbId=" + targetDisbursement.IdDisbursement;
 
                 int notifId = _notificationDAO.CreateNotification(message);
                 _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
@@ -765,7 +766,29 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("Disbursement");
         }
-        
+
+        //James: Print Disbursement Details' PDF
+        [HttpGet]
+        public ActionResult PrintDisbursementPdf(IEnumerable<int> disbId)
+        //public ActionResult PrintDisbursementPdf(int disbId)
+        {
+            Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
+            //Disbursement targetDisbursement = _disbursementDAO.FindById(disbId);
+            List<DisbursementItem> targetList = targetDisbursement.DisbursementItems.ToList();
+
+            // Get Dep Rep
+            Employee depRep = targetDisbursement.Department.Employees
+                .Where(emp => emp.IdRole == 3)
+                .FirstOrDefault();
+
+            DisbursementReport disbursementReport = new DisbursementReport();
+            byte[] abytes = disbursementReport.PrepareReport(targetDisbursement, targetList, depRep);
+
+            String filename = $"{targetDisbursement.Date.ToString("yyyyMMdd")}_Disbursement_{targetDisbursement.IdDisbursement}.pdf";
+
+            return File(abytes, "application/pdf", filename);
+        }
+
         //James: Stocktake overview
         public ActionResult Stocktake()
         {

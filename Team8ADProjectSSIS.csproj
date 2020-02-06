@@ -303,6 +303,7 @@
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report\ExcelReport.cs" />
+    <Compile Include="Report\DisbursementReport.cs" />
     <Compile Include="Report\RetrievalFormReport.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

@@ -152,7 +152,8 @@
 
             </div>
             <div class="modal-footer" id="modalFootDivDisbursement">
-                <label for="confirmDel" id="confirmDelLabel" class="btn btn-success" visible="false">Disburse</label>
+                <label for="printDisbPdf" id="printDisbPdfLabel" class="btn btn-success" visible="false">Print PDF</label>
+                <label for="confirmDel" id="confirmDelLabel" class="btn btn-primary" visible="false">Disburse</label>
                 <button type="button" class="btn btn-default" onclick="RefreshDisb()">Refresh</button>
             </div>
         </div>
@@ -194,6 +195,12 @@
                 document.getElementById('confirmDelLabel').style.visibility = "hidden"
             }
 
+            var printDisbBtn = document.getElementById('printDisbPdf');
+            if (printDisbBtn != null) {
+                document.getElementById('printDisbPdfLabel').style.visibility = "visible"
+            } else {
+                document.getElementById('printDisbPdfLabel').style.visibility = "hidden"
+            }
         })
     };
 
