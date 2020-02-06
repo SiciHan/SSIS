@@ -61,12 +61,12 @@ $(document).ready(function () {
             //when the page is just opened
             //need to attach the onclick listener to submit button
             $("#submitaction").click(function () {
-                alert("You have submitted the Purchase Orders.");
+                
                 //create entry in database
 
                 var data = {
-                    "role": "StockManager",
-                    "message":"Hi Manager, your employee has submitted a purchase order for you to view."
+                    "role": "Supervisor",
+                    "message":"Hi Supervisor, your employee has submitted a purchase order for you to view."
                 };
                 $.ajax({
                     type: 'POST',
@@ -80,6 +80,21 @@ $(document).ready(function () {
                         console.log(error);
                     }
                 });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Home/SendEmailToGroup',
+
+                    data: data,
+                    success: function (response) {
+                        console.log("success");
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+
+                alert("You have submitted the Purchase Orders.");
                 //send a notification to storeManager
                 $.connection.chatHub.server.sendNotificationByGroupByRole(parseInt($('#hdnSession1').val()), "StoreManager", "Hi Manager! You have a new Purchase Order Raised.");
             });

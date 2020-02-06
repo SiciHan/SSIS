@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Diagnostics;
 
 namespace Team8ADProjectSSIS.Filters
 {
-    public class AuthorizeFilter : ActionFilterAttribute, IAuthorizationFilter
+    public class ActionFilter : ActionFilterAttribute, IActionFilter
     {
         private bool isAuthOk = false;
-        public void OnAuthorization(AuthorizationContext filterContext)
+        public override void OnActionExecuting(ActionExecutingContext aec)
         {
             isAuthOk = false;
-            Debug.WriteLine("OnAuthorization", filterContext.RouteData);
-            string role = (string)filterContext.HttpContext.Session["Role"];
-            string controllerName = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName;
+            Debug.WriteLine("OnActionExecuting", aec.RouteData);
+            string role = (string)aec.HttpContext.Session["Role"];
+            string controllerName = aec.ActionDescriptor.ControllerDescriptor.ControllerName;
 
             if (String.IsNullOrEmpty(role))
             {
@@ -77,7 +77,7 @@ namespace Team8ADProjectSSIS.Filters
             if (!isAuthOk)
             {
                 HttpContext.Current.Session.Clear();
-                filterContext.Result = new RedirectToRouteResult(
+                aec.Result = new RedirectToRouteResult(
                         new RouteValueDictionary
                         {
                         {"controller","Home" },

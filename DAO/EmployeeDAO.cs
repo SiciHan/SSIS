@@ -63,5 +63,15 @@ namespace Team8ADProjectSSIS.DAO
         {
             return context.Employees.Where(x => x.IdRole == IdRole).ToList();
         }
+
+        internal List<string> FindEmailsByRole(string role)
+        {
+            List<string> emails = new List<string>();
+            foreach(Employee e in context.Employees.OfType<Employee>().Where(x => x.Role.Label.Contains(role)).ToList())
+            {
+                emails.Add(e.Email);
+            }
+            return emails;
+        }
     }
 }

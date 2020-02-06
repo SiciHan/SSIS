@@ -312,7 +312,7 @@
                         <a class="btn btn-block" href="/StoreClerk/CollectPO?id=@po.IdPurchaseOrder">Collect</a>
                     </td>
                     <td>
-                        <a class="btn btn-block" href="/StoreClerk/SchedulePO?id=@po.IdPurchaseOrder">Schedule</a>
+                        
 
 
                         <button class="btn btn-block" data-toggle="modal" data-target="#schedule-@po.IdPurchaseOrder">Schedule</button>
@@ -731,7 +731,7 @@
                                                 @po.ApprovedDate
                                             }
                                         </p>
-                                        <p>Delivered Date: @po.DeliverDate</p>
+                                        
                                         <p>
                                             Delivered Date:
                                             @if (po.DeliverDate.Equals(DateTime.Parse("01/01/1900")))

@@ -12,8 +12,10 @@ using Team8ADProjectSSIS.Filters;
 
 namespace Team8ADProjectSSIS.Controllers
 {
-    [AuthorizeFilter]
+
     [AuthenticateFilter]
+    [AuthorizeFilter]
+      
     public class StoreSupervisorController : Controller
     {
         StockRecordDAO _stockRecordDAO;
@@ -29,7 +31,7 @@ namespace Team8ADProjectSSIS.Controllers
             this._purchaseOrderDetailsDAO = new PurchaseOrderDetailsDAO();
             _notificationChannelDAO = new NotificationChannelDAO();
         }
-
+          
         public ActionResult Notification()
         {
             int IdReceiver = 1;
@@ -41,7 +43,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return View();
         }
-
+          
         public ActionResult Voucher()
         {
             List<StockRecord> vouchers = _stockRecordDAO.FindVoucherForSupervisor();
@@ -55,7 +57,7 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["vouchers"] = vouchers;
             return View();
         }
-
+          
         public ActionResult VoucherHistory()
         {
             List<StockRecord> vouchers = _stockRecordDAO.FindJudgedVoucherForSupervisor();
@@ -79,21 +81,21 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["status"] = status;
             return View();
         }
-
+          
         public ActionResult PurchaseOrder()
         {
             List<PurchaseOrder> pendingPOs = _purchaseOrderDAO.FindPendingPO();
             ViewData["pengding"] = pendingPOs;
             return View();
         }
-
+          
         public ActionResult POHistory()
         {
             List<PurchaseOrder> handledPOs = _purchaseOrderDAO.FindHandledPO();
             ViewData["handledPOs"] = handledPOs;
             return View();
         }
-
+          
         public ActionResult PurchaseOrderDetail(int idPurchaseOrder)
         {
             List<PurchaseOrderDetail> PODetails = _purchaseOrderDetailsDAO.FindDetailPO(idPurchaseOrder);
@@ -102,11 +104,12 @@ namespace Team8ADProjectSSIS.Controllers
             ViewBag.po = po;
             return View();
         }
+          
         public ActionResult DashBoard()
         {
             return View();
         }
-
+          
         public ActionResult ExportExcel()
         {
 
@@ -115,12 +118,13 @@ namespace Team8ADProjectSSIS.Controllers
             byte[] ExcelData = excelReport.GenerateExcelReport(DownloadableData);
 
             return File(ExcelData, "application/xlsx", "Ordered Data.xlsx");
-        }   
+        }
+          
         public ActionResult PrintPDF()
         {
             return View();
         }
-
+          
         [HttpPost]
         public ActionResult HandlePO(string handle, List<int> purchase_ordersId)
         {
@@ -140,7 +144,7 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return RedirectToAction("PurchaseOrder", "StoreSupervisor");
         }
-
+          
         [HttpPost]
         public ActionResult Handlejustment(string handle, List<int> vouchersId)
         {

@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Filters;
 using Team8ADProjectSSIS.Models;
+using Team8ADProjectSSIS.EmailModel;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -39,6 +40,7 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpGet]
         public ActionResult LogIn()
         {
+            Session.Clear();
             return View();
         }
 
@@ -132,6 +134,26 @@ namespace Team8ADProjectSSIS.Controllers
             //int IdSender = 2;
             _notificationChannelDAO.CreateNotificationsToGroup(role,IdSender,message);
             string status = "OK";
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult SendEmailToGroup(string role, string message)
+        {
+            List<string> emails=_employeeDAO.FindEmailsByRole(role);
+            string status="Ok";
+            try
+            {
+                foreach(string email in emails)
+                {
+                    EmailClass emailClass = new EmailClass();
+                    emailClass.SendTo(email, "SSIS System Email", message);
+                }
+            }
+            catch (Exception)
+            {
+                status = "Bad";
+            }
             return Json(status, JsonRequestBehavior.AllowGet);
         }
 
