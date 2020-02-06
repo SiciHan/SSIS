@@ -11,8 +11,9 @@ using Team8ADProjectSSIS.Report;
 
 namespace Team8ADProjectSSIS.Controllers
 {
-    [AuthorizeFilter]
     [AuthenticateFilter]
+    [AuthorizeFilter]
+     
     public class StoreClerkController : Controller
     {
         private readonly DisbursementDAO _disbursementDAO;
@@ -53,6 +54,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
 
+         
         // GET: StoreClerk
         public ActionResult Index()
         {
@@ -66,7 +68,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
             
         }
-
+         
         // Get: FormRetrieve Method
         public ActionResult FormRetrieve()
         {
@@ -105,6 +107,8 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["CPs"] = CPs;
             return View();
         }
+
+         
         // Post Method
         [HttpPost]
         public ActionResult FormRetrieve(int[] idCPs, string StartDate, string EndDate)
@@ -202,7 +206,8 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
-        
+         
+
         [HttpPost]
         public ActionResult SaveDisbursement(int[] IdItemRetrieved) 
         {
@@ -241,6 +246,8 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("FormRetrieve", "StoreClerk");
 
         }
+
+         
         [HttpPost]
         public ActionResult PrintPdf(string StartDate, string EndDate)
         {
@@ -260,7 +267,8 @@ namespace Team8ADProjectSSIS.Controllers
             return File(abytes,"application/pdf", "Retrieve Form.pdf");
 
         }
-        
+
+         
         //@Shutong
         public ActionResult PurchaseOrderList()
         {
@@ -273,6 +281,8 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["LowStock"] = _itemDAO.FindLowStockItems();
             return View();
         }
+
+         
         //@Shutong
         public ActionResult MakePurchaseOrder(string searchStr)
         {
@@ -286,7 +296,7 @@ namespace Team8ADProjectSSIS.Controllers
             //ViewData["PODCart"] = _purchaseOrderDetailsDAO.FindAllIncompletePODetails(_purchaseOrderDAO.FindIncompletePO());
             return View();
         }
-
+         
         //@Shutong
         [HttpPost]
         public ActionResult AddToCart(FormCollection form)
@@ -315,6 +325,7 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("MakePurchaseOrder", "StoreClerk");
         }
 
+         
         //@Shutong
         public ActionResult PurchaseOrderCart()
         {
@@ -322,6 +333,7 @@ namespace Team8ADProjectSSIS.Controllers
             //ViewData["POCart"] = _purchaseOrderDAO.FindIncompletePO();
             return View();
         }
+         
         //@Shutong
         public ActionResult DeletePODFromCart(int id)
         {
@@ -330,12 +342,14 @@ namespace Team8ADProjectSSIS.Controllers
             //return Content("You have deleted your Purchase Order details"+id);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
+         
         //@Shutong
         public ActionResult UpdateOrderUnit(int orderUnit, int idPOD)
         {
             _purchaseOrderDetailsDAO.UpdateOrderUnitById(orderUnit, idPOD);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
+         
         //@Shutong
         [HttpPost]
         public ActionResult SubmitPurchaseOrder(FormCollection form)
@@ -351,6 +365,7 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
+         
         //@Shutong
         [HttpPost]
         public ActionResult CancelAllPurchaseOrder(FormCollection form)
@@ -367,6 +382,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+         
         //@Shutong
         public ActionResult CancelPO(int id)
         {
@@ -375,6 +391,7 @@ namespace Team8ADProjectSSIS.Controllers
                 
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+         
         //@Shutong
         public ActionResult WithdrawPO(int id)
         {
@@ -383,7 +400,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
-
+         
         //@Shutong
         public ActionResult UpdatePO(int id)
         {
@@ -392,7 +409,7 @@ namespace Team8ADProjectSSIS.Controllers
             _purchaseOrderDAO.UpdateRejectedToIncomplete(id);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
-
+         
         //@Shutong
         [HttpGet]
         public ActionResult CollectPO(int? id)
@@ -406,7 +423,7 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["pod"] = _purchaseOrderDetailsDAO.FindPODetailsByPOId(id.Value);
             return View();
         }
-
+         
         //@Shutong
         [HttpPost]
         public ActionResult CollectPO(FormCollection form)
@@ -426,6 +443,7 @@ namespace Team8ADProjectSSIS.Controllers
             _purchaseOrderDAO.UpdateStatusToDelivered(id);
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+         
         //@Shutong
         public ActionResult Schedule(int IdPO, string deliverDate)
         {
@@ -434,6 +452,7 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
 
         }
+    
         //@Shutong
         public ActionResult ViewSupplierItem(int Iditem,string codesupplier)
         {
@@ -442,6 +461,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+   
         // James: Disbursement overview
         public ActionResult Disbursement()
         {
@@ -475,7 +495,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return View();
         }
-
+        
         // James: Selecting multiple disbursements to schedule for collection
         [HttpPost]
         public ActionResult Schedule(IEnumerable<int> disbIdsToSchedule, String pickDate)
@@ -520,7 +540,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("Disbursement");
         }
-
+        
         // James: Scheduling a single disbursement with redistribution if necessary
         [HttpPost]
         public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, String pickDate)
@@ -565,6 +585,7 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("Disbursement");
         }
 
+    
         // James: Opens page to redistribute qty from other disbursements
         public ActionResult Redistribute(int disbId)
         {
@@ -628,7 +649,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return PartialView("DisbursementDetails");
         }
-
+  
         //James: Refresh Disbursement page and updates the unitIssued to the QtyDisbursed
         [HttpPost]
         public ActionResult RefreshDisbursement(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
@@ -665,7 +686,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("Disbursement");
         }
-
+    
         //James: For clerk to sign, raises SA in case of discrepancy and email out a copy of the disbursement details
         [HttpPost]
         public ActionResult ClerkSign(IEnumerable<int> disbId)
@@ -702,7 +723,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("Disbursement");
         }
-
+        
         //James: Stocktake overview
         public ActionResult Stocktake()
         {
@@ -727,7 +748,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
-
+     
         //James: Save the created stocktake into individual stockrecords
         [HttpPost]
         public ActionResult SaveStocktake(IList<int> itemId, IList<int> actualQty, IList<int> missingQty, IList<int> wrongQty, IList<int> brokenQty, IList<int> giftQty)
@@ -806,7 +827,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("Stocktake");
         }
-
+     
         public void RaiseSAandNotifyBoss(DateTime date, int IdOperation, String IdDepartment, String IdSupplier, int IdStoreClerk, Item item, int qty, 
             Employee supervisor, Employee manager)
         {
@@ -821,7 +842,7 @@ namespace Team8ADProjectSSIS.Controllers
                 _notificationChannelDAO.SendNotification(IdStoreClerk, supervisor.IdEmployee, notifId, date);
 
         }
-
+       
         //James: View past stocktake based on time
         public ActionResult ViewStocktake(String targetMonth)
         {

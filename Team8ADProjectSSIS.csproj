@@ -211,6 +211,7 @@
     <Compile Include="DAO\SSISInitializer.cs" />
     <Compile Include="EmailModel\EmailClass.cs" />
     <Compile Include="Filters\AuthenticateFilter.cs" />
+    <Compile Include="Filters\ActionFilter.cs" />
     <Compile Include="Filters\AuthorizeFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

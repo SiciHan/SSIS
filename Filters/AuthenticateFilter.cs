@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,6 +15,8 @@ namespace Team8ADProjectSSIS.Filters
         private bool IsAuthOK = false;
         public void OnAuthentication(AuthenticationContext filterContext)
         {
+            IsAuthOK = false;
+            Debug.WriteLine("OnAuthentication", filterContext.RouteData);
             //if the session does not expire yet
             var sessionId = HttpContext.Current.Session["sessionId"];
             if (sessionId != null && sessionId is Guid)
