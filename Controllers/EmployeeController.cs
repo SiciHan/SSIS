@@ -36,9 +36,14 @@ namespace Team8ADProjectSSIS.Controllers
                 return RedirectToAction("Login", "Home");
 
             int idEmployee = (int)Session["IdEmployee"];
+            List<Item> items = new List<Item>();
 
+            items = RecentProducts(idEmployee);
+
+             
             ViewBag.items = ListProducts(searchStr);
             ViewBag.searchStr = searchStr;
+            ViewBag.recentItems = items; 
             ViewData["Emp"] = _employeeDAO.FindEmployeeById(idEmployee);
             return View();
         }
@@ -453,6 +458,43 @@ namespace Team8ADProjectSSIS.Controllers
             Session["searchStr"] = searchStr;
             ViewBag.products = items;
             return items;
+        }
+
+
+        public List<Item> RecentProducts(int idEmployee)
+        {
+           // if (Session["IdEmployee"] == null)
+              //  return RedirectToAction("Login", "Home");
+
+           // int idEmployee = (int)Session["IdEmployee"];
+            List<Item> items = new List<Item>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string ch = @"Select * from RequisitionItems Inner Join  Requisitions On RequisitionItems.IdRequisiton = Requisitions.IdRequisition
+                              Inner Join Items On RequisitionItems.IdItem = Items.IdItem                                                  
+                              Where RequisitionItems.IdRequisiton =(SELECT MAX([IdRequisition]) from Requisitions) And Requisitions.IdEmployee =" + idEmployee + "";
+
+
+                SqlCommand chh = new SqlCommand(ch, conn);
+
+                SqlDataReader readerr = chh.ExecuteReader();
+                while (readerr.Read())
+                {
+                    Item it = new Item()
+                    {
+                     
+                        Description = (String)readerr["Description"]
+
+                    };
+                    items.Add(it);
+                };
+            }
+
+            return items;
+
         }
 
         public JsonResult UpdatereqId(int? reqID)
