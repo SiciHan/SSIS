@@ -8,6 +8,8 @@ using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Report;
 using Team8ADProjectSSIS.Filters;
+using Microsoft.AspNet.SignalR;
+using Team8ADProjectSSIS.Hubs;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -163,10 +165,33 @@ namespace Team8ADProjectSSIS.Controllers
             if(judge == "Approve")
             {
                 _stockRecordDAO.UpdateVoucherToApproved(vouchers);
+
+                foreach (StockRecord sr in vouchers)
+                {
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(sr.IdStoreClerk);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "Hi," + sr.StoreClerk.Name + " your stock adjustment voucher for (" + sr.Operation.Label.Split('-')[1] + ") " + sr.Unit + " " + sr.Item.unitOfMeasure + sr.Item.Description + " raised on " + sr.Date + " has been approved.";
+
+                    _notificationChannelDAO.CreateNotificationsToIndividual(sr.StoreClerk.IdEmployee, (int)Session["IdEmployee"], message);
+                    emailClass.SendTo(sr.StoreClerk.Email, "SSIS System Email", message);
+                }
             }
             else
             {
                 _stockRecordDAO.UpdateVoucherToRejected(vouchers);
+                foreach (StockRecord sr in vouchers)
+                {
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(sr.IdStoreClerk);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "Hi," + sr.StoreClerk.Name + " your stock adjustment voucher for (" + sr.Operation.Label.Split('-')[1] + ") " + sr.Unit + " " + sr.Item.unitOfMeasure + sr.Item.Description + " raised on " + sr.Date + " has been rejected.";
+
+                    _notificationChannelDAO.CreateNotificationsToIndividual(sr.StoreClerk.IdEmployee, (int)Session["IdEmployee"], message);
+                    emailClass.SendTo(sr.StoreClerk.Email, "SSIS System Email", message);
+                }
+
+
             }
             return RedirectToAction("Voucher", "StoreManager");
         }
