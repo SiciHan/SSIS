@@ -9,6 +9,8 @@ using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Report;
 using Team8ADProjectSSIS.Filters;
+using Microsoft.AspNet.SignalR;
+using Team8ADProjectSSIS.Hubs;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -126,7 +128,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
           
         [HttpPost]
-        public ActionResult HandlePO(string handle, List<int> purchase_ordersId)
+        public ActionResult HandlePO(string handle, List<int> purchase_ordersId, string remarks)
         {
             List<PurchaseOrder> purchaseOrders = new List<PurchaseOrder>();
             foreach (int id in purchase_ordersId)
@@ -137,10 +139,31 @@ namespace Team8ADProjectSSIS.Controllers
             if (handle == "Approve")
             {
                 _purchaseOrderDAO.UpdatePOToApproved(purchaseOrders);
+
+                foreach (PurchaseOrder po in purchaseOrders)
+                {
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(po.IdStoreClerk);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "Hi," + po.StoreClerk.Name + " your purchase order made with " + po.Supplier.Name + " ordered on " + po.OrderDate + " has been approved";
+                    _notificationChannelDAO.CreateNotificationsToIndividual(po.StoreClerk.IdEmployee, (int)Session["IdEmployee"], message);
+                    emailClass.SendTo(po.StoreClerk.Email, "SSIS System Email", message);
+                }   
             }
             else
             {
-                _purchaseOrderDAO.UpdatePOToRejected(purchaseOrders);
+                _purchaseOrderDAO.UpdatePOToRejected(purchaseOrders, remarks);
+
+                foreach (PurchaseOrder po in purchaseOrders)
+                {
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(po.IdStoreClerk);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "Hi," + po.StoreClerk.Name + " your purchase order made with " + po.Supplier.Name + " ordered on " + po.OrderDate + " has been reject +/n" +
+                        "Reasons: "+po.PurchaseRemarks;
+                    _notificationChannelDAO.CreateNotificationsToIndividual(po.StoreClerk.IdEmployee, (int)Session["IdEmployee"], message);
+                    emailClass.SendTo(po.StoreClerk.Email, "SSIS System Email", message);
+                }
             }
             return RedirectToAction("PurchaseOrder", "StoreSupervisor");
         }
@@ -157,13 +180,32 @@ namespace Team8ADProjectSSIS.Controllers
             if (handle == "Approve")
             {
                 _stockRecordDAO.UpdateVoucherToApproved(vouchers);
+                foreach (StockRecord sr in vouchers)
+                {
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(sr.IdStoreClerk);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "Hi," + sr.StoreClerk.Name + " your stock adjustment voucher for (" + sr.Operation.Label.Split('-')[1] + ") " + sr.Unit + " " + sr.Item.unitOfMeasure + sr.Item.Description + " raised on " + sr.Date + " has been approved.";
+  
+                    _notificationChannelDAO.CreateNotificationsToIndividual(sr.StoreClerk.IdEmployee, (int)Session["IdEmployee"], message);
+                    emailClass.SendTo(sr.StoreClerk.Email, "SSIS System Email", message);
+                }
             }
             else
             {
                 _stockRecordDAO.UpdateVoucherToRejected(vouchers);
+
+                foreach (StockRecord sr in vouchers)
+                {
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(sr.IdStoreClerk);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "Hi," + sr.StoreClerk.Name + " your stock adjustment voucher for (" + sr.Operation.Label.Split('-')[1] + ") " + sr.Unit + " " + sr.Item.unitOfMeasure + sr.Item.Description + " raised on " + sr.Date + " has been rejected.";
+                    _notificationChannelDAO.CreateNotificationsToIndividual(sr.StoreClerk.IdEmployee, (int)Session["IdEmployee"], message);
+                    emailClass.SendTo(sr.StoreClerk.Email, "SSIS System Email", message);
+                }
             }
             return RedirectToAction("Voucher", "StoreSupervisor");
         }
-
     }
 }
