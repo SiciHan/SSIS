@@ -489,6 +489,7 @@
     <Content Include="Scripts\vendor\jquery\jquery.slim.min.js" />
     <Content Include="Styles\css\number-input.css" />
     <Content Include="Styles\css\simple-sidebar.css" />
+    <Content Include="Styles\css\styles.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -4,7 +4,8 @@
     string searchStr = (string)ViewBag.searchStr;
     var found = false;
 
-     var Emp = ViewData["Emp"] as Employee;
+    var recentItems = ViewBag.recentItems;
+    var Emp = ViewData["Emp"] as Employee;
 
 }
 
@@ -17,7 +18,9 @@
 
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link href="~/Styles/styles.css" rel="stylesheet" />
+
+    <link href="~/Styles/css/styles.css" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -60,7 +63,61 @@
     </div>
     <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
     <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+
+    <div class="recent-items">
+        <h2 class="recent">
+            Recent Items You've Requested
+        </h2>
+
+        @if (recentItems.Count == 0 || recentItems == null)
+        {
+            <h2 class="recent">
+                There is no recent requests.
+            </h2>
+        }
+        else
+        {
+            <div>
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        <th>Description</th>
+                    </tr>
+
+                    @foreach (Item ite in recentItems)
+                    {
+
+                        string des = ite.Description;
+                        int id = ite.IdCategory;
+
+
+                        <tbody id="myTable">
+                            <tr>
+
+                                <td><input type="checkbox" id="chkbox" value="@Html.Raw(id)"></td>
+                                <td><span class="shop-item-title" value="itemName">@Html.Raw(@des)</td>
+
+
+                            </tr>
+
+
+                        </tbody>
+                    }
+
+                </table>
+            </div>
+        }
+
+
+
+
+
+
+
+    </div>
+
     @Html.Partial("Catalog")
+
 
 
     <section class="container content-section">
@@ -82,6 +139,8 @@
         </div>
 
     </section>
+
+
 
 
     @*<button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>*@
