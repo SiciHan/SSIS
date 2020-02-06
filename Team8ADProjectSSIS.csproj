@@ -186,6 +186,7 @@
     <Compile Include="Controllers\StoreClerkController.cs" />
     <Compile Include="Controllers\StoreManagerController.cs" />
     <Compile Include="Controllers\StoreSupervisorController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="DAO\CategoryDAO.cs" />
     <Compile Include="DAO\RequisitionItemDAO.cs" />
     <Compile Include="DAO\RoleDAO.cs" />
@@ -577,6 +578,8 @@
     <Content Include="Views\StoreClerk\ViewSupplierItem.cshtml" />
     <Content Include="Views\Home\Logout.cshtml" />
     <Content Include="Views\Home\SessionExpired.cshtml" />
+    <Content Include="Views\Test\Test1.cshtml" />
+    <Content Include="Views\Test\Test2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

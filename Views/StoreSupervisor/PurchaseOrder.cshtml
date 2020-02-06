@@ -42,7 +42,7 @@
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
-@using (Html.BeginForm("HandlePO", "StoreSupervisor", FormMethod.Post))
+@using (Html.BeginForm("HandlePO", "StoreSupervisor", FormMethod.Post, new { @id = "form"}))
 {
     <div class="container">
         <table>
@@ -119,10 +119,18 @@
         }
 
         function ConfirmReject() {
+            var remarks = prompt("Please input your remarks or just skip .", "");
             if (!confirm("Confirm reject the selected purchase order ? ")) {
                 window.event.returnValue = false;
             }
             else {
+                $("#form").submit(function (eventObj) {
+                    $("<input />").attr("type", "hidden")
+                        .attr("name", "remarks")
+                        .attr("value", remarks)
+                        .appendTo("#form");
+                    return true;
+                });
                 window.event.returnValue = true;
             }
         }

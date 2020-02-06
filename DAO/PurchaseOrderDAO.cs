@@ -268,7 +268,7 @@ namespace Team8ADProjectSSIS.DAO
             }
         }
 
-        public void UpdatePOToRejected(List<PurchaseOrder> POs)
+        public void UpdatePOToRejected(List<PurchaseOrder> POs, string remarks)
         {
             foreach (PurchaseOrder po in POs)
             {
@@ -276,6 +276,7 @@ namespace Team8ADProjectSSIS.DAO
                     .Where(x => x.IdPurchaseOrder == po.IdPurchaseOrder)
                     .FirstOrDefault();
                 temp.IdStatus = 4;
+                temp.PurchaseRemarks = remarks;
                 context.SaveChanges();
             }
         }
