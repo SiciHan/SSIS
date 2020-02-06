@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
@@ -206,25 +207,13 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
-        public List<JoinDandDI> FindDetailDisbursement(int IdDisbursement)
+        public List<DisbursementItem> FindDetailDisbursement(int IdDisbursement)
         {
-            var DetailDisbursement = context.Disbursements
-                                        .Join(context.DisbursementItems,
-                                        d => d.IdDisbursement, di => di.IdDisbursement,
-                                        (d, di) => new { d, di })
-                                        .Join(context.Departments,
-                                        ddi => ddi.d.CodeDepartment, dpt => dpt.CodeDepartment,
-                                        (ddi, dpt) => new { ddi, dpt })
-                                        .Join(context.Status,
-                                        ddidpt => ddidpt.ddi.d.IdStatus, s => s.IdStatus,
-                                        (ddidpt, s) => new JoinDandDI
-                                        {
-                                            disbursement = ddidpt.ddi.d,
-                                            disbursementItem = ddidpt.ddi.di,
-                                            department = ddidpt.dpt,
-                                            status = s
-                                        }).Where(x => x.disbursement.IdDisbursement == IdDisbursement)
-                                        .ToList();
+            List<DisbursementItem> DetailDisbursement = context.DisbursementItems.OfType<DisbursementItem>()
+                                                                    .Where(di => di.IdDisbursement == IdDisbursement)
+                                                                    .Include(di => di.Disbursement)
+                                                                    .Include(di => di.Disbursement.Department)
+                                                                    .Include(di => di.Status).ToList();
             return DetailDisbursement;
         }
 

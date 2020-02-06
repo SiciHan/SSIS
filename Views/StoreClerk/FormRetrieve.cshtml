@@ -45,23 +45,28 @@
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 @if (!NoDisbursement)
 {
-
-    using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
+<div class="form">
+    @using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
     {
-        <div width="513" onclick="choicetest();">
-            <input type="checkbox" name="idCPs" id="CPs" value="1" />Management School
-            <input type="checkbox" name="idCPs" id="CPs" value="2" />Stationery Store
-            <input type="checkbox" name="idCPs" id="CPs" value="3" />Medical School
-            <p></p>
-            <input type="checkbox" name="idCPs" id="CPs" value="4" />Engineering School
-            <input type="checkbox" name="idCPs" id="CPs" value="5" />Science School
-            <input type="checkbox" name="idCPs" id="CPs" value="6" />University Hospital
-        </div>
+    <div width="513" onclick="choicetest();">
+        <input type="checkbox" name="idCPs" id="CPs" value="1" />Management School
+        <input type="checkbox" name="idCPs" id="CPs" value="2" />Stationery Store
+        <input type="checkbox" name="idCPs" id="CPs" value="3" />Medical School
+        <p></p>
+        <input type="checkbox" name="idCPs" id="CPs" value="4" />Engineering School
+        <input type="checkbox" name="idCPs" id="CPs" value="5" />Science School
+        <input type="checkbox" name="idCPs" id="CPs" value="6" />University Hospital
+    </div>
+    <div>
         <input type="hidden" name="StartDate" value=@ViewBag.LastThu />
         <input type="hidden" name="EndDate" value=@ViewBag.Today />
         <input type="submit" value="Change" />
+    </div>
     }
-    using (Html.BeginForm("SaveDisbursement", "StoreClerk", FormMethod.Post))
+</div>
+<br/>
+<div class="form">
+    @using (Html.BeginForm("SaveDisbursement", "StoreClerk", FormMethod.Post))
     {
         <table>
             <thead>
@@ -88,18 +93,18 @@
                 </tbody>
             }
         </table>
-        <div style="display: inline" float="right">
-            <input type="submit" value="Retrieve" style="padding: 10px 15px; cursor:pointer; background-color:cornflowerblue" />
-        </div>
+        <button type="submit" style="padding: 10px 20px; cursor:pointer">Retrieve</button>
     }
-    using (Html.BeginForm("PrintPdf", "StoreClerk", FormMethod.Post))
+</div>
+<div class="form">
+    @using (Html.BeginForm("PrintPdf", "StoreClerk", FormMethod.Post))
     {
-        <div style="display: inline" float="right">
-            <input type="submit" value="Print" style="padding: 10px 15px; cursor:pointer; background-color:aquamarine" />
-            <input type="hidden" name="StartDate" value="@(ViewBag.LastThu ?? String.Empty)" />
-            <input type="hidden" name="EndDate" value="@(ViewBag.Today ?? String.Empty)" />
-        </div>
+        <button type="submit" style="padding: 10px 20px; cursor:pointer">Print</button>
+        <input type="hidden" name="StartDate" value="@(ViewBag.LastThu ?? String.Empty)" />
+        <input type="hidden" name="EndDate" value="@(ViewBag.Today ?? String.Empty)" />
     }
+    <br/>
+</div>
 
 }
 else
@@ -196,7 +201,6 @@ else
         border-spacing: 1px;
         border-collapse: collapse;
         background: white;
-        border-radius: 10px;
         overflow: hidden;
         width: 100%;
         margin: 0 auto;
@@ -225,6 +229,7 @@ else
         color: #000000;
         line-height: 1.2;
         font-weight: unset;
+        background-color:gray;
     }
 
     tbody tr:nth-child(even) {
@@ -262,6 +267,13 @@ else
     .col-5 {
         width: 10%;
         text-align: center;
+    }
+    .form Button{
+        float: right;
+        margin: 10px
+    }
+    .form div{
+        display:inline-block;
     }
 </style>
 
