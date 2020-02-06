@@ -572,6 +572,7 @@
     <Content Include="Views\StoreSupervisor\Notification.cshtml" />
     <Content Include="Views\DepartmentHead\Notification.cshtml" />
     <Content Include="Views\DepartmentActingHead\Notification.cshtml" />
+    <Content Include="Views\StoreClerk\ViewSupplierItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

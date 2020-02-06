@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using Team8ADProjectSSIS.Models;
@@ -35,6 +36,14 @@ namespace Team8ADProjectSSIS.DAO
                 .Include("Item")
                 .Where(x => x.IdItem == item.IdItem && x.IdSupplier.Equals(item.CodeSupplier1))
                 .FirstOrDefault();
+        }
+
+        public SupplierItem FindSupplierItemByIditemAndCodesupplier(int iditem, string codesupplier)
+        {
+            return context.SupplierItems.OfType<SupplierItem>()
+                .Where(x => x.IdItem ==iditem && x.IdSupplier.Equals(codesupplier))
+                .Include(y=>y.Item)
+                .Include(y => y.Supplier).FirstOrDefault();
         }
     }
 }

@@ -435,6 +435,12 @@ namespace Team8ADProjectSSIS.Controllers
 
         }
 
+        public ActionResult ViewSupplierItem(int Iditem,string codesupplier)
+        {
+            SupplierItem supplierItem=_supplierItemDAO.FindSupplierItemByIditemAndCodesupplier(Iditem, codesupplier);
+            ViewData["supplierItem"] = supplierItem;
+            return View();
+        }
 
         // James: Disbursement overview
         public ActionResult Disbursement()
@@ -840,5 +846,6 @@ namespace Team8ADProjectSSIS.Controllers
 
             return PartialView("ViewStocktake");
         }
+
     }
 }
