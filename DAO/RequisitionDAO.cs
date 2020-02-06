@@ -124,5 +124,14 @@ namespace Team8ADProjectSSIS.DAO
             return context.Requisitions.OfType<Requisition>().Where(x => x.IdRequisition == ReqId).FirstOrDefault();
 
         }
+
+        public List<Requisition> FindAllRequisition()
+        {
+            return context.Requisitions.OfType<Requisition>()
+                                        .Include(r => r.RequisitionItems)
+                                        .Include(r => r.RequisitionItems.Select(ri => ri.Item))
+                                        .Include(r => r.Employee)
+                                        .ToList();
+        }
     }
 }

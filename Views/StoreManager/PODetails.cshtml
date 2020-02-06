@@ -3,17 +3,17 @@
 @{
     ViewBag.Title = "PODetails";
     List<PurchaseOrderDetail> DetailPO = (List<PurchaseOrderDetail>)ViewData["DetailPO"];
+    int IdPurchaseOrder = (int)ViewData["IdPurchaseOrder"];
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
 
 <h2>Purchase Order Details</h2>
 <div>
-    <h5>Purchase Order Id</h5>
-    <h5>@Html.LabelFor(x => x.IdPurchaseOrder)</h5>
+    <h5>Purchase Order Id: @IdPurchaseOrder</h5>
 </div>
 <table>
     <tr>
-        <th>IdItem</th>
+        <th>Item Description</th>
         <th>Order Unit</th>
         <th>Delivered Unit</th>
         <th>Delivery Remark</th>
@@ -21,7 +21,7 @@
     @foreach (PurchaseOrderDetail i in DetailPO)
     {
         <tr>
-            <td>@i.IdItem</td>
+            <td>@i.Item.Description</td>
             <td>@i.OrderUnit</td>
             <td>@i.DeliveredUnit</td>
             <td>@i.DeliveryRemark</td>
@@ -29,3 +29,18 @@
     }
 </table>
 
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
