@@ -409,7 +409,8 @@ namespace Team8ADProjectSSIS.DAO
         //James
         public Disbursement FindById(int disbId)
         {
-            return context.Disbursements.Where(x => x.IdDisbursement == disbId).FirstOrDefault();
+            return context.Disbursements.OfType<Disbursement>().Where(x => x.IdDisbursement == disbId).Include(y => y.CollectionPoint).FirstOrDefault();
+                
         }
     }
 }
