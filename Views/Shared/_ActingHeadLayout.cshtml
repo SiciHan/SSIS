@@ -21,29 +21,6 @@
 
 
 
-    <!--Side Bar-->
-    @*<div class="bg-light border-right position-fixed" id="sidebar-wrapper">
-            <div class="sidebar-heading">Stationery Store </div>
-            <div class="list-group list-group-flush">
-                @Html.ActionLink("Dashboard", "Index", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
-                @Html.ActionLink("Suppliers", "ItemsForSuppliers", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
-
-                <a href="@Url.Action("Index","StoreManager")"
-                   class="list-group-item list-group-item-action bg-light">
-                    Notification <span class="badge badge-danger">8</span>
-                </a>
-
-                <a href="@Url.Action("Index","StoreManager")"
-                   class="list-group-item list-group-item-action bg-light">
-                    Discrepency <span class="badge badge-danger">3</span>
-                </a>
-
-                @Html.ActionLink("Voucher", "Index", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
-                @Html.ActionLink("Settings", "Index", "StoreManager", null, new { @class = "list-group-item list-group-item-action bg-light" })
-
-            </div>
-        </div>*@
-
     <!--Page Content-->
     <div id="page-content-wrapper">
 
@@ -61,24 +38,19 @@
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
                 <ul class="nav navbar-nav faq-tabbable">
                     <li>
-                        <a href="@Url.Action("PendingLists","DepartmentHead")" class="nav-link">
+                        <a href="@Url.Action("PendingLists","DepartmentActingHead")" class="nav-link">
                             View Pending Request Lists
                         </a>
                     </li>
 
                     <li>
-                        <a href="@Url.Action("CurrentRepCP", "DepartmentHead")" class="nav-link">
+                        <a href="@Url.Action("CurrentRepCP", "DepartmentActingHead")" class="nav-link">
                             View Current Department Rep
                         </a>
                     </li>
                     <li>
-                        <a href="@Url.Action("ChangeRepCP", "DepartmentHead")" class="nav-link">
+                        <a href="@Url.Action("ChangeRepCP", "DepartmentActingHead")" class="nav-link">
                             Change Rep and Collection Point
-                        </a>
-                    </li>
-                    <li>
-                        <a href="@Url.Action("Delegation", "DepartmentHead")" class="nav-link">
-                            Delegation
                         </a>
                     </li>
 
@@ -92,7 +64,7 @@
 
 
                     <li style="padding-right:8px">
-                        <a href="@Url.Action("Notification","DepartmentHead")" style="padding-right:0px">
+                        <a href="@Url.Action("Notification","DepartmentActingHead")" style="padding-right:0px">
                             <span class="glyphicon glyphicon-bell" style="top:4px"></span>
                             <span class="badge badge-danger">5</span>
                         </a>

@@ -1,0 +1,47 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "PendingLists";
+    Layout = "~/Views/Shared/_ActingHeadLayout.cshtml";
+    List<Requisition> empReqList = (List<Requisition>)ViewBag.empReqList;
+}
+
+<div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+    <div class="container">
+        <h2><b>View Pending Request Lists</b></h2>
+        <p>Please click view hyperlink to check details of requisition</p>
+    </div>
+</div>
+
+<table>
+    <tr>
+        <th>Date of Request</th>
+        <th>Requested By</th>
+        <th>Action</th>
+        
+    </tr>
+    @foreach (Requisition r in empReqList)
+    {
+        <tr>
+            <td>@r.RaiseDate</td>
+            <td>@r.Employee.Name</td>
+            <td>@Html.ActionLink("View", "PendingDetail", "DepartmentHead", new { idRequisition = r.IdRequisition }, null)</td>
+        </tr>
+    }
+</table>
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
+

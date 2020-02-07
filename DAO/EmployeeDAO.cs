@@ -38,6 +38,26 @@ namespace Team8ADProjectSSIS.DAO
             }
             return empReqList;
         }
+
+        public Employee UpdateRoleToActingHead(int idEmployee)
+        {
+            Employee employee = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Role).FirstOrDefault();
+            employee.Role = context.Roles.OfType<Role>().Where(x => x.Label.Contains("ActingHead")).FirstOrDefault();
+            
+            context.SaveChanges();
+            return employee;
+
+        }
+
+        internal Employee UpdateRoleToEmployee(int idEmployee)
+        {
+            Employee employee = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Role).FirstOrDefault();
+            employee.Role= context.Roles.OfType<Role>().Where(x => x.Label.Contains("Employee")).FirstOrDefault();
+            
+            context.SaveChanges();
+            return employee;
+        }
+
         public Employee FindEmployeeByUsername(string username)
         {
             return context.Employees.OfType<Employee>().Where(x => x.UserName.Equals(username)).FirstOrDefault();
@@ -104,6 +124,16 @@ namespace Team8ADProjectSSIS.DAO
                 return ah.IdEmployee;
             }
             return 0; 
+            
+        }
+
+
+        internal List<Employee> FindAllClerk()
+        {
+           
+            
+          return context.Employees.OfType<Employee>().Where(x => x.Role.Label.Contains("Clerk")).ToList();
+
             
         }
     }
