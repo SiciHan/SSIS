@@ -6,10 +6,10 @@
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
 
-    <h2>Disbursement Details</h2>
-    <div>
-        <h5>Disbursement Id: @IdDisbursement</h5>
-    </div>
+<h2>Disbursement Details</h2>
+<div>
+    <h5>Disbursement Id: @IdDisbursement</h5>
+</div>
 <table>
     <tr>
         <th>Item Description</th>
@@ -27,6 +27,8 @@
         </tr>
     }
 </table>
+<input type="button" class="btn btn-primary" value="Back" onclick="location.href='@Url.Action("DisbursementHistory", "StoreManager")'"
+       style="margin-top:24px" />
 
 <style>
 

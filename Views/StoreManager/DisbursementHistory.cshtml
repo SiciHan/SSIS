@@ -5,27 +5,28 @@
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
 
-    <div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
-        <div class="container">
-            <h2><b>Disbursement History</b></h2>
-            <p>You can view the details of each disbursement here!</p>
-        </div>
+<div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+    <div class="container">
+        <h2><b>Disbursement History</b></h2>
+        <p>You can view the details of each disbursement here!</p>
     </div>
+</div>
 
 <table>
     <tr>
         <th>Department Name</th>
         <th>Date</th>
         <th colspan="2">Status</th>
+        <th>Details</th>
     </tr>
     @foreach (Disbursement i in AllDisbursement)
     {
-<tr>
-    <td>@i.Department.Name</td>
-    <td>@i.Date.ToString("dd-MM-yyyy")</td>
-    <td>@i.Status.Label</td>
-    <td>@Html.ActionLink("View", "DisbursementDetails", "StoreManager", new { IdDisbursement = i.IdDisbursement }, null)</td>
-</tr>
+        <tr>
+            <td>@i.Department.Name</td>
+            <td>@i.Date.ToString("dd-MM-yyyy")</td>
+            <td>@i.Status.Label</td>
+            <td>@Html.ActionLink("View", "DisbursementDetails", "StoreManager", new { IdDisbursement = i.IdDisbursement }, null)</td>
+        </tr>
     }
 </table>
 
