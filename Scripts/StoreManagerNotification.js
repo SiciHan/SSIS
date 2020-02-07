@@ -110,13 +110,13 @@
 
     //to change the count in real time when someone send a notification to the person
     $.connection.chatHub.client.receiveNotification = function (IdReceiver) {
-        alert("There is a notification");
+        //alert("There is a notification");
         //if the notification is sent to me
         if (parseInt($("#hdnSession1").val()) == IdReceiver) {
             var count = 0;
             count = parseInt($('#noti-count').html()) || 0;
             count++;
-            alert("There is a notification and for you");
+            alert("There is a notification for you.");
             $('#noti-count').html(count);
         }
     };
@@ -125,7 +125,7 @@
         type: 'GET',
         url: '/Home/GetUnreadNotificationCount?IdReceiver=' + $("#hdnSession1").val(),
         success: function (response) {
-            alert("There are " + response + "unread notifications " + "for" + $("#hdnSession1").val());
+            //alert("There are " + response + "unread notifications " + "for" + $("#hdnSession1").val());
             $('#noti-count').html(response);
         },
         error: function (error) {

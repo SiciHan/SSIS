@@ -42,6 +42,12 @@ namespace Team8ADProjectSSIS.DAO
             context.Delegations.Add(deleg);
             context.SaveChanges();
         }
+
+        private readonly SSISContext context;
+        public DelegationDAO()
+        {
+            context = new SSISContext();
+        }
         public void Update(Delegation d)
         {
             using (SSISContext context = new SSISContext())
@@ -68,6 +74,26 @@ namespace Team8ADProjectSSIS.DAO
             {
                 return context.Delegations.OfType<Delegation>().ToList<Delegation>();
             }
+        }
+
+        internal bool CheckIfInDelegationPeriod(int idActingHead)
+        {
+            
+            List<Delegation> delegations=context.Delegations.OfType<Delegation>().Where(x => x.IdEmployee == idActingHead).ToList();
+
+            if (delegations.Count == 0)
+            {
+                return false;
+            }
+            foreach(Delegation d in delegations)
+            {
+                //if start date is ealier than current tiem, and current time is earlier than end date
+                if(DateTime.Compare(d.StartDate, DateTime.Now)<=0 && DateTime.Compare(DateTime.Now, d.EndDate) <= 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void Delete(Delegation d)

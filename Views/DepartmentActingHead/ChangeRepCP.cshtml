@@ -1,0 +1,48 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "ChangeRepCP";
+    Layout = "~/Views/Shared/_ActingHeadLayout.cshtml";
+    List<Employee> empList = (List<Employee>)ViewBag.EmployeeList;
+    List<CollectionPoint> cpList = (List<CollectionPoint>)ViewBag.CollectionPoint;
+}
+
+<h2>Change Department Rep</h2>
+
+@using (Html.BeginForm("GetChangeRepCP", "DepartmentActingHead", FormMethod.Post, new { @id = "form"}))
+{
+    @Html.Label("Employee")
+    @*@Html.DropDownList("Employee", "--select--")*@
+    <select id="selectId">
+        @foreach(Employee emp in empList)
+        {
+            <option value="@emp.Name">@emp.Name</option>
+            
+        }
+    </select>
+    <br />
+    <br />
+    @Html.Label("Location")
+    foreach (CollectionPoint cp in cpList)
+    {
+        <input type="radio" name="cp" value="@cp.Location" />@cp.Location
+        <span></span><span></span><span></span><span></span>
+    }
+    @*@Html.RadioButton("CollectionPoint", "Please select a collectionPoint")*@
+    <br />
+    <input type="submit" name="judge" value="Apply Change" onclick="change()" />
+    <input type="submit" name="judge" value="Cancel" onclick="change()" />
+}
+<h>@Html.ActionLink("Reject", "CurrentRepCP", "DepartmentActingHead")</h>
+<script type="text/javascript">
+    function change() {
+        var e = document.getElementById("selectId");
+        var strSelected = e.options[e.selectedIndex].value;
+        $("#form").submit(function (eventObj) {
+            $("<input />").attr("type", "hidden")
+                .attr("name", "emp")
+                .attr("value", strSelected)
+                .appendTo("#form");
+        });
+    }
+</script>
+
