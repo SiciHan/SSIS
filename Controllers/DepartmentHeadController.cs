@@ -159,17 +159,55 @@ namespace Team8ADProjectSSIS.Controllers
                 {
                     Employee newRep = _employeeDAO.FindEmployeeByName(empName);
                     string codeDepartment = newRep.CodeDepartment;
+                    string oldCollectionPoint = _collectionPointDAO.FindByDepartment(codeDepartment);
                     Employee oldRep = _employeeDAO.FindDepartmentRep(codeDepartment);
 
-                    //change old rep status back to 1
+                    //change old rep back to employee
                     _employeeDAO.PutOldRepBack(oldRep.Name);
-
+                    //change the current employee to rep and change collection point
                     _employeeDAO.ChangeNewRepCP(newRep.Name, location);
+
+                    if (newRep.Name != oldRep.Name)
+                    {
+                        //@Shutong: send notification here
+                        int IdEmployee = oldRep.IdEmployee;
+                        var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                        hub.Clients.All.receiveNotification(IdEmployee);
+                        EmailClass emailClass = new EmailClass();
+                        string message = "Hi " + oldRep.Name
+                            + ", you are not Department Rep anymore.";
+                        _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                        emailClass.SendTo(oldRep.Email, "SSIS System Email", message);
+
+                        IdEmployee = newRep.IdEmployee;
+                        hub.Clients.All.receiveNotification(IdEmployee);
+                        message = "Hi " + newRep.Name
+                           + ", you are appointed as Department Rep.";
+                        _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                        emailClass.SendTo(newRep.Email, "SSIS System Email", message);
+                        //end of notification sending
+                    }
+                    //if rep didnot change but only cp changes
+                    else
+                    {
+                        if (oldCollectionPoint != location)
+                        {
+                            int IdEmployee = oldRep.IdEmployee;
+                            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                            hub.Clients.All.receiveNotification(IdEmployee);
+                            EmailClass emailClass = new EmailClass();
+                            string message = "Hi " + oldRep.Name
+                                + ", your collection point has been changed by your head.";
+                            _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                            emailClass.SendTo(oldRep.Email, "SSIS System Email", message);
+
+                        }
+
+                    }
+
                     return RedirectToAction("CurrentRepCP", "DepartmentHead");
                 }
             }
-            
-            
 
             return RedirectToAction("CurrentRepCP", "DepartmentHead");
         }
