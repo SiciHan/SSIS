@@ -22,23 +22,25 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly RequisitionItemDAO _requisitionItemDAO;
         private readonly ItemDAO _itemDAO;
         private readonly DepartmentDAO _departmentDAO;
+        private readonly CollectionPointDAO _collectionPointDAO;
         private readonly NotificationChannelDAO _notificationChannelDAO;
 
-        EmployeeDAO _employeeDAO;
-        RequisitionDAO _requisitionDAO;
-        RequisitionItemDAO _requisitionItemDAO;
-        ItemDAO _itemDAO;
-        DepartmentDAO _deparmentDAO;
-        CollectionPointDAO _collectionPointDAO;
+        //EmployeeDAO _employeeDAO;
+        //RequisitionDAO _requisitionDAO;
+        //RequisitionItemDAO _requisitionItemDAO;
+        //ItemDAO _itemDAO;
+        //DepartmentDAO _deparmentDAO;
+        //CollectionPointDAO _collectionPointDAO;
         public DepartmentHeadController()
         {
             _employeeDAO = new EmployeeDAO();
             _requisitionDAO= new RequisitionDAO();
             _requisitionItemDAO = new RequisitionItemDAO();
             _itemDAO = new ItemDAO();
+
             _departmentDAO = new DepartmentDAO();
             _notificationChannelDAO = new NotificationChannelDAO();
-            _deparmentDAO = new DepartmentDAO();
+            
             _collectionPointDAO = new CollectionPointDAO();
         }
 
@@ -123,7 +125,7 @@ namespace Team8ADProjectSSIS.Controllers
         {
             String codeDepartment = "CPSC";        
             Employee employee=_employeeDAO.FindDepartmentRep(codeDepartment);
-            Department department = _deparmentDAO.FindDepartmentCollectionPoint(codeDepartment);
+            Department department = _departmentDAO.FindDepartmentCollectionPoint(codeDepartment);
             ViewData["employee"] = employee;
             ViewData["department"] = department;
             return View();

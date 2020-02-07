@@ -14,12 +14,12 @@ namespace Team8ADProjectSSIS.DAO
         {
             context = new SSISContext();
         }
-        private readonly SSISContext context;
+        //private readonly SSISContext context;
 
-        public DepartmentDAO()
-        {
-            this.context = new SSISContext();
-        }
+        //public DepartmentDAO()
+        //{
+        //    this.context = new SSISContext();
+        //}
         //SH
         public Department FindDepartmentCollectionPoint(String codeDepartment)
         {
