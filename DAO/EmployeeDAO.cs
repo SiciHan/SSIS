@@ -18,52 +18,26 @@ namespace Team8ADProjectSSIS.DAO
         public void ChangeNewRepCP(string name,string location)
         {
             Employee e = FindEmployeeByName(name);
-            e.IdRole = 3;
-
-            string codeDepartment = e.CodeDepartment;
-            // find employee department and use if else to set idlocation
-            Department dep = context.Departments.Where(d => d.CodeDepartment.Equals(codeDepartment)).FirstOrDefault();
-            if(location.Equals("Management School"))
-            {
-                dep.IdCollectionPt = 1;
-            }
-            else if(location.Equals("Stationery Store"))
-            {
-                dep.IdCollectionPt = 2;
-            }
-            else if (location.Equals("Medical School"))
-            {
-                dep.IdCollectionPt = 3;
-            }
-            else if (location.Equals("Engineering School"))
-            {
-                dep.IdCollectionPt = 4;
-            }
-            else if (location.Equals("Science School"))
-            {
-                dep.IdCollectionPt = 5;
-            }
-            else if (location.Equals("University Hospital"))
-            {
-                dep.IdCollectionPt = 6;
-            }
-            else
-            {
-
-            }
+            //change to rep
+            e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("Representative")).FirstOrDefault();
+            context.SaveChanges();
+            //change cp
+            Department dep = context.Departments.Where(d => d.CodeDepartment.Equals(e.CodeDepartment)).Include(x=>x.CollectionPt).FirstOrDefault();
+            dep.CollectionPt = context.CollectionPoints.OfType<CollectionPoint>().Where(c => c.Location.Equals(location)).FirstOrDefault();
             context.SaveChanges();
         }
         //SH
         public void PutOldRepBack(string name)
         {
             Employee e = FindEmployeeByName(name);
-            e.IdRole = 1;
+            //change to employee
+            e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("Employee")).FirstOrDefault();
             context.SaveChanges();
         }
         //SH
         public Employee FindEmployeeByName(string name)
         {
-            return context.Employees.Where(e => e.Name == name).FirstOrDefault();
+            return context.Employees.Where(e => e.Name == name).Include(x=>x.Role).FirstOrDefault();
         }
         //SH
         public Employee FindDepartmentRep(String codeDepartment)
