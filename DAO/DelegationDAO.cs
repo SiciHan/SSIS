@@ -9,11 +9,16 @@ namespace Team8ADProjectSSIS.DAO
     public class DelegationDAO
     {
         private readonly SSISContext context;
-
         public DelegationDAO()
         {
-            this.context = new SSISContext();
+            context = new SSISContext();
         }
+        //private readonly SSISContext context1;
+
+        //public DelegationDAO()
+        //{
+        //    this.context = new SSISContext();
+        //}
         public Delegation FindDelegationById(int idEmployee)
         {
             return context.Delegations.Where(d => d.IdEmployee == idEmployee).FirstOrDefault();
@@ -43,11 +48,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
         }
 
-        private readonly SSISContext context;
-        public DelegationDAO()
-        {
-            context = new SSISContext();
-        }
+        
         public void Update(Delegation d)
         {
             using (SSISContext context = new SSISContext())
