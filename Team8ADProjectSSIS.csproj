@@ -584,6 +584,7 @@
     <Content Include="Views\Home\SessionExpired.cshtml" />
     <Content Include="Views\Test\Test1.cshtml" />
     <Content Include="Views\Test\Test2.cshtml" />
+    <Content Include="Views\DepartmentHead\ViewDelegations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

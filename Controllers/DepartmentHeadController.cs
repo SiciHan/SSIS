@@ -24,6 +24,7 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly DepartmentDAO _departmentDAO;
         private readonly CollectionPointDAO _collectionPointDAO;
         private readonly NotificationChannelDAO _notificationChannelDAO;
+        private readonly DelegationDAO _delegationDAO;
 
         //EmployeeDAO _employeeDAO;
         //RequisitionDAO _requisitionDAO;
@@ -37,11 +38,10 @@ namespace Team8ADProjectSSIS.Controllers
             _requisitionDAO= new RequisitionDAO();
             _requisitionItemDAO = new RequisitionItemDAO();
             _itemDAO = new ItemDAO();
-
             _departmentDAO = new DepartmentDAO();
             _notificationChannelDAO = new NotificationChannelDAO();
-            
             _collectionPointDAO = new CollectionPointDAO();
+            _delegationDAO = new DelegationDAO();
         }
 
         public ActionResult Notification()
@@ -138,7 +138,7 @@ namespace Team8ADProjectSSIS.Controllers
             String codeDepartment = "CPSC";
             List<Employee> empList=_employeeDAO.FindEmployeeListByDepartment(codeDepartment);
             List<CollectionPoint> cpList = _collectionPointDAO.FindAll();
-            ViewBag.Employee = new SelectList(empList, "IdEmployee", "Name"); // put inside drop down list
+            //ViewBag.Employee = new SelectList(empList, "IdEmployee", "Name"); // put inside drop down list
             ViewBag.EmployeeList = empList;
             ViewBag.CollectionPoint = cpList;
             return View();
@@ -175,9 +175,93 @@ namespace Team8ADProjectSSIS.Controllers
         }
         public ActionResult Delegation()
         {
+            string codeDepartment = "ENGL";
+            List<Employee>empList=_employeeDAO.FindEmployeeListByDepartmentAndRole(codeDepartment);
+            ViewBag.EmployeeList = empList;
+            // retrieve employee where idrole=1 from the same dept
             return View();
         }
-        
+        [HttpPost]
+        public ActionResult PostDelegation(string emp,string cp,string judge, string StartDate, string EndDate)
+        {
+            string submit = judge;
+            string empName = emp;
+            string remarks = cp; // for notification
+            string s1 = StartDate;
+            string s2 = EndDate;
+            if (submit.Equals("Back"))
+            {
+                return RedirectToAction("ViewDelegations", "DepartmentHead");
+            }
+            else if (submit.Equals("Approve Delegate"))
+            {
+                // First check if they are null
+                if(empName!=null && !string.IsNullOrEmpty(s1) && !string.IsNullOrEmpty(s2) )
+                {
+                    DateTime SDate = DateTime.ParseExact(s1, "dd-MM-yyyy",
+                               System.Globalization.CultureInfo.InvariantCulture);
+                    DateTime EDate = DateTime.ParseExact(s2, "dd-MM-yyyy",
+                                    System.Globalization.CultureInfo.InvariantCulture);
+                    // Find the emp by empName--> change emp role to idRole=4, get employee Id, pass id and startdate, end date into delegation
+                    if (EDate >= SDate)
+                    {
+                        // approve delegation
+                        _employeeDAO.DelegateEmployeeToActingRole(empName);
+                        _delegationDAO.UpdateDelegation(empName, SDate, EDate);
+
+                        //@Shutong: send notification here
+                        Employee e = _employeeDAO.FindEmployeeByName(empName);
+                        int IdEmployee = e.IdEmployee;
+                        Delegation d = _delegationDAO.FindDelegationById(IdEmployee);
+                        var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                        hub.Clients.All.receiveNotification(IdEmployee);
+                        EmailClass emailClass = new EmailClass();
+                        string message = "Hi," + empName
+                            + " You are delegated to Acting Department Head from " + d.StartDate + " to " + d.EndDate 
+                            + " to assist approve stationery requisition. Remarks: "+remarks;
+
+                        _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                        emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+                        //end of notification sending 
+
+
+                    }
+
+
+                }
+                return RedirectToAction("ViewDelegations", "DepartmentHead");
+            }
+
+            return RedirectToAction("ViewDelegations", "DepartmentHead");
+        }
+        public ActionResult ViewDelegations()
+        {
+            // display delegation
+            List<Delegation> delegationList= _delegationDAO.FindDelegationlist();
+            ViewBag.delegationList = delegationList;
+            return View();
+        }
+        public ActionResult RemoveDelegation(int idEmployee)
+        {
+            _delegationDAO.RemoveDelegate(idEmployee);
+            _employeeDAO.RemoveDelegate(idEmployee);
+
+            //@Shutong: send notification here
+            Employee e = _employeeDAO.FindEmployeeById(idEmployee);
+            string empName = e.Name;
+            int IdEmployee = e.IdEmployee;
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            hub.Clients.All.receiveNotification(IdEmployee);
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi," + empName
+                + " Thanks for approving stationery requisition on behalf of me! "
+                + " Well done. I will now approve on my own.";
+
+            _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+            //end of notification sending 
+            return RedirectToAction("ViewDelegations", "DepartmentHead");
+        }
 
 
         //use home logout method!!

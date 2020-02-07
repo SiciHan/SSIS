@@ -1,0 +1,52 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "ViewDelegations";
+    Layout = "~/Views/Shared/_HeadLayout.cshtml";
+    List<Delegation> delegationList = (List<Delegation>)ViewBag.delegationList;
+}
+
+<h2>ViewDelegations</h2>
+<div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+    <div class="container">
+        <h2><b>View Acting head delegation list</b></h2>
+        <p>You can remove their acting head responsibility</p>
+    </div>
+</div>
+
+<table>
+    <tr>
+        <th>Acting Head</th>
+        <th>Employee Number</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Action</th>
+
+    </tr>
+    @foreach (Delegation d in delegationList)
+    {
+        <tr>
+            <td>@d.Employee.Name</td>
+            <td>@d.IdEmployee</td>
+            <td>@d.StartDate</td>
+            <td>@d.EndDate</td>
+            <td>@Html.ActionLink("Remove", "RemoveDelegation", "DepartmentHead", new { idEmployee = d.IdEmployee}, null)</td>
+        </tr>
+    }
+</table>
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
+

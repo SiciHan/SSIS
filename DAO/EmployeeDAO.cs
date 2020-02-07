@@ -15,6 +15,32 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
+        //SH
+        public void RemoveDelegate(int idEmployee)
+        {
+            Employee emp = context.Employees.Where(e=>e.IdEmployee == idEmployee).FirstOrDefault();
+            emp.IdRole = 1;// change idrole back to 1
+            context.SaveChanges();
+        }
+        //SH
+        public void DelegateEmployeeToActingRole(string name)
+        {
+            // Find the emp by empName--> change emp role to idRole=4
+            Employee e = FindEmployeeByNameAndRole(name);
+            e.IdRole = 4;// set to idRole to 4
+            context.SaveChanges();
+        }
+        //SH
+        public Employee FindEmployeeByNameAndRole(string name)
+        {
+            return context.Employees.Where(e => e.Name == name).Where(e=>e.IdRole==1).FirstOrDefault();
+        }
+        //SH
+        public List<Employee> FindEmployeeListByDepartmentAndRole(string codeDepartment)
+        {
+            return context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).Where(e => e.IdRole == 1).ToList();
+        }
+        //SH
         public void ChangeNewRepCP(string name,string location)
         {
             Employee e = FindEmployeeByName(name);

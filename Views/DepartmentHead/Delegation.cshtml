@@ -2,7 +2,89 @@
 @{
     ViewBag.Title = "Delegation";
     Layout = "~/Views/Shared/_HeadLayout.cshtml";
+    List<Employee> empList = (List<Employee>)ViewBag.EmployeeList;
 }
 
-<h2>Delegation</h2>
+<h2>Add Delegation</h2>
+@using (Html.BeginForm("PostDelegation", "DepartmentHead", FormMethod.Post, new { @id = "form" }))
+{
+    @Html.Label("Employee")
+    <select id="selectId">
+        @foreach (Employee emp in empList)
+        {
+            <option value="@emp.Name">@emp.Name</option>
 
+        }
+    </select>
+    <br />
+    <br />
+
+    @Html.Editor("StartDate", new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", placeholder = "Start Date..." } })
+    @:&nbsp;&nbsp;&nbsp;&nbsp;
+    @Html.Editor("EndDate", new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", placeholder = "End Date..." } })
+    @:&nbsp;&nbsp;&nbsp;&nbsp;
+
+    <div class="cities" style="padding-left:320px">
+
+        <h2>Please type the message to acting head in the box below</h2><input type="text" name="cp" value="" />
+        <span></span><span></span><span></span><span></span>
+    <br />
+    <input type="submit" name="judge" value="Approve Delegate" onclick="change()" />
+    <input type="submit" name="judge" value="Back" onclick="change()" />
+    </div>
+    
+}
+@*<style>
+.cities {
+  padding-right: 20px;
+} 
+    
+</style>*@
+
+<script type="text/javascript">
+    function change() {
+        var e = document.getElementById("selectId");
+        var strSelected = e.options[e.selectedIndex].value;
+        $("#form").submit(function (eventObj) {
+            $("<input />").attr("type", "hidden")
+                .attr("name", "emp")
+                .attr("value", strSelected)
+                .appendTo("#form");
+        });
+    }
+</script>
+
+@section Scripts{
+
+
+    <script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script type="text/javascript">
+        var Today = new Date();
+
+
+
+        $(function () {
+            $("#StartDate").datepicker({
+                dateFormat: "dd-mm-yy",
+                minDate: Today,
+
+                autohide: true,
+            });
+            $("#EndDate").datepicker({
+                dateFormat: "dd-mm-yy",
+                minDate: Today,
+
+                autohide: true,
+            });
+        });
+
+
+
+
+
+
+
+
+
+    </script>
+}
