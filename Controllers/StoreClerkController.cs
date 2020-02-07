@@ -4,15 +4,19 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.SignalR;
 using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.Filters;
+using Team8ADProjectSSIS.Hubs;
 using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Report;
 
 namespace Team8ADProjectSSIS.Controllers
 {
-    [AuthorizeFilter]
     [AuthenticateFilter]
+    [AuthorizeFilter]
+     
     public class StoreClerkController : Controller
     {
         private readonly DisbursementDAO _disbursementDAO;
@@ -53,6 +57,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
 
+         
         // GET: StoreClerk
         public ActionResult Index()
         {
@@ -66,7 +71,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
             
         }
-
+         
         // Get: FormRetrieve Method
         public ActionResult FormRetrieve()
         {
@@ -105,6 +110,8 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["CPs"] = CPs;
             return View();
         }
+
+         
         // Post Method
         [HttpPost]
         public ActionResult FormRetrieve(int[] idCPs, string StartDate, string EndDate)
@@ -202,7 +209,8 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
-        
+         
+
         [HttpPost]
         public ActionResult SaveDisbursement(int[] IdItemRetrieved) 
         {
@@ -229,9 +237,24 @@ namespace Team8ADProjectSSIS.Controllers
 
                 // check if stock unit is less reorder level
                 bool IsLowerThanReorderLevel = _itemDAO.CheckIfLowerThanReorderLevel(IdItemRetrieved);
+         
                 if (IsLowerThanReorderLevel)
                 {
-                    // raise alert
+                    // raise alert to all stockclerks
+                    Employee storeclerk1=_employeeDAO.FindEmployeeById(1);
+                    Employee storeclerk2 = _employeeDAO.FindEmployeeById(2);
+                    Employee storeclerk3 = _employeeDAO.FindEmployeeById(3);
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(1);
+                    hub.Clients.All.receiveNotification(2);
+                    hub.Clients.All.receiveNotification(3);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "The stock levels of some items are running low!";
+                    _notificationChannelDAO.CreateNotificationsToGroup("Clerk",IdStoreClerk, message);
+                    emailClass.SendTo(storeclerk1.Email, "SSIS System Email", message);
+                    emailClass.SendTo(storeclerk2.Email, "SSIS System Email", message);
+                    emailClass.SendTo(storeclerk3.Email, "SSIS System Email", message);
+
                 }
             }
             else
@@ -241,6 +264,8 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("FormRetrieve", "StoreClerk");
 
         }
+
+         
         [HttpPost]
         public ActionResult PrintPdf(string StartDate, string EndDate)
         {
@@ -260,7 +285,8 @@ namespace Team8ADProjectSSIS.Controllers
             return File(abytes,"application/pdf", "Retrieve Form.pdf");
 
         }
-        
+
+         
         //@Shutong
         public ActionResult PurchaseOrderList()
         {
@@ -273,6 +299,8 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["LowStock"] = _itemDAO.FindLowStockItems();
             return View();
         }
+
+         
         //@Shutong
         public ActionResult MakePurchaseOrder(string searchStr)
         {
@@ -286,7 +314,7 @@ namespace Team8ADProjectSSIS.Controllers
             //ViewData["PODCart"] = _purchaseOrderDetailsDAO.FindAllIncompletePODetails(_purchaseOrderDAO.FindIncompletePO());
             return View();
         }
-
+         
         //@Shutong
         [HttpPost]
         public ActionResult AddToCart(FormCollection form)
@@ -315,6 +343,7 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("MakePurchaseOrder", "StoreClerk");
         }
 
+         
         //@Shutong
         public ActionResult PurchaseOrderCart()
         {
@@ -322,6 +351,7 @@ namespace Team8ADProjectSSIS.Controllers
             //ViewData["POCart"] = _purchaseOrderDAO.FindIncompletePO();
             return View();
         }
+         
         //@Shutong
         public ActionResult DeletePODFromCart(int id)
         {
@@ -330,12 +360,14 @@ namespace Team8ADProjectSSIS.Controllers
             //return Content("You have deleted your Purchase Order details"+id);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
+         
         //@Shutong
         public ActionResult UpdateOrderUnit(int orderUnit, int idPOD)
         {
             _purchaseOrderDetailsDAO.UpdateOrderUnitById(orderUnit, idPOD);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
+         
         //@Shutong
         [HttpPost]
         public ActionResult SubmitPurchaseOrder(FormCollection form)
@@ -351,6 +383,7 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
+         
         //@Shutong
         [HttpPost]
         public ActionResult CancelAllPurchaseOrder(FormCollection form)
@@ -367,6 +400,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+         
         //@Shutong
         public ActionResult CancelPO(int id)
         {
@@ -375,15 +409,23 @@ namespace Team8ADProjectSSIS.Controllers
                 
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+         
         //@Shutong
         public ActionResult WithdrawPO(int id)
         {
-
+            int idEmployee = (int)Session["IdEmployee"];
             _purchaseOrderDAO.UpdateStatusToIncomplete(id);
-
+            //raise notification
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            int idsupervisor = _employeeDAO.FindIdByRole("Supervisor")[0];
+            hub.Clients.All.receiveNotification(idsupervisor);//5 is supervisor
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi Supervisor, your store clerk "+_employeeDAO.FindEmployeeById(idEmployee).Name+ " has withdrawed the PO "+id;
+            _notificationChannelDAO.CreateNotificationsToGroup("Supervisor", idEmployee, message);
+            emailClass.SendTo(_employeeDAO.FindEmailsByRole("Supervisor")[0], "SSIS System Email", message);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
-
+         
         //@Shutong
         public ActionResult UpdatePO(int id)
         {
@@ -392,7 +434,7 @@ namespace Team8ADProjectSSIS.Controllers
             _purchaseOrderDAO.UpdateRejectedToIncomplete(id);
             return RedirectToAction("PurchaseOrderCart", "StoreClerk");
         }
-
+         
         //@Shutong
         [HttpGet]
         public ActionResult CollectPO(int? id)
@@ -406,7 +448,7 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["pod"] = _purchaseOrderDetailsDAO.FindPODetailsByPOId(id.Value);
             return View();
         }
-
+         
         //@Shutong
         [HttpPost]
         public ActionResult CollectPO(FormCollection form)
@@ -426,6 +468,7 @@ namespace Team8ADProjectSSIS.Controllers
             _purchaseOrderDAO.UpdateStatusToDelivered(id);
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
         }
+         
         //@Shutong
         public ActionResult Schedule(int IdPO, string deliverDate)
         {
@@ -434,8 +477,16 @@ namespace Team8ADProjectSSIS.Controllers
             return RedirectToAction("PurchaseOrderList", "StoreClerk");
 
         }
+    
+        //@Shutong
+        public ActionResult ViewSupplierItem(int Iditem,string codesupplier)
+        {
+            SupplierItem supplierItem=_supplierItemDAO.FindSupplierItemByIditemAndCodesupplier(Iditem, codesupplier);
+            ViewData["supplierItem"] = supplierItem;
+            return View();
+        }
 
-
+   
         // James: Disbursement overview
         public ActionResult Disbursement()
         {
@@ -469,7 +520,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return View();
         }
-
+        
         // James: Selecting multiple disbursements to schedule for collection
         [HttpPost]
         public ActionResult Schedule(IEnumerable<int> disbIdsToSchedule, String pickDate)
@@ -509,12 +560,18 @@ namespace Team8ADProjectSSIS.Controllers
 
                     int notifId = _notificationDAO.CreateNotification(message);
                     _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(depRep.IdEmployee);
+                    EmailClass emailClass = new EmailClass();
+                    emailClass.SendTo(depRep.Email, "SSIS System Email", message);
+
+
                 }
             }
 
             return RedirectToAction("Disbursement");
         }
-
+        
         // James: Scheduling a single disbursement with redistribution if necessary
         [HttpPost]
         public ActionResult ScheduleSingle(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> transferQtyNum, IList<int> disbItemIdDeptFrom, String pickDate)
@@ -553,12 +610,17 @@ namespace Team8ADProjectSSIS.Controllers
 
                 int notifId = _notificationDAO.CreateNotification(message);
                 _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
+                var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(depRep.IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                emailClass.SendTo(depRep.Email, "SSIS System Email", message);
             }
 
             _disbursementDAO.UpdateStatus(disbId, 10, SDate, null);
             return RedirectToAction("Disbursement");
         }
 
+    
         // James: Opens page to redistribute qty from other disbursements
         public ActionResult Redistribute(int disbId)
         {
@@ -622,7 +684,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return PartialView("DisbursementDetails");
         }
-
+  
         //James: Refresh Disbursement page and updates the unitIssued to the QtyDisbursed
         [HttpPost]
         public ActionResult RefreshDisbursement(IEnumerable<int> disbId, IList<int> disbItemId, IList<int> qtyDisbursed)
@@ -659,7 +721,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("Disbursement");
         }
-
+    
         //James: For clerk to sign, raises SA in case of discrepancy and email out a copy of the disbursement details
         [HttpPost]
         public ActionResult ClerkSign(IEnumerable<int> disbId)
@@ -673,8 +735,6 @@ namespace Team8ADProjectSSIS.Controllers
                 IdStoreClerk = (int)Session["IdEmployee"];
             }
 
-
-
             // updates the disb's status to "Disbursed" or 7
             _disbursementDAO.UpdateStatus(disbId, 7, DateTime.Now, IdStoreClerk);
 
@@ -687,14 +747,44 @@ namespace Team8ADProjectSSIS.Controllers
                     .Where(emp => emp.IdRole == 3)
                     .FirstOrDefault();
 
-                String message = $"Attached a copy of the acknolwedged Disbursement for {targetDisbursement.CodeDepartment} on {targetDisbursement.Date.ToString("dd/MM/yyyy")}.";
+                String message = $"Attached a copy of the acknolwedged Disbursement for {targetDisbursement.CodeDepartment} on {targetDisbursement.Date.ToString("dd/MM/yyyy")}./n" +
+                    $"Department Rep: " + depRep.Name + "/n" +
+                    $"Store Clerk: " + _employeeDAO.FindEmployeeById(IdStoreClerk).Name +
+                $"Both achknowledged. " +
+                "Download report at https://localhost:44304/StoreClerk/PrintDisbursementPdf?disbId=" + targetDisbursement.IdDisbursement;
 
                 int notifId = _notificationDAO.CreateNotification(message);
                 _notificationChannelDAO.SendNotification(IdStoreClerk, depRep.IdEmployee, notifId, DateTime.Now);
                 _notificationChannelDAO.SendNotification(IdStoreClerk, IdStoreClerk, notifId, DateTime.Now);
+                var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(depRep.IdEmployee);
+                hub.Clients.All.receiveNotification(IdStoreClerk);
+                EmailClass emailClass = new EmailClass();
+                emailClass.SendTo(depRep.Email, "SSIS System Email", message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdStoreClerk).Email, "SSIS System Email", message);
             }
 
             return RedirectToAction("Disbursement");
+        }
+
+        //James: Print Disbursement Details' PDF
+        [HttpGet]
+        public ActionResult PrintDisbursementPdf(IEnumerable<int> disbId)
+        {
+            Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
+            List<DisbursementItem> targetList = targetDisbursement.DisbursementItems.ToList();
+
+            // Get Dep Rep
+            Employee depRep = targetDisbursement.Department.Employees
+                .Where(emp => emp.IdRole == 3)
+                .FirstOrDefault();
+
+            DisbursementReport disbursementReport = new DisbursementReport();
+            byte[] abytes = disbursementReport.PrepareReport(targetDisbursement, targetList, depRep);
+
+            String filename = $"{targetDisbursement.Date.ToString("yyyyMMdd")}_Disbursement_{targetDisbursement.IdDisbursement}.pdf";
+
+            return File(abytes, "application/pdf", filename);
         }
 
         //James: Stocktake overview
@@ -709,8 +799,6 @@ namespace Team8ADProjectSSIS.Controllers
                 IdStoreClerk = (int)Session["IdEmployee"];
             }
 
-
-
             ViewBag.allItems = _itemDAO.GetAllItems();
 
             ViewBag.mth1 = DateTime.Now.ToString("yyyy-MM");
@@ -721,7 +809,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
-
+     
         //James: Save the created stocktake into individual stockrecords
         [HttpPost]
         public ActionResult SaveStocktake(IList<int> itemId, IList<int> actualQty, IList<int> missingQty, IList<int> wrongQty, IList<int> brokenQty, IList<int> giftQty)
@@ -800,22 +888,37 @@ namespace Team8ADProjectSSIS.Controllers
 
             return RedirectToAction("Stocktake");
         }
-
+     
         public void RaiseSAandNotifyBoss(DateTime date, int IdOperation, String IdDepartment, String IdSupplier, int IdStoreClerk, Item item, int qty, 
             Employee supervisor, Employee manager)
         {
+
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
             String message = $"Stock adjustment raised for Item ({item.Description}). Please approve/reject.";
             _stockRecordDAO.RaiseSA(date, IdOperation, IdDepartment, IdSupplier, IdStoreClerk, item.IdItem, qty);
             int notifId = _notificationDAO.CreateNotification(message);
+            
 
             SupplierItem si = _supplierItemDAO.FindByItem(item);
             if (Math.Abs(qty * si.Price) > 250)
+            {
                 _notificationChannelDAO.SendNotification(IdStoreClerk, manager.IdEmployee, notifId, date);
+                //var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(manager.IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                emailClass.SendTo(manager.Email, "SSIS System Email", message);
+            }
+
             else
+            {
                 _notificationChannelDAO.SendNotification(IdStoreClerk, supervisor.IdEmployee, notifId, date);
-
+                hub.Clients.All.receiveNotification(supervisor.IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                emailClass.SendTo(supervisor.Email, "SSIS System Email", message);
+            }
+                
         }
-
+       
         //James: View past stocktake based on time
         public ActionResult ViewStocktake(String targetMonth)
         {
@@ -840,5 +943,6 @@ namespace Team8ADProjectSSIS.Controllers
 
             return PartialView("ViewStocktake");
         }
+
     }
 }

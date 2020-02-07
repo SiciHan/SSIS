@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.SignalR;
 using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.EmailModel;
 using Team8ADProjectSSIS.Filters;
+using Team8ADProjectSSIS.Hubs;
 using Team8ADProjectSSIS.Models;
 
 namespace Team8ADProjectSSIS.Controllers
@@ -67,10 +70,31 @@ namespace Team8ADProjectSSIS.Controllers
         {
             //int idEmployee = 4;
             int idEmployee = (int)Session["IdEmployee"];
+            int IdStoreClerk1 = _disbursementDAO.FindById(idDisbursement).IdDisbursedBy.GetValueOrDefault(0);//old clerk
+            string cp1 = _disbursementDAO.FindById(idDisbursement).CollectionPoint.Location;
+            string cp2 = _collectionPointDAO.Find(idCollectionPt).Location;
             Employee employee = _employeeDAO.FindEmployeeById(idEmployee);
             
             bool result1 =_departmentDAO.UpdateCollectionPt(employee.CodeDepartment, idCollectionPt);
             bool result2 = _disbursementDAO.UpdateCollectionPt(idDisbursement, idCollectionPt);
+
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            int IdStoreClerk2 = _disbursementDAO.FindById(idDisbursement).IdDisbursedBy.GetValueOrDefault(0);//new clerk
+            hub.Clients.All.receiveNotification(IdStoreClerk1);
+            hub.Clients.All.receiveNotification(IdStoreClerk2);
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi," + _employeeDAO.FindEmployeeById(IdStoreClerk1).Name +
+                employee.Name + "from Department " + employee.CodeDepartment + "has changed the Collection Point from "+cp1+" to "+cp2+".";
+            _notificationChannelDAO.CreateNotificationsToIndividual(IdStoreClerk1, (int)Session["IdEmployee"], message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdStoreClerk1).Email, "SSIS System Email", message);
+
+            message = "Hi," + _employeeDAO.FindEmployeeById(IdStoreClerk2).Name +
+                employee.Name + "from Department " + employee.CodeDepartment + "has changed the Collection Point from " + cp1 + " to " + cp2 + ".";
+            _notificationChannelDAO.CreateNotificationsToIndividual(IdStoreClerk2, (int)Session["IdEmployee"], message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdStoreClerk2).Email, "SSIS System Email", message);
+
+
+
             return RedirectToAction("Home");
         }
 
@@ -81,6 +105,14 @@ namespace Team8ADProjectSSIS.Controllers
             int idEmployee = (int)Session["IdEmployee"];
             Employee employee = _employeeDAO.FindEmployeeById(idEmployee);
             bool result = _disbursementDAO.AcknowledgeCollection(idDisbursement, employee.IdEmployee);
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            int IdStoreClerk=_disbursementDAO.FindById(idDisbursement).IdDisbursedBy.GetValueOrDefault(0);
+            hub.Clients.All.receiveNotification(IdStoreClerk);
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi," + _employeeDAO.FindEmployeeById(IdStoreClerk).Name +
+                employee.Name + "from Department " + employee.CodeDepartment + "has acknowledged the disbursement received just now. Please counter sign ";
+            _notificationChannelDAO.CreateNotificationsToIndividual(IdStoreClerk, (int)Session["IdEmployee"], message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdStoreClerk).Email, "SSIS System Email", message);
             return RedirectToAction("Home");
         }
 

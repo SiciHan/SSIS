@@ -1,29 +1,47 @@
-﻿@model Team8ADProjectSSIS.Models.JoinDandDI
-@using Team8ADProjectSSIS.Models;
+﻿@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "DisbursementDetails";
-    List<JoinDandDI> DetailDisbursement = (List<JoinDandDI>)ViewData["DetailDisbursement"];
+    List<DisbursementItem> DetailDisbursement = (List<DisbursementItem>)ViewData["DetailDisbursement"];
+    int IdDisbursement = (int)ViewData["IdDisbursement"];
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
 
     <h2>Disbursement Details</h2>
+    <div>
+        <h5>Disbursement Id: @IdDisbursement</h5>
+    </div>
 <table>
     <tr>
-        <th>IdItem</th>
+        <th>Item Description</th>
         <th>Unit Requested</th>
         <th>Unit Issued</th>
         <th>Status</th>
     </tr>
-    @foreach (JoinDandDI i in DetailDisbursement)
+    @foreach (DisbursementItem i in DetailDisbursement)
     {
         <tr>
-            <td>@i.disbursementItem.IdItem</td>
-            <td>@i.disbursementItem.UnitRequested</td>
-            <td>@i.disbursementItem.UnitIssued</td>
-            <td>@i.disbursementItem.Status.Label</td>
+            <td>@i.Item.Description</td>
+            <td>@i.UnitRequested</td>
+            <td>@i.UnitIssued</td>
+            <td>@i.Status.Label</td>
         </tr>
     }
 </table>
 
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
 
 

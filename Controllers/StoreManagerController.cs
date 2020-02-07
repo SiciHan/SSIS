@@ -8,6 +8,8 @@ using Team8ADProjectSSIS.DAO;
 using Team8ADProjectSSIS.Models;
 using Team8ADProjectSSIS.Report;
 using Team8ADProjectSSIS.Filters;
+using Microsoft.AspNet.SignalR;
+using Team8ADProjectSSIS.Hubs;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -24,6 +26,8 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly DisbursementItemDAO _disbursementItemDAO;
         private readonly StockRecordDAO _stockRecordDAO;
         private readonly NotificationChannelDAO _notificationChannelDAO;
+        private readonly RequisitionDAO _requisitionDAO;
+        private readonly RequisitionItemDAO _requisitionItemDAO;
 
         public StoreManagerController()
         {
@@ -35,6 +39,8 @@ namespace Team8ADProjectSSIS.Controllers
             _disbursementItemDAO = new DisbursementItemDAO();
             _stockRecordDAO = new StockRecordDAO();
             _notificationChannelDAO = new NotificationChannelDAO();
+            _requisitionDAO = new RequisitionDAO();
+            _requisitionItemDAO = new RequisitionItemDAO();
         }
 
         // GET: StoreManager
@@ -86,26 +92,26 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
-        [HttpPost]
         public ActionResult PODetails(int IdPurchaseOrder)
         {
             List<PurchaseOrderDetail> DetailPO = _purchaseOrderDetailsDAO.FindDetailPO(IdPurchaseOrder);
+            ViewData["IdPurchaseOrder"] = IdPurchaseOrder;
             ViewData["DetailPO"] = DetailPO;
             return View();
         }
 
         public ActionResult DisbursementHistory()
         {
-            List<JoinDandDI> AllDisbursement = _disbursementDAO.FindAllDisbursement();
+            List<Disbursement> AllDisbursement = _disbursementDAO.GetAllDisbursements();
             ViewData["AllDisbursement"] = AllDisbursement;
             return View();
         }
 
-        [HttpPost]
         public ActionResult DisbursementDetails(int IdDisbursement)
         {
-            List<JoinDandDI> DetailDisbursement = _disbursementItemDAO.FindDetailDisbursement(IdDisbursement);
+            List<DisbursementItem> DetailDisbursement = _disbursementItemDAO.FindDetailDisbursement(IdDisbursement);
             ViewData["DetailDisbursement"] = DetailDisbursement;
+            ViewData["IdDisbursement"] = IdDisbursement;
             return View();
         }
 
@@ -159,10 +165,33 @@ namespace Team8ADProjectSSIS.Controllers
             if(judge == "Approve")
             {
                 _stockRecordDAO.UpdateVoucherToApproved(vouchers);
+
+                foreach (StockRecord sr in vouchers)
+                {
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(sr.IdStoreClerk);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "Hi," + sr.StoreClerk.Name + " your stock adjustment voucher for (" + sr.Operation.Label.Split('-')[1] + ") " + sr.Unit + " " + sr.Item.unitOfMeasure + sr.Item.Description + " raised on " + sr.Date + " has been approved.";
+
+                    _notificationChannelDAO.CreateNotificationsToIndividual(sr.StoreClerk.IdEmployee, (int)Session["IdEmployee"], message);
+                    emailClass.SendTo(sr.StoreClerk.Email, "SSIS System Email", message);
+                }
             }
             else
             {
                 _stockRecordDAO.UpdateVoucherToRejected(vouchers);
+                foreach (StockRecord sr in vouchers)
+                {
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                    hub.Clients.All.receiveNotification(sr.IdStoreClerk);
+                    EmailClass emailClass = new EmailClass();
+                    string message = "Hi," + sr.StoreClerk.Name + " your stock adjustment voucher for (" + sr.Operation.Label.Split('-')[1] + ") " + sr.Unit + " " + sr.Item.unitOfMeasure + sr.Item.Description + " raised on " + sr.Date + " has been rejected.";
+
+                    _notificationChannelDAO.CreateNotificationsToIndividual(sr.StoreClerk.IdEmployee, (int)Session["IdEmployee"], message);
+                    emailClass.SendTo(sr.StoreClerk.Email, "SSIS System Email", message);
+                }
+
+
             }
             return RedirectToAction("Voucher", "StoreManager");
         }
@@ -175,6 +204,20 @@ namespace Team8ADProjectSSIS.Controllers
             byte[] ExcelData = excelReport.GenerateExcelReport(DownloadableData);
 
             return File(ExcelData, "application/xlsx", "Ordered Data.xlsx");
+        }
+
+        public ActionResult RequisitionHistory()
+        {
+            List<Requisition> AllRequisition = _requisitionDAO.FindAllRequisition();
+            ViewData["AllRequisition"] = AllRequisition;
+            return View();
+        }
+        public ActionResult RequisitionDetails(int IdRequisition)
+        {
+            List<RequisitionItem> RequisitionDetails = _requisitionItemDAO.RetrieveRequisitionItemByReqId(IdRequisition);
+            ViewData["RequisitionDetails"] = RequisitionDetails;
+            ViewData["IdRequisition"] = IdRequisition;
+            return View();
         }
     }
 }

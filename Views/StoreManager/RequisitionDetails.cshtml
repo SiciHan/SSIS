@@ -1,0 +1,45 @@
+﻿@using Team8ADProjectSSIS.Models;
+@{
+    ViewBag.Title = "RequisitionDetails";
+    List<RequisitionItem> RequisitionDetails = (List<RequisitionItem>)ViewData["RequisitionDetails"];
+    int IdRequisition = (int)ViewData["IdRequisition"];
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+}
+
+<h2>RequisitionDetails</h2>
+<div>
+    <h5>Requisition Id: @IdRequisition</h5>
+</div>
+<table>
+    <tr>
+        <th>Item Description</th>
+        <th>Stock Unit</th>
+        <th>Request Unit</th>
+        <th>Unit of Measure</th>
+    </tr>
+    @foreach (RequisitionItem i in RequisitionDetails)
+    {
+        <tr>
+            <td>@i.Item.Description</td>
+            <td>@i.Item.StockUnit</td>
+            <td>@i.Unit</td>
+            <td>@i.Item.unitOfMeasure</td>
+        </tr>
+    }
+</table>
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>

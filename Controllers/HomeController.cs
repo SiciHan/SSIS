@@ -1,4 +1,7 @@
-﻿using System;
+﻿/*
+ Author: Shutong
+ */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -6,10 +9,13 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Team8ADProjectSSIS.DAO;
+using Team8ADProjectSSIS.Filters;
 using Team8ADProjectSSIS.Models;
+using Team8ADProjectSSIS.EmailModel;
 
 namespace Team8ADProjectSSIS.Controllers
 {
+    
     public class HomeController : Controller
     {
         private readonly CategoryDAO _categoryDAO;
@@ -23,25 +29,18 @@ namespace Team8ADProjectSSIS.Controllers
             _roleDAO = new RoleDAO();
             _notificationChannelDAO = new NotificationChannelDAO();
         }
-/*        public HomeController(CategoryDAO categoryDAO)
-        {
-            _categoryDAO = categoryDAO;
-        }*/
-
         public ActionResult Chat()
         {
             return View();
         }
-
-
         public ActionResult Index()
         {
-
             return View();
         }
         [HttpGet]
         public ActionResult LogIn()
         {
+            Session.Clear();
             return View();
         }
 
@@ -77,7 +76,7 @@ namespace Team8ADProjectSSIS.Controllers
                         case "Employee":
                             return RedirectToAction("Index", "Employee");
                         case "Head":
-                            return RedirectToAction("Dashboard", "DepartmentHead");
+                            return RedirectToAction("Notification", "DepartmentHead");
                         case "Representative":
                             return RedirectToAction("Home", "DepartmentRepresentative");
                         case "StockClerk":
@@ -87,7 +86,7 @@ namespace Team8ADProjectSSIS.Controllers
                         case "StockSupervisor":
                             return RedirectToAction("Dashboard", "StoreSupervisor");
                         case "ActingHead":
-                            return RedirectToAction("Dashboard", "DepartmentActingHead");
+                            return RedirectToAction("Notification", "DepartmentActingHead");
                         default:
                             return RedirectToAction("Index", "Home");
                     }
@@ -101,37 +100,26 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult Logout()
         {
             Session.Clear();
-            return Content("You are logged out. Please try to log in again.");
+            return View();
         }
         public ActionResult SessionExpired()
         {
-            return Content("Your session is expired. Please try to log in again.");
+            return View();
         }
 
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
-            Category c = new Category();
-            c.Label = "pen";
-            _categoryDAO.Create(c);
-           // DAO method
             return View();
         }
 
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
-            using (SSISContext context = new SSISContext())
-            {
-                // Context method
-                Role c = new Role();
-                c.Label = "Manager";
-                context.Roles.Add(c);
-                context.SaveChanges();
-            }
             return View();
         }
 
+        [AuthenticateFilter]
         public JsonResult GetNotifications()
         {
             int IdReceiver = (int) Session["IdEmployee"];
@@ -139,6 +127,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(_notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver), JsonRequestBehavior.AllowGet);
         }
 
+        [AuthenticateFilter]
         public JsonResult CreateNotificationsToGroup(string role,string message)
         {
             int IdSender= (int)Session["IdEmployee"];
@@ -148,6 +137,27 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(status, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult SendEmailToGroup(string role, string message)
+        {
+            List<string> emails=_employeeDAO.FindEmailsByRole(role);
+            string status="Ok";
+            try
+            {
+                foreach(string email in emails)
+                {
+                    EmailClass emailClass = new EmailClass();
+                    emailClass.SendTo(email, "SSIS System Email", message);
+                }
+            }
+            catch (Exception)
+            {
+                status = "Bad";
+            }
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+
+        [AuthenticateFilter]
         public JsonResult CreateNotificationsToIndividual(int idReceiver, string message)
         {
             int IdSender = (int)Session["IdEmployee"];
@@ -157,6 +167,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(status, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthenticateFilter]
         public JsonResult MarkNotificationChannelAsRead(int IdNC)
         {
             string status = null;
@@ -174,6 +185,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(status, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthenticateFilter]
         public JsonResult MarkNotificationChannelAsUnread(int IdNC)
         {
 
@@ -192,6 +204,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(status, JsonRequestBehavior.AllowGet);
         }
 
+        [AuthenticateFilter]
         public JsonResult GetUnreadNotificationCount(int IdReceiver)
         {
             

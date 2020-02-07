@@ -120,5 +120,48 @@ namespace Team8ADProjectSSIS.DAO
         {
             return context.Employees.Where(x => x.IdRole == IdRole).ToList();
         }
+
+        internal List<string> FindEmailsByRole(string role)
+        {
+            List<string> emails = new List<string>();
+            foreach(Employee e in context.Employees.OfType<Employee>().Where(x => x.Role.Label.Contains(role)).ToList())
+            {
+                emails.Add(e.Email);
+            }
+            return emails;
+        }
+
+        internal List<int> FindIdByRole(string role)
+        {
+
+            List<int> ids = new List<int>();
+            foreach (Employee e in context.Employees.OfType<Employee>().Where(x => x.Role.Label.Contains(role)).ToList())
+            {
+                ids.Add(e.IdEmployee);
+            }
+            return ids;
+         
+        }
+
+
+        internal int FindHeadIdByIdEmployee(int idEmployee)
+        {
+            Employee e = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Department).FirstOrDefault();
+            string codeDepartment = e.Department.CodeDepartment;
+            return context.Employees.OfType<Employee>().Where(x => x.CodeDepartment == codeDepartment && x.Role.Label.Equals("Head")).FirstOrDefault().IdEmployee;
+        }
+
+        internal int FindActingHeadIdByIdEmployee(int idEmployee)
+        {
+            Employee e = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Department).FirstOrDefault();
+            string codeDepartment = e.Department.CodeDepartment;
+            Employee ah=context.Employees.OfType<Employee>().Where(x => x.CodeDepartment == codeDepartment && x.Role.Label.Equals("ActingHead")).FirstOrDefault();
+            if (ah != null)
+            {
+                return ah.IdEmployee;
+            }
+            return 0; 
+            
+        }
     }
 }

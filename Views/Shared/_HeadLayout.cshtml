@@ -55,8 +55,8 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>*@
             @*<div class="navbar-header">
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>*@
+                    @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>*@
 
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
                 <ul class="nav navbar-nav faq-tabbable">
@@ -89,10 +89,10 @@
                     <li class="navbar-brand" style="padding-right:0px; padding-top:18px">
                         Welcome Back, Head &nbsp;
                     </li>
-                   
+
 
                     <li style="padding-right:8px">
-                        <a href="@Url.Action("PendingLists","DepartmentHead")" style="padding-right:0px">
+                        <a href="@Url.Action("Notification","DepartmentHead")" style="padding-right:0px">
                             <span class="glyphicon glyphicon-bell" style="top:4px"></span>
                             <span class="badge badge-danger">5</span>
                         </a>
@@ -125,6 +125,13 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
+
+    <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+    <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/DepartHeadNotification.js"></script>
+
     @RenderSection("scripts", required: false)
     @*<script src="~/Scripts/vendor/jquery/jquery.min.js"></script>
         <script src="~/Scripts/vendor/bootstrap/js/bootstrap.bundle.js"></script>*@

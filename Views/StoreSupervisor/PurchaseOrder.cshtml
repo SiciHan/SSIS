@@ -25,7 +25,12 @@
                 <li>@Html.ActionLink("Adjustment Voucher History", "VoucherHistory", "StoreSupervisor")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li style="padding-right:8px">
+                    <a href="@Url.Action("Notification","StoreSupervisor")" style="padding-right:0px">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
@@ -33,7 +38,11 @@
 </div>
 
 <h2>PurchaseOrder</h2>
-@using (Html.BeginForm("HandlePO", "StoreSupervisor", FormMethod.Post))
+
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+
+@using (Html.BeginForm("HandlePO", "StoreSupervisor", FormMethod.Post, new { @id = "form"}))
 {
     <div class="container">
         <table>
@@ -65,21 +74,12 @@
         </table>
         <input type="button" class="btn btn-primary" value="History" onclick="location.href='@Url.Action("POHistory", "StoreSupervisor")'" style="margin-top:24px" />
 
-        <input type="submit" class="btn btn-danger" name="handle" value="Reject" style="float:right; margin-top:24px" />
-        <input type="submit" class="btn btn-success" name="handle" value="Approve" style="float:right; margin-right:24px; margin-top:24px" />
+        <input type="submit" class="btn btn-danger" name="handle" value="Reject" style="float:right; margin-top:24px"
+               onclick="ConfirmReject()" />
+        <input type="submit" class="btn btn-success" name="handle" value="Approve" style="float:right; margin-right:24px; margin-top:24px"
+               onclick="ConfirmApprove()" />
     </div>
 }
-
-<script type="text/javascript">
-    function SelectAll(isChecked) {
-        var po = document.getElementsByName("purchase_ordersId");
-        //var selectall = document.getElementsByName("select_all");
-        for (var i = 0; i < po.length; i++) {
-            po[i].checked = isChecked;
-        }
-    }
-</script>
-
 
 <style>
 
@@ -96,3 +96,59 @@
         text-align: center;
     }
 </style>
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/StoreSupervisorNotification.js"></script>
+    <script type="text/javascript">
+        function SelectAll(isChecked) {
+            var po = document.getElementsByName("purchase_ordersId");
+            //var selectall = document.getElementsByName("select_all");
+            for (var i = 0; i < po.length; i++) {
+                po[i].checked = isChecked;
+            }
+        }
+
+        function ConfirmApprove() {
+            if (!confirm("Confirm approve the selected purchase order ? ")) {
+                window.event.returnValue = false;
+            }
+            else {
+                window.event.returnValue = true;
+            }
+        }
+
+        function ConfirmReject() {
+            var remarks = prompt("Please input your remarks or just skip .", "");
+            if (!confirm("Confirm reject the selected purchase order ? ")) {
+                window.event.returnValue = false;
+            }
+            else {
+                $("#form").submit(function (eventObj) {
+                    $("<input />").attr("type", "hidden")
+                        .attr("name", "remarks")
+                        .attr("value", remarks)
+                        .appendTo("#form");
+                    return true;
+                });
+                window.event.returnValue = true;
+            }
+        }
+
+        window.onload = function () {
+            var po = document.getElementsByName("purchase_ordersId");
+            var buttons = document.getElementsByName("handle");
+            var checkedNum = 0;
+            for (var i = 0; i < po.length; i++) {
+                if (po[i].checked) {
+                    checkedNum++;
+                }
+            }
+            if (checkedNum == 0) {
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = true;
+                }
+            }
+        }
+    </script>
+}

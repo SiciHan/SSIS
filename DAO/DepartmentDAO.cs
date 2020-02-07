@@ -12,6 +12,12 @@ namespace Team8ADProjectSSIS.DAO
 
         public DepartmentDAO()
         {
+            context = new SSISContext();
+        }
+        private readonly SSISContext context;
+
+        public DepartmentDAO()
+        {
             this.context = new SSISContext();
         }
         //SH
@@ -36,6 +42,12 @@ namespace Team8ADProjectSSIS.DAO
                 db.SaveChanges();
             }
             return true;
+        }
+
+        internal string FindCodeDepartmentByIdEmployee(int v)
+        {
+            Department department = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == v).Select(x => x.Department).FirstOrDefault();
+            return department.CodeDepartment;
         }
     }
 }

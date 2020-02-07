@@ -27,7 +27,12 @@
                 <li>@Html.ActionLink("Adjustment Voucher History", "VoucherHistory", "StoreSupervisor")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-bell"></span> <span class="badge badge-pill badge-primary badge-danger">3</span></a></li>
+                <li style="padding-right:8px">
+                    <a href="@Url.Action("Notification","StoreSupervisor")" style="padding-right:0px">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
+                    </a>
+                </li>
                 <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
             </ul>
         </div>
@@ -35,6 +40,10 @@
 </div>
 
 <h2>Voucher</h2>
+
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+
 
 @using (Html.BeginForm("JudgeAdjustment", "StoreManager", FormMethod.Post))
 {
@@ -89,8 +98,10 @@
         </table>
         <input type="button" class="btn btn-primary" value="Voucher History" onclick="location.href='@Url.Action("VoucherHistory", "StoreSupervisor")'" style="margin-top:24px" />
 
-        <input type="submit" class="btn btn-danger" name="handle" value="Reject" style="float:right; margin-top:24px" />
-        <input type="submit" class="btn btn-success" name="handle" value="Approve" style="float:right; margin-right:24px; margin-top:24px" />
+        <input type="submit" class="btn btn-danger" name="handle" value="Reject" style="float:right; margin-top:24px" 
+               onclick="ConfirmReject()" />
+        <input type="submit" class="btn btn-success" name="handle" value="Approve" style="float:right; margin-right:24px; margin-top:24px" 
+               onclick="ConfirmApprove()" />
     </div>
 }
 
@@ -119,3 +130,44 @@
         text-align: center;
     }
 </style>
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/StoreSupervisorNotification.js"></script>
+    <script type="text/javascript">
+        function ConfirmApprove() {
+            if (!confirm("Confirm approve the selected voucher ? ")) {
+                window.event.returnValue = false;
+            }
+            else {
+                window.event.returnValue = true;
+            }
+        }
+
+        function ConfirmReject() {
+            if (!confirm("Confirm reject the selected voucher ? ")) {
+                window.event.returnValue = false;
+            }
+            else {
+                window.event.returnValue = true;
+            }
+        }
+
+        window.onload = function () {
+            var vouchers = document.getElementsByName("vouchersId");
+            var buttons = document.getElementsByName("handle");
+            var checkedNum = 0;
+            for (var i = 0; i < vouchers.length; i++) {
+                if (vouchers[i].checked) {
+                    checkedNum++;
+                }
+            }
+            if (checkedNum == 0) {
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = true;
+                }
+            }
+        }
+    </script>
+}

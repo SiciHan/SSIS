@@ -19,6 +19,11 @@ namespace Team8ADProjectSSIS.DAO
         {
             StockRecord voucher = context.StockRecords
                 .Where(x => x.IdStockRecord == voucherId)
+                .Include(x=>x.StoreClerk)
+                .Include(x=>x.Item)
+                .Include(x=>x.Operation)
+                .Include(x=>x.Supplier)
+                
                 .FirstOrDefault();
 
             return voucher;

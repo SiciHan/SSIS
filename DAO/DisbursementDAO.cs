@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
@@ -112,11 +113,17 @@ namespace Team8ADProjectSSIS.DAO
                 Disbursement disbursement = context.Disbursements
                                                     .Where(d => d.IdDisbursement == id)
                                                     .FirstOrDefault();
+
+                Department department = context.Departments
+                                                .Where(dpt => dpt.CodeDepartment.Equals(disbursement.CodeDepartment))
+                                                .FirstOrDefault();
+
                 if (disbursement != null && disbursement.IdDisbursement != 9) 
                 {
                     Status status = context.Status.Where(s => s.IdStatus == 9).FirstOrDefault();
-                    disbursement.IdStatus = 9;
+                    disbursement.IdStatus = 9;//Prepared
                     disbursement.Status = status;
+                    disbursement.IdCollectionPt = department.IdCollectionPt;
                     context.SaveChanges();
                 }
             }
@@ -214,27 +221,6 @@ namespace Team8ADProjectSSIS.DAO
             }
             
             return RetrievalItem;
-        }
-        public List<JoinDandDI> FindAllDisbursement()
-        {
-            var JoinDanDi = context.Disbursements
-                            .Join(context.DisbursementItems,
-                            d => d.IdDisbursement, di => di.IdDisbursement,
-                            (d, di) => new { d, di})
-                            .Join(context.Departments,
-                            ddi => ddi.d.CodeDepartment, dpt => dpt.CodeDepartment,
-                            (ddi, dpt) => new { ddi, dpt})
-                            .Join(context.Status,
-                            ddidpt => ddidpt.ddi.d.IdStatus, s => s.IdStatus,
-                            (ddidpt, s) => new JoinDandDI
-                            {
-                                disbursement = ddidpt.ddi.d,
-                                disbursementItem = ddidpt.ddi.di,
-                                department = ddidpt.dpt,
-                                status = s
-                            }).ToList();
-
-            return JoinDanDi;
         }
 
         public List<Disbursement> GetAllDisbursements()
@@ -423,7 +409,8 @@ namespace Team8ADProjectSSIS.DAO
         //James
         public Disbursement FindById(int disbId)
         {
-            return context.Disbursements.Where(x => x.IdDisbursement == disbId).FirstOrDefault();
+            return context.Disbursements.OfType<Disbursement>().Where(x => x.IdDisbursement == disbId).Include(y => y.CollectionPoint).FirstOrDefault();
+                
         }
     }
 }

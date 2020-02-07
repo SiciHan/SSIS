@@ -194,7 +194,8 @@ namespace Team8ADProjectSSIS.DAO
                 Include(x => x.PurchaseOrderDetails.Select(c => c.Item)).
                 FirstOrDefault();
             po.Status = context.Status.OfType<Status>().Where(x => x.Label.Equals("Delivered")).FirstOrDefault();
-            
+            po.DeliverDate = DateTime.Now;
+
             foreach(PurchaseOrderDetail pod in po.PurchaseOrderDetails)
             {
                 //also need to create a stock record
@@ -268,7 +269,7 @@ namespace Team8ADProjectSSIS.DAO
             }
         }
 
-        public void UpdatePOToRejected(List<PurchaseOrder> POs)
+        public void UpdatePOToRejected(List<PurchaseOrder> POs, string remarks)
         {
             foreach (PurchaseOrder po in POs)
             {
@@ -276,6 +277,7 @@ namespace Team8ADProjectSSIS.DAO
                     .Where(x => x.IdPurchaseOrder == po.IdPurchaseOrder)
                     .FirstOrDefault();
                 temp.IdStatus = 4;
+                temp.PurchaseRemarks = remarks;
                 context.SaveChanges();
             }
         }

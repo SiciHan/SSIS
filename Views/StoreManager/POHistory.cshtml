@@ -1,28 +1,55 @@
 ﻿@model Team8ADProjectSSIS.Models.PurchaseOrder
 @using Team8ADProjectSSIS.Models;
 @{
-    ViewBag.Title = "POHistory";
+    ViewBag.Title = "POHistory - Manager";
     List<PurchaseOrder> AllPO = (List<PurchaseOrder>)ViewData["AllPO"];
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
 
-<h2>POHistory</h2>
+    <div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+        <div class="container">
+            <h2><b>Purchase Order History</b></h2>
+            <p>You can view the details of each Purchase Order here!</p>
+        </div>
+    </div>
 
 <table>
     <tr>
         <th>Purchase Order Id</th>
+        <th>Supplier</th>
         <th>Approved Date</th>
         <th>Order Date</th>
-        <th colspan="2">DeliverDate</th>
+        <th>DeliverDate</th>
+        <th colspan="2">Status</th>
+        <th>Remarks</th>
     </tr>
     @foreach (PurchaseOrder i in AllPO)
     {
         <tr>
             <td>@i.IdPurchaseOrder</td>
+            <td>@i.Supplier.CodeSupplier</td>
             <td>@i.ApprovedDate</td>
             <td>@i.OrderDate</td>
             <td>@i.DeliverDate</td>
+            <td>@i.Status.Label</td>
+            <td>@i.PurchaseRemarks</td>
             <td>@Html.ActionLink("View", "PODetails", "StoreManager", new { IdPurchaseOrder = i.IdPurchaseOrder }, null)</td>
         </tr>
     }
 </table>
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>

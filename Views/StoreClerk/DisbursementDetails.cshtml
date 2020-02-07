@@ -72,5 +72,9 @@
     if(disb.IdStatus == 11)
     {
         <input type="submit" id="confirmDel" class="hidden" formaction="@Url.Action("ClerkSign")" formmethod="post" onclick="alert('Successfully disbursed! A confirmation has been sent to you and @disb.Department.Name!')"/>
-    } 
+    } else if (disb.IdStatus == 7)
+    {
+        <input type="submit" id="printDisbPdf" class="hidden" formaction="@Url.Action("PrintDisbursementPdf")" formmethod="get" />
+        @*<a href="/StoreClerk/PrintDisbursementPdf?disbId=@disb.IdDisbursement" id="printDisbPdf" >Print PDF</a>*@
+    }
 }
