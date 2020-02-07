@@ -25,7 +25,7 @@
             <td>@i.IdRequisition</td>
             <td>@i.Employee.CodeDepartment</td>
             <td>@i.ApprovedDate</td>
-            <td>@i.HeadRemark</td>
+            <td colspan="2">@i.HeadRemark</td>
             <td>@Html.ActionLink("View", "RequisitionDetails", "StoreManager", new { IdRequisition = i.IdRequisition }, null)</td>
         </tr>
     }
