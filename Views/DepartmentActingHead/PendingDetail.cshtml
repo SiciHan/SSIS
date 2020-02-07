@@ -8,6 +8,81 @@
 }
 
 <h2 class="text-center">Stationery Requisition Detail</h2>
+@using (Html.BeginForm("ApproveReject", "DepartmentActingHead", FormMethod.Post, new { @id = "form" }))
+{
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-2">
+            <p>Employee Name: @r.Employee.Name</p>
+            <p>Date of Request: @r.RaiseDate</p>
+            @*<p>RequisitionId: @r.IdRequisition</p>*@
+            <input type="hidden" name="idRequisition" value="@r.IdRequisition" />
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-2">
+            <table>
+                <tr>
+                    <th align="center">Item Id</th>
+                    <th align="center">Description</th>
+                    <th align="center">Quantity</th>
+
+                </tr>
+                @foreach (RequisitionItem ri in requisitionItemList)
+                {
+                    <tr>
+                        <td align="center">@ri.IdItem</td>
+                        <td align="center">@ri.Item.Description</td>
+                        <td align="center">@ri.Unit</td>
+
+                    </tr>
+                }
+            </table>
+            <h2>Approve/Reject Remarks</h2><input type="text" name="remarks" value="" />
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="col-md-10 col-md-offset-2">
+
+        </div>
+
+        <input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-top:24px" />
+
+        <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-right:24px; margin-top:24px" />
+    </div>
+
+}
+@*<div class="row">
+        <div class="col-md-10 col-md-offset-2">
+            <p>Employee Name: @r.Employee.Name</p>
+            <p>Date of Request: @r.RaiseDate</p>
+
+        </div>
+
+    </div>*@
+@*<div class="row">
+        <div class="col-md-10 col-md-offset-2">
+            <table>
+                <tr>
+                    <th align="center">Item Id</th>
+                    <th align="center">Description</th>
+                    <th align="center">Quantity</th>
+
+                </tr>
+                @foreach (RequisitionItem ri in requisitionItemList)
+                {
+                    <tr>
+                        <td align="center">@ri.IdItem</td>
+                        <td align="center">@ri.Item.Description</td>
+                        <td align="center">@ri.Unit</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>*@
+
 @*<div class="row">
     <div class="col-md-10 col-md-offset-2">
         <p>Employee Name: @r.Employee.Name</p>
@@ -15,8 +90,8 @@
 
     </div>
 
-</div>*@
-@*<div class="row">
+</div>
+<div class="row">
     <div class="col-md-10 col-md-offset-2">
         <table>
             <tr>
@@ -37,43 +112,11 @@
     </div>
 </div>*@
 
-    <div class="row">
-        <div class="col-md-10 col-md-offset-2">
-            <p>Employee Name: @r.Employee.Name</p>
-            <p>Date of Request: @r.RaiseDate</p>
-
-        </div>
-
+@*<div class="container-fluid">
+    <div class="col-md-10 col-md-offset-2">
+        <h>@Html.ActionLink("Approve", "Approve", "DepartmentActingHead", new { idRequisition = r.IdRequisition }, null)</h>
+        <h>@Html.ActionLink("Reject", "Reject", "DepartmentActingHead", new { idRequisition = r.IdRequisition }, null)</h>
     </div>
-    <div class="row">
-        <div class="col-md-10 col-md-offset-2">
-            <table>
-                <tr>
-                    <th align="center">Item Id</th>
-                    <th align="center">Description</th>
-                    <th align="center">Quantity</th>
 
-                </tr>
-                @foreach (RequisitionItem ri in requisitionItemList)
-                {
-                    <tr>
-                        <td align="center">@ri.IdItem</td>
-                        <td align="center">@ri.Item.Description</td>
-                        <td align="center">@ri.Unit</td>
-                    </tr>
-                }
-            </table>
-        </div>
-    </div>
-    
-    <div class="container-fluid">
-        <div class="col-md-10 col-md-offset-2">
-            <h>@Html.ActionLink("Approve", "Approve", "DepartmentActingHead", new { idRequisition = r.IdRequisition }, null)</h>
-            <h>@Html.ActionLink("Reject", "Reject", "DepartmentActingHead", new { idRequisition = r.IdRequisition }, null)</h>
-        </div>
-        
-        @*<input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-top:24px" />
-
-        <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-right:24px; margin-top:24px" />*@
-    </div>
+</div>*@
 

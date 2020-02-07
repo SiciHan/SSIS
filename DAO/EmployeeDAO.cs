@@ -75,7 +75,7 @@ namespace Team8ADProjectSSIS.DAO
         // SH
         public List<Employee> FindEmployeeListByDepartment(string codeDepartment)
         {
-            return context.Employees.OfType<Employee>().Where(x => x.CodeDepartment.Equals(codeDepartment)).ToList();
+            return context.Employees.OfType<Employee>().Where(x =>x.Role.Label.Equals("Employee") && x.CodeDepartment.Equals(codeDepartment)).ToList();
         }
         //SH
         public List<Requisition> RaisesRequisitions(string codeDepartment)
