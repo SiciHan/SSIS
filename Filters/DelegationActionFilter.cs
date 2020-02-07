@@ -29,8 +29,8 @@ namespace Team8ADProjectSSIS.Filters
                     aec.Result = new RedirectToRouteResult(
                             new RouteValueDictionary
                             {
-                        {"controller","Home" },
-                        {"action","Login" }
+                        {"controller","DepartmentActingHead" },
+                        {"action","Notification" }
                             });
                 }
             }
@@ -44,8 +44,8 @@ namespace Team8ADProjectSSIS.Filters
                     aec.Result = new RedirectToRouteResult(
                             new RouteValueDictionary
                             {
-                        {"controller","Home" },
-                        {"action","Login" }
+                        {"controller","Employee" },
+                        {"action","Index" }
                             });
                 }
 

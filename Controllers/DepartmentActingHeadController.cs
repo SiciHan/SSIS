@@ -17,7 +17,6 @@ namespace Team8ADProjectSSIS.Controllers
     [DelegationActionFilter]
     public class DepartmentActingHeadController : Controller
     {
-
         private readonly EmployeeDAO _employeeDAO;
         private readonly RequisitionDAO _requisitionDAO;
         private readonly RequisitionItemDAO _requisitionItemDAO;

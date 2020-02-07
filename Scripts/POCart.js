@@ -14,47 +14,6 @@ $(document).ready(function () {
         alert("you are changing the order units");
     });
 
-    /*// Click on notification icon for show notification
-    $("#noti-icon").click(function (e) {
-        e.stopPropagation();
-        
-        $("#noti-content").show();
-        var count = 0;
-        count = parseInt($("#noti-count").html()) || 0;
-
-        alert("icon is clicked count="+count);
-        if (count >= 0) {
-            $("#notiContent").empty();
-            $("#notiContent").append($('<h4>Notifications</h4>'));
-            $("#notiContent").append($('<li>Loading...</li>'));
-            //need to get notificationchannels from server
-            $.ajax({
-                type: 'GET',
-                url: '/Home/GetNotifications',
-                success: function (response) {
-                    $('#notiContent').empty();
-                    $("#notiContent").append($('<h4>Notifications</h4>'));
-                    if (response.length == 0) {
-                        $('#notiContent').append($('<li>No data available</li>'));
-                    }
-                    $.each(response, function (index, value) {
-                        $('#notiContent').append($('<li>From ' + value.From.Name + ': ' + value.Notification.Text + '</li>'));
-                    });
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        }
-        //set it to space
-        $('#noti-count', this).html('&nbsp;');
-    });
-
-    // hide notifications
-    $('html').click(function () {
-        $('#noti-content').hide();
-    });*/
-
     //initiate the connection
     $.connection.hub.start()
         .done(function () {
@@ -108,7 +67,7 @@ $(document).ready(function () {
             var count = 0;
             count = parseInt($('#noti-count').html()) || 0;
             count++;
-            alert("There is a notification");
+            alert("There is a notification for you.");
             $('#noti-count').html(count);
         }
     };
