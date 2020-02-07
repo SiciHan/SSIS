@@ -589,6 +589,7 @@
     <Content Include="Views\DepartmentActingHead\PendingDetail.cshtml" />
     <Content Include="Views\DepartmentActingHead\PendingLists.cshtml" />
     <Content Include="Views\Shared\_ActingHeadLayout.cshtml" />
+    <Content Include="Views\DepartmentHead\ViewDelegations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
