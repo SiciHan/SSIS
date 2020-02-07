@@ -178,6 +178,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AndroidController.cs" />
     <Compile Include="Controllers\DepartmentActingHeadController.cs" />
     <Compile Include="Controllers\DepartmentHeadController.cs" />
     <Compile Include="Controllers\DepartmentRepresentativeController.cs" />
@@ -591,6 +592,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Android\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
