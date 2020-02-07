@@ -65,10 +65,11 @@
             </table>
         </div>
     </div>
+    
     <div class="container-fluid">
         <div class="col-md-10 col-md-offset-2">
-            <h>@Html.ActionLink("Approve", "Approve", "DepartmentHead", new { idRequisition = r.IdRequisition }, null)</h>
-            <h>@Html.ActionLink("Reject", "Reject", "DepartmentHead", new { idRequisition = r.IdRequisition }, null)</h>
+            <h>@Html.ActionLink("Approve", "Approve", "DepartmentActingHead", new { idRequisition = r.IdRequisition }, null)</h>
+            <h>@Html.ActionLink("Reject", "Reject", "DepartmentActingHead", new { idRequisition = r.IdRequisition }, null)</h>
         </div>
         
         @*<input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-top:24px" />

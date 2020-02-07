@@ -24,6 +24,7 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly ItemDAO _itemDAO;
         private readonly DepartmentDAO _departmentDAO;
         private readonly NotificationChannelDAO _notificationChannelDAO;
+        private readonly CollectionPointDAO _collectionPointDAO;
         public DepartmentActingHeadController()
         {
             _employeeDAO = new EmployeeDAO();
@@ -32,6 +33,7 @@ namespace Team8ADProjectSSIS.Controllers
             _itemDAO = new ItemDAO();
             _departmentDAO = new DepartmentDAO();
             _notificationChannelDAO = new NotificationChannelDAO();
+            _collectionPointDAO = new CollectionPointDAO();
         }
 
         // GET: DepartmentActingHead
@@ -95,7 +97,7 @@ namespace Team8ADProjectSSIS.Controllers
             emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
             //end of notification sending 
 
-            return RedirectToAction("PendingLists", "DepartmentHead");
+            return RedirectToAction("PendingLists", "DepartmentActingHead");
         }
         public ActionResult Reject(int idRequisition)
         {
@@ -114,19 +116,62 @@ namespace Team8ADProjectSSIS.Controllers
             emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
             //end of notification sending 
 
-            return RedirectToAction("PendingLists", "DepartmentHead");
+            return RedirectToAction("PendingLists", "DepartmentActingHead");
         }
 
         // view CurrentRep and CP
+        // view CurrentRep and CP
         public ActionResult CurrentRepCP()
         {
+            String codeDepartment = "CPSC";
+            Employee employee = _employeeDAO.FindDepartmentRep(codeDepartment);
+            Department department = _departmentDAO.FindDepartmentCollectionPoint(codeDepartment);
+            ViewData["employee"] = employee;
+            ViewData["department"] = department;
             return View();
         }
 
         // change Rep and CP
         public ActionResult ChangeRepCP()
         {
+            // find employee from the department
+            String codeDepartment = "CPSC";
+            List<Employee> empList = _employeeDAO.FindEmployeeListByDepartment(codeDepartment);
+            List<CollectionPoint> cpList = _collectionPointDAO.FindAll();
+            ViewBag.Employee = new SelectList(empList, "IdEmployee", "Name"); // put inside drop down list
+            ViewBag.EmployeeList = empList;
+            ViewBag.CollectionPoint = cpList;
             return View();
+        }
+        [HttpPost]
+        public ActionResult GetChangeRepCP(string emp, string cp, string judge)
+        {
+            string submit = judge;
+            string location = cp;
+            string empName = emp;
+            if (judge.Equals("Cancel"))
+            {
+                RedirectToAction("CurrentRepCP", "DepartmentActingHead");
+            }
+            else if (judge.Equals("Apply Change"))
+            {
+                if (location != null && empName != null)
+                {
+                    Employee newRep = _employeeDAO.FindEmployeeByName(empName);
+                    string codeDepartment = newRep.CodeDepartment;
+                    Employee oldRep = _employeeDAO.FindDepartmentRep(codeDepartment);
+
+                    //change old rep status back to 1
+                    _employeeDAO.PutOldRepBack(oldRep.Name);
+
+                    _employeeDAO.ChangeNewRepCP(newRep.Name, location);
+                    return RedirectToAction("CurrentRepCP", "DepartmentActingHead");
+                }
+            }
+
+
+
+            return RedirectToAction("CurrentRepCP", "DepartmentActingHead");
         }
 
     }

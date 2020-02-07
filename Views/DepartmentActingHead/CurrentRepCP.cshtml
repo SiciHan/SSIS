@@ -1,8 +1,46 @@
-﻿
+﻿@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "CurrentRepCP";
     Layout = "~/Views/Shared/_ActingHeadLayout.cshtml";
+    Employee e = (Employee)ViewData["employee"];
+    Department d = (Department)ViewData["department"];
+    
 }
 
-<h2>CurrentRepCP</h2>
+<h2>Current Department Representative</h2>
+<table>
+    <tr>
+        <th>Department Rep</th>
+        <th>Employee Number</th>
+        <th>Email Address</th>
+        <th>Collection Point</th>
+        <th>Action</th>
+
+    </tr>
+    
+        <tr>
+            <td>@e.Name</td>
+            <td>@e.IdEmployee</td>
+            <td>@e.Email</td>
+            <td>@d.CollectionPt.Location</td>
+            <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentActingHead")</td>
+        </tr>
+    
+</table>
+
+<style>
+
+    table {
+        width: 100%;
+        @*box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*@
+        border-collapse: collapse;
+        letter-spacing: 1px;
+    }
+
+    table, th, tr, td {
+        border-bottom: 1px solid #dedede;
+        padding: 5px;
+        text-align: center;
+    }
+</style>
 
