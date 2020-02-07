@@ -15,6 +15,63 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
+        //SH
+        public void RemoveDelegate(int idEmployee)
+        {
+            Employee emp = context.Employees.Where(e=>e.IdEmployee == idEmployee).FirstOrDefault();
+            emp.IdRole = 1;// change idrole back to 1
+            context.SaveChanges();
+        }
+        //SH
+        public void DelegateEmployeeToActingRole(string name)
+        {
+            // Find the emp by empName--> change emp role to idRole=4
+            Employee e = FindEmployeeByNameAndRole(name);
+            e.IdRole = 4;// set to idRole to 4
+            context.SaveChanges();
+        }
+        //SH
+        public Employee FindEmployeeByNameAndRole(string name)
+        {
+            return context.Employees.Where(e => e.Name == name).Where(e=>e.IdRole==1).FirstOrDefault();
+        }
+        //SH
+        public List<Employee> FindEmployeeListByDepartmentAndRole(string codeDepartment)
+        {
+            return context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).Where(e => e.IdRole == 1).ToList();
+        }
+        //SH
+        public void ChangeNewRepCP(string name,string location)
+        {
+            Employee e = FindEmployeeByName(name);
+            //change to rep
+            e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("Representative")).FirstOrDefault();
+            context.SaveChanges();
+            //change cp
+            Department dep = context.Departments.Where(d => d.CodeDepartment.Equals(e.CodeDepartment)).Include(x=>x.CollectionPt).FirstOrDefault();
+            dep.CollectionPt = context.CollectionPoints.OfType<CollectionPoint>().Where(c => c.Location.Equals(location)).FirstOrDefault();
+            context.SaveChanges();
+        }
+        //SH
+        public void PutOldRepBack(string name)
+        {
+            Employee e = FindEmployeeByName(name);
+            //change to employee
+            e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("Employee")).FirstOrDefault();
+            context.SaveChanges();
+        }
+        //SH
+        public Employee FindEmployeeByName(string name)
+        {
+            return context.Employees.Where(e => e.Name == name).Include(x=>x.Role).FirstOrDefault();
+        }
+        //SH
+        public Employee FindDepartmentRep(String codeDepartment)
+        {
+            
+            return context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).Where(e => e.IdRole == 3).FirstOrDefault();
+            //return context.Employees.Where(e => e.IdRole==3).FirstOrDefault();
+        }
         // SH
         public List<Employee> FindEmployeeListByDepartment(string codeDepartment)
         {
@@ -30,7 +87,7 @@ namespace Team8ADProjectSSIS.DAO
             {
                 foreach(Requisition r in reqList)
                 {
-                    if (r.IdEmployee==e.IdEmployee)
+                    if (r.IdEmployee==e.IdEmployee && r.IdStatusCurrent==1)
                     {
                         empReqList.Add(r);
                     }
@@ -38,6 +95,26 @@ namespace Team8ADProjectSSIS.DAO
             }
             return empReqList;
         }
+
+        public Employee UpdateRoleToActingHead(int idEmployee)
+        {
+            Employee employee = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Role).FirstOrDefault();
+            employee.Role = context.Roles.OfType<Role>().Where(x => x.Label.Contains("ActingHead")).FirstOrDefault();
+            
+            context.SaveChanges();
+            return employee;
+
+        }
+
+        internal Employee UpdateRoleToEmployee(int idEmployee)
+        {
+            Employee employee = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Role).FirstOrDefault();
+            employee.Role= context.Roles.OfType<Role>().Where(x => x.Label.Contains("Employee")).FirstOrDefault();
+            
+            context.SaveChanges();
+            return employee;
+        }
+
         public Employee FindEmployeeByUsername(string username)
         {
             return context.Employees.OfType<Employee>().Where(x => x.UserName.Equals(username)).FirstOrDefault();
@@ -104,6 +181,16 @@ namespace Team8ADProjectSSIS.DAO
                 return ah.IdEmployee;
             }
             return 0; 
+            
+        }
+
+
+        internal List<Employee> FindAllClerk()
+        {
+           
+            
+          return context.Employees.OfType<Employee>().Where(x => x.Role.Label.Contains("Clerk")).ToList();
+
             
         }
     }

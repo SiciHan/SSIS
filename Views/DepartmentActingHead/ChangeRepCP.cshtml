@@ -1,14 +1,14 @@
 ﻿@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "ChangeRepCP";
-    Layout = "~/Views/Shared/_HeadLayout.cshtml";
+    Layout = "~/Views/Shared/_ActingHeadLayout.cshtml";
     List<Employee> empList = (List<Employee>)ViewBag.EmployeeList;
     List<CollectionPoint> cpList = (List<CollectionPoint>)ViewBag.CollectionPoint;
 }
 
 <h2>Change Department Rep</h2>
 
-@using (Html.BeginForm("GetChangeRepCP", "DepartmentHead", FormMethod.Post, new { @id = "form"}))
+@using (Html.BeginForm("GetChangeRepCP", "DepartmentActingHead", FormMethod.Post, new { @id = "form"}))
 {
     @Html.Label("Employee")
     @*@Html.DropDownList("Employee", "--select--")*@
@@ -32,7 +32,7 @@
     <input type="submit" name="judge" value="Apply Change" onclick="change()" />
     <input type="submit" name="judge" value="Cancel" onclick="change()" />
 }
-
+<h>@Html.ActionLink("Reject", "CurrentRepCP", "DepartmentActingHead")</h>
 <script type="text/javascript">
     function change() {
         var e = document.getElementById("selectId");

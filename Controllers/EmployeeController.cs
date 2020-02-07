@@ -15,6 +15,7 @@ namespace Team8ADProjectSSIS.Controllers
 {
     [AuthenticateFilter]
     [AuthorizeFilter]
+    [DelegationActionFilter]
     public class EmployeeController : Controller
     {
 

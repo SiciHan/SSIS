@@ -211,7 +211,7 @@
     <Compile Include="DAO\SSISInitializer.cs" />
     <Compile Include="EmailModel\EmailClass.cs" />
     <Compile Include="Filters\AuthenticateFilter.cs" />
-    <Compile Include="Filters\ActionFilter.cs" />
+    <Compile Include="Filters\DelegationActionFilter.cs" />
     <Compile Include="Filters\AuthorizeFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -278,6 +278,7 @@
       <DependentUpon>202002031211153_snapshot15.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="ModelForHTML\CollectionPointName.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CPClerk.cs" />
     <Compile Include="Models\Delegation.cs" />
@@ -569,7 +570,6 @@
     <Content Include="Views\StoreManager\RequisitionDetails.cshtml" />
     <Content Include="Views\Employee\Notification.cshtml" />
     <Content Include="Views\DepartmentHead\PendingLists.cshtml" />
-    <Content Include="Views\DepartmentActingHead\Pending.cshtml" />
     <Content Include="Views\DepartmentHead\PendingDetail.cshtml" />
     <Content Include="Views\DepartmentHead\CurrentRepCP.cshtml" />
     <Content Include="Views\DepartmentHead\ChangeRepCP.cshtml" />
@@ -583,6 +583,12 @@
     <Content Include="Views\Home\SessionExpired.cshtml" />
     <Content Include="Views\Test\Test1.cshtml" />
     <Content Include="Views\Test\Test2.cshtml" />
+    <Content Include="Views\DepartmentActingHead\ChangeRepCP.cshtml" />
+    <Content Include="Views\DepartmentActingHead\CurrentRepCP.cshtml" />
+    <Content Include="Views\DepartmentActingHead\PendingDetail.cshtml" />
+    <Content Include="Views\DepartmentActingHead\PendingLists.cshtml" />
+    <Content Include="Views\Shared\_ActingHeadLayout.cshtml" />
+    <Content Include="Views\DepartmentHead\ViewDelegations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

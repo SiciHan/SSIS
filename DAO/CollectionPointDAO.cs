@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using Team8ADProjectSSIS.Models;
@@ -15,7 +16,7 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
-
+        
         public void Update(CollectionPoint cp)
         {
            
@@ -93,5 +94,10 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        internal string FindByDepartment(string codeDepartment)
+        {
+            Department d = context.Departments.Where(x => x.CodeDepartment.Equals(codeDepartment)).Include(x=>x.CollectionPt).FirstOrDefault();
+            return d.CollectionPt.Location;
+        }
     }
 }

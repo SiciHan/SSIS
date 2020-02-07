@@ -38,7 +38,7 @@
             var count = 0;
             count = parseInt($('#noti-count').html()) || 0;
             count++;
-            alert("There is a notification");
+            alert("There is a notification for you");
             $('#noti-count').html(count);
         }
     };

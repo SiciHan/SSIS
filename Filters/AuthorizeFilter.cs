@@ -27,6 +27,7 @@ namespace Team8ADProjectSSIS.Filters
                 {
                     if (role.Contains("ActingHead"))
                     {
+
                         isAuthOk = true;
                     }
                 }

@@ -1,7 +1,7 @@
 ﻿@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "CurrentRepCP";
-    Layout = "~/Views/Shared/_HeadLayout.cshtml";
+    Layout = "~/Views/Shared/_ActingHeadLayout.cshtml";
     Employee e = (Employee)ViewData["employee"];
     Department d = (Department)ViewData["department"];
     
@@ -23,7 +23,7 @@
             <td>@e.IdEmployee</td>
             <td>@e.Email</td>
             <td>@d.CollectionPt.Location</td>
-            <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentHead")</td>
+            <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentActingHead")</td>
         </tr>
     
 </table>
