@@ -14,6 +14,17 @@ namespace Team8ADProjectSSIS.DAO
         {
             context = new SSISContext();
         }
+        //private readonly SSISContext context;
+
+        //public DepartmentDAO()
+        //{
+        //    this.context = new SSISContext();
+        //}
+        //SH
+        public Department FindDepartmentCollectionPoint(String codeDepartment)
+        {
+            return context.Departments.Where(d => d.CodeDepartment.Equals(codeDepartment)).FirstOrDefault();
+        }
         public bool UpdateCollectionPt(string codeDepartment, int idCollectionPt)
         {
             Department model = null;
