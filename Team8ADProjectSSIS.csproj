@@ -276,6 +276,7 @@
       <DependentUpon>202002031211153_snapshot15.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="ModelForHTML\CollectionPointName.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CPClerk.cs" />
     <Compile Include="Models\Delegation.cs" />

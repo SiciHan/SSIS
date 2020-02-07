@@ -21,12 +21,15 @@ namespace Team8ADProjectSSIS.DAO
         {
             // here there is something wrong, does not display those req with only idstatusCurrent==1. if i add in && r.IdStatusCurrent==1--> display error
             return context.Requisitions.Include("Employee").Where(r => r.IdRequisition == idRequisition ).FirstOrDefault();
+            //return context.Requisitions.Include("Employee").Where(r => r.IdRequisition == idRequisition).Where(r => r.IdStatusCurrent == 1).FirstOrDefault();
         }
         //SH
         public void UpdateApproveStatus(int idRequisition)
         {
             Requisition r = FindRequisitionByRequisionId(idRequisition);
             r.IdStatusCurrent = 3;
+            DateTime saveNow = DateTime.Now;
+            r.ApprovedDate = saveNow;
             context.SaveChanges();
         }
         //SH

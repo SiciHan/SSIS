@@ -15,7 +15,7 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
-
+        
         public void Update(CollectionPoint cp)
         {
            
