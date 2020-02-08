@@ -209,6 +209,7 @@
     <Compile Include="DAO\OperationDAO.cs" />
     <Compile Include="DAO\SSISContext.cs" />
     <Compile Include="DAO\SSISInitializer.cs" />
+    <Compile Include="DataPoints\DataPoint.cs" />
     <Compile Include="EmailModel\EmailClass.cs" />
     <Compile Include="Filters\AuthenticateFilter.cs" />
     <Compile Include="Filters\DelegationActionFilter.cs" />

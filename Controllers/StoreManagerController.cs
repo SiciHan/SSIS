@@ -10,6 +10,10 @@ using Team8ADProjectSSIS.Report;
 using Team8ADProjectSSIS.Filters;
 using Microsoft.AspNet.SignalR;
 using Team8ADProjectSSIS.Hubs;
+using System.Data.SqlClient;
+using System.Diagnostics;
+using Newtonsoft.Json;
+using Team8ADProjectSSIS.DataPoints;
 
 namespace Team8ADProjectSSIS.Controllers
 {
@@ -60,8 +64,101 @@ namespace Team8ADProjectSSIS.Controllers
 
             return View();
         }
-        public ActionResult Dashboard()
+        public ActionResult Dashboard(string category="", string department="")
         {
+            List<DateTime> times = new List<DateTime>();
+            List<int> amounts_groupbyCategory = new List<int>();
+            List<int> amounts_groupbyDepartment = new List<int>();
+            DateTime today = DateTime.Now;
+            DateTime temp = today;
+
+            for(int i=1; i<=30; i+=7)
+            {
+                temp = temp.AddDays(-7);
+                times.Add(temp);
+            }
+            using (SqlConnection conn = new SqlConnection(("Server=.; Database=SSIS; Integrated Security=true")))
+            {
+                conn.Open();
+                foreach(DateTime time in times)
+                {
+                    DateTime time_nextweek = time.AddDays(8);
+                    string sql_groupbyCategory;
+                    string sql_groupbyDepartment;
+                    if (category == "" || category == "Total")
+                    {
+                        sql_groupbyCategory = @"SELECT SUM(Unit) AS unit
+                            FROM RequisitionItems ri INNER JOIN Requisitions r
+                            ON ri.IdRequiston = r.IdRequisition
+                            WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'";
+                    }
+                    else
+                    {
+                        sql_groupbyCategory = @"SELECT SUM(Unit) AS unit
+                            FROM RequisitionItems ri 
+                            INNER JOIN Requisitions r ON ri.IdRequiston = r.IdRequisition
+                            INNER JOIN Items i ON i.IdItem = ri.IdItem
+                            INNER JOIN Categories c ON c.IdCategory = i.IdCategory
+                            WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
+                            "AND c.Label = '" + category + "'";
+                    }
+                    if(department == "" || department == "Total")
+                    {
+                        sql_groupbyDepartment = @"SELECT SUM(Unit) AS unit
+                            FROM RequisitionItems ri INNER JOIN Requisitions r
+                            ON ri.IdRequiston = r.IdRequisition
+                            INNER JOIN Employees emp
+                            ON emp.IdEmployee = r.IdEmployee
+                            WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'";
+                    }
+                    else
+                    {
+                        sql_groupbyDepartment = @"SELECT SUM(Unit) AS unit
+                            FROM RequisitionItems ri INNER JOIN Requisitions r
+                            ON ri.IdRequiston = r.IdRequisition
+                            INNER JOIN Employees emp
+                            ON emp.IdEmployee = r.IdEmployee
+                            WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
+                            "AND emp.CodeDepartment = '" + department + "'" ;
+                    }
+                    SqlCommand cmd1 = new SqlCommand(sql_groupbyCategory, conn);
+                    SqlCommand cmd2 = new SqlCommand(sql_groupbyDepartment, conn);
+                    SqlDataReader reader1 = cmd1.ExecuteReader();
+                    SqlDataReader reader2 = cmd2.ExecuteReader();
+                    if (reader1.Read())
+                    {
+                        int t = (int)reader1["unit"];
+                        amounts_groupbyCategory.Add(t);
+                    }
+                    else
+                    {
+                        amounts_groupbyCategory.Add(0);
+                    }
+                    if (reader2.Read())
+                    {
+                        int t = (int)reader2["unit"];
+                        amounts_groupbyDepartment.Add(t);
+                    }
+                    else
+                    {
+                        amounts_groupbyDepartment.Add(0);
+                    }
+                    
+                }
+            }
+            List<DataPoint> dataPoints1 = new List<DataPoint>();
+            List<DataPoint> dataPoints2 = new List<DataPoint>();
+            foreach(DateTime time in times)
+            {
+                DataPoint d = new DataPoint();
+                d.x = time;
+                dataPoints1.Add(d);
+                dataPoints2.Add(d);
+            }
+            foreach(int amount in amounts_groupbyCategory)
+            {
+
+            }
             return View();
         }
 
