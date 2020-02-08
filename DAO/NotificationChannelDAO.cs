@@ -17,12 +17,12 @@ namespace Team8ADProjectSSIS.DAO
         }
         public List<NotificationChannel> FindAllNotifications()
         {
-            return context.NotificationChannels.OfType<NotificationChannel>().Include(x => x.Notification).ToList();
+            return context.NotificationChannels.OfType<NotificationChannel>().OrderByDescending(x=>x.Date).Include(x => x.Notification).ToList();
         }
 
         public List<NotificationChannel> FindAllNotificationsByIdReceiver(int idReceiver)
         {
-            List<NotificationChannel> nclist=context.NotificationChannels.OfType<NotificationChannel>().Where(x=>x.IdTo==idReceiver).Include(x => x.Notification).Include(x=>x.From).ToList();
+            List<NotificationChannel> nclist=context.NotificationChannels.OfType<NotificationChannel>().Where(x=>x.IdTo==idReceiver).Include(x => x.Notification).Include(x=>x.From).OrderByDescending(x => x.Date).ToList();
 /*            foreach(NotificationChannel nc in nclist)
             {
                 nc.IsRead = true;
