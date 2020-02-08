@@ -338,14 +338,10 @@ namespace Team8ADProjectSSIS.Controllers
                         emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
                         //end of notification sending 
 
-
                     }
-
-
                 }
                 return RedirectToAction("ViewDelegations", "DepartmentHead");
             }
-
             return RedirectToAction("ViewDelegations", "DepartmentHead");
         }
         public ActionResult ViewDelegations()
@@ -376,14 +372,6 @@ namespace Team8ADProjectSSIS.Controllers
             emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
             //end of notification sending 
             return RedirectToAction("ViewDelegations", "DepartmentHead");
-        }
-
-
-        //use home logout method!!
-        public ActionResult Logout()
-        {
-            // need to redirect to Login page
-            return View();
         }
     }
 }
