@@ -90,7 +90,10 @@ namespace Team8ADProjectSSIS.DAO
 
         public List<PurchaseOrder> FindAllPO()
         {
-            return context.PurchaseOrders.OfType<PurchaseOrder>().ToList<PurchaseOrder>();
+            return context.PurchaseOrders.OfType<PurchaseOrder>()
+                                        .Include(po => po.Supplier)
+                                        .Include(po => po.Status)
+                                        .ToList();
         }
 
         public PurchaseOrder Create(string codeSupplier, int idStoreClerk)

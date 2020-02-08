@@ -80,11 +80,54 @@ namespace Team8ADProjectSSIS.Controllers
             
             return View();
         }
+        public ActionResult ApproveReject(string judge,int idRequisition,string remarks)
+        {
+            int id = idRequisition;
+            string r = remarks;
+            string w = r;
+            if (judge.Equals("Approve"))
+            {
+                _requisitionDAO.UpdateApproveStatusAndRemarks(idRequisition, remarks);
+
+                //@Shutong: send notification here
+                Requisition req = _requisitionDAO.FindRequisitionByRequisionId(idRequisition);
+                int IdEmployee = req.IdEmployee;
+                var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                string message = "Hi," + _employeeDAO.FindEmployeeById(IdEmployee).Name
+                    + " your requisition: " + req.IdRequisition + " raised on " + req.RaiseDate + " has been approved.";
+
+                _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+                //end of notification sending 
+                return RedirectToAction("PendingLists", "DepartmentHead");
+            }
+            else if (judge.Equals("Reject"))
+            {
+                _requisitionDAO.UpdateRejectStatusAndRemarks(idRequisition, remarks);
+
+                //@Shutong: send notification here
+                Requisition req = _requisitionDAO.FindRequisitionByRequisionId(idRequisition);
+                int IdEmployee = req.IdEmployee;
+                var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                string message = "Hi," + _employeeDAO.FindEmployeeById(IdEmployee).Name
+                    + " your requisition: " + req.IdRequisition + " raised on " + req.RaiseDate + " has been approved.";
+
+                _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+                //end of notification sending 
+                return RedirectToAction("PendingLists", "DepartmentHead");
+            }
+            return RedirectToAction("PendingLists", "DepartmentHead");
+        }
         
         public ActionResult Approve(int idRequisition)
         {
             _requisitionDAO.UpdateApproveStatus(idRequisition);
-
+            
             //@Shutong: send notification here
             Requisition req = _requisitionDAO.FindRequisitionByRequisionId(idRequisition);
             int IdEmployee = req.IdEmployee;
@@ -256,7 +299,7 @@ namespace Team8ADProjectSSIS.Controllers
                         EmailClass emailClass = new EmailClass();
                         string message = "Hi," + empName
                             + " You are delegated to Acting Department Head from " + d.StartDate + " to " + d.EndDate 
-                            + " to assist approve stationery requisition. Remarks: "+remarks;
+                            + " to assist approve stationery requisition. \r\nRemarks: "+remarks;
 
                         _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
                         emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
