@@ -17,22 +17,23 @@
     <tr>
         <th style="width:10%">Purchase Order Id</th>
         <th>Supplier</th>
-        <th>Order Date</th>
-        <th>Approved Date</th>
-        <th>DeliverDate</th>
+        <th style="width:10%">Approved Date</th>
+        <th style="width:10%">Order Date</th>
+        <th style="width:10%">DeliverDate</th>
         <th>Status</th>
-        <th colspan="2" align="left">Remarks</th>
+        <th>Remarks</th>
+        <th>Details</th>
     </tr>
     @foreach (PurchaseOrder i in AllPO)
     {
         <tr>
             <td>@i.IdPurchaseOrder</td>
             <td>@i.Supplier.CodeSupplier</td>
-            <td>@i.OrderDate.ToString("dd-MM-yy")</td>
             <td>@i.ApprovedDate.ToString("dd-MM-yy")</td>
+            <td>@i.OrderDate.ToString("dd-MM-yy")</td>
             <td>@i.DeliverDate.ToString("dd-MM-yy")</td>
             <td>@i.Status.Label</td>
-            <td align="left">@i.PurchaseRemarks</td>
+            <td>@i.PurchaseRemarks</td>
             <td>@Html.ActionLink("View", "PODetails", "StoreManager", new { IdPurchaseOrder = i.IdPurchaseOrder }, null)</td>
         </tr>
     }
