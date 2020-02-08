@@ -60,7 +60,7 @@
             {
                 <tr>
                     <td>
-                        <input type="checkbox" name="purchase_ordersId" value="@po.IdPurchaseOrder" />
+                        <input type="checkbox" name="purchase_ordersId" value="@po.IdPurchaseOrder" onclick="onCheck()"/>
                     </td>
                     <td>@po.OrderDate</td>
                     <td>@po.StoreClerk.Name</td>
@@ -75,9 +75,9 @@
         <input type="button" class="btn btn-primary" value="History" onclick="location.href='@Url.Action("POHistory", "StoreSupervisor")'" style="margin-top:24px" />
 
         <input type="submit" class="btn btn-danger" name="handle" value="Reject" style="float:right; margin-top:24px"
-               onclick="ConfirmReject()" />
+               onclick="ConfirmReject()" disabled/>
         <input type="submit" class="btn btn-success" name="handle" value="Approve" style="float:right; margin-right:24px; margin-top:24px"
-               onclick="ConfirmApprove()" />
+               onclick="ConfirmApprove()" disabled/>
     </div>
 }
 
@@ -107,6 +107,8 @@
             for (var i = 0; i < po.length; i++) {
                 po[i].checked = isChecked;
             }
+            // enable button
+            onCheck();
         }
 
         function ConfirmApprove() {
@@ -135,7 +137,28 @@
             }
         }
 
-        window.onload = function () {
+        function onCheck() {
+            var po = document.getElementsByName("purchase_ordersId");
+            var buttons = document.getElementsByName("handle");
+            var checkedNum = 0;
+            for (var i = 0; i < po.length; i++) {
+                if (po[i].checked) {
+                    checkedNum++;
+                }
+            }
+            if (checkedNum != 0) {
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = false;
+                }
+            } else {
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = true;
+                }
+            }
+            
+        }
+
+        /*window.onload = function () {
             var po = document.getElementsByName("purchase_ordersId");
             var buttons = document.getElementsByName("handle");
             var checkedNum = 0;
@@ -149,6 +172,6 @@
                     buttons[i].disabled = true;
                 }
             }
-        }
+        }*/
     </script>
 }
