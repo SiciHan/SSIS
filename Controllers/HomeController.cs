@@ -211,6 +211,9 @@ namespace Team8ADProjectSSIS.Controllers
             int count = _notificationChannelDAO.GetUnreadNotificationCount(IdReceiver);
             return Json(count, JsonRequestBehavior.AllowGet);
         }
+
+
         
+
     }
 }

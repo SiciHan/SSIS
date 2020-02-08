@@ -8,12 +8,67 @@ namespace Team8ADProjectSSIS.DAO
 {
     public class DelegationDAO
     {
-
         private readonly SSISContext context;
         public DelegationDAO()
         {
             context = new SSISContext();
         }
+        //private readonly SSISContext context1;
+
+        //public DelegationDAO()
+        //{
+        //    this.context = new SSISContext();
+        //}
+        public Delegation FindDelegationById(int idEmployee)
+        {
+            return context.Delegations.Where(d => d.IdEmployee == idEmployee).FirstOrDefault();
+        }
+        //SH
+        public void RemoveDelegate(int idEmployee)
+        {
+            Delegation deleg = context.Delegations.Where(d => d.IdEmployee == idEmployee).FirstOrDefault();
+            context.Delegations.Remove(deleg);
+            context.SaveChanges();
+        }
+        //SH
+        public List<Delegation> FindDelegationListByDepartment(string codeDepartment)
+        {
+           List<Delegation> delegationAllDepartment= context.Delegations.Include("Employee").ToList();
+            List<Employee> employeeListByDepartment = context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).ToList();
+            List<Delegation> delegationDepartmentList = new List<Delegation>();
+            foreach(Delegation d in delegationAllDepartment)
+            {
+                // put each delegation id  to test with specific 
+                foreach(Employee e in employeeListByDepartment)
+                {
+                    if (d.IdEmployee == e.IdEmployee)
+                    {
+                        delegationDepartmentList.Add(d);
+                    }
+                }
+            }
+            return delegationDepartmentList;
+        }
+        //SH
+        public List<Delegation> FindDelegationlist()
+        {
+            //
+            return context.Delegations.Include("Employee").ToList();
+        }
+        //SH
+        public void UpdateDelegation(string name, DateTime startDate,DateTime endDate)
+        {
+            Employee ActingHead = context.Employees.Where(e => e.Name.Equals(name)).FirstOrDefault();
+            int idEmployee = ActingHead.IdEmployee;
+            Delegation deleg= new Delegation();
+            deleg.IdEmployee = idEmployee;
+            deleg.StartDate = startDate;
+            deleg.EndDate = endDate;
+            context.Delegations.Add(deleg);
+            context.SaveChanges();
+        }
+
+        
         public void Update(Delegation d)
         {
             using (SSISContext context = new SSISContext())

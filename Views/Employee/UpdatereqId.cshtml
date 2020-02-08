@@ -36,29 +36,7 @@
     }
 
 
-    function getJson() {
-
-
-
-        //var results = document.getElementById("results");
-        //var hr = new XMLHttpRequest();
-        //hr.open("GET", "/Employee/UpdatereqId", true);
-        //hr.setRequestHeader("Content-type", "application/json", true);
-        //hr.onreadystatechange = function () {
-        //    if (hr.readyState == 4 && hr.status == 200) {
-        //        var data = JSON.parse(hr.responseText);
-        //        results.innerHTML = "";
-        //        for (var obj in data) {
-        //            results.innerHTML += data[obj].IdReqItem;
-        //        }
-        //    }
-        //}
-
-        //hr.send(null);
-        //results.innerHTML = "requesting...";
-
-
-    }
+ 
 
 
     function sendJson(selectedId) {
@@ -439,34 +417,7 @@
     </thead>
 
     <tbody class="tItems">
-        @*@if (reqs != null)
-            {
-                foreach (var q in reqs)
-                {
-                    int IdReqItem = q.IdReqItem;
-                    int IdRequisition = q.IdRequisiton;
-                    int IdItem = q.IdItem;
-                    int Unit = q.Unit;
-                    <tr>
-
-                        <td><span class="shop-item-title" value="IdReqItem">@Html.Raw(@IdReqItem)</td>
-                        <td><span class="shop-item-title" value="IdRequisiton">@Html.Raw(@IdRequisition)</td>
-                        <td><span class="shop-item-price" value="IdItem">@Html.Raw(@IdItem)</td>
-                        <td><span class="shop-item-price" value="Unit">@Html.Raw(@Unit)</td>
-                    </tr>
-
-
-                }
-
-            }
-            else
-            {
-                <tr>
-                    <td colspan="3" style="text-align:center">There are no matches for your search(test).</td>
-                </tr>
-
-
-            }*@
+      
     </tbody>
 </table>
 

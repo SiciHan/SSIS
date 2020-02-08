@@ -449,6 +449,7 @@
     <Content Include="Scripts\DepartHeadNotification.js" />
     <Content Include="Scripts\EmployeeNotification.js" />
     <Content Include="Scripts\FormRetrieve.js" />
+    <Content Include="Scripts\history.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -477,6 +478,7 @@
     <Content Include="Scripts\DepartmentRepresentativeNotification.js" />
     <Content Include="Scripts\StoreManagerNotification.js" />
     <Content Include="Scripts\StoreSupervisorNotification.js" />
+    <Content Include="Scripts\updateReq.js" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-grid.min.css" />
     <Content Include="Scripts\vendor\bootstrap\css\bootstrap-reboot.css" />
@@ -494,6 +496,7 @@
     <Content Include="Styles\css\number-input.css" />
     <Content Include="Styles\css\simple-sidebar.css" />
     <Content Include="Styles\css\styles.css" />
+    <Content Include="Styles\styles.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -589,9 +592,12 @@
     <Content Include="Views\DepartmentActingHead\PendingDetail.cshtml" />
     <Content Include="Views\DepartmentActingHead\PendingLists.cshtml" />
     <Content Include="Views\Shared\_ActingHeadLayout.cshtml" />
+    <Content Include="Views\DepartmentHead\ViewDelegations.cshtml" />
+    <Content Include="Views\Employee\History1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Android\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

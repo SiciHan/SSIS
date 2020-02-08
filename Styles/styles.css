@@ -60,7 +60,8 @@ p.catalog {
 .stationery-catalog {
     margin-top: 70px;
     font-family: "Avenir-Heavy";
-
+    border: 1px solid #e0e0e0;
+    width: 755px;
 }
 
 .catalog {
@@ -86,7 +87,9 @@ span.search-filter {
 
 
 .content-section {
-    margin: 1em;
+    border: 1px solid #e0e0e0;
+    width: 755px;
+    margin-left: 0px;
 }
 
 .container {
@@ -102,6 +105,9 @@ span.search-filter {
     color: #333;
     text-align: center;
     font-weight: bold;
+    border: 1px solid #e0e0e0;
+    width: 755px;
+    margin-top: 30px;
 }
 
 
@@ -166,8 +172,7 @@ span.search-filter {
 }
 
 .navbar-nav > li > a {
-    padding-top: px;
-    padding-bottom: 15px;
+   
     font-size: 15px;
     color: black;
 }
@@ -179,7 +184,7 @@ span.search-filter {
 #nav {
     position: absolute;
     width: 100%;
-    height:20px;
+    height: 20px ;
     left: 0;
     top: 0;
 }
@@ -205,6 +210,25 @@ span.search-filter {
     height: 54px;
 }
 
+.recent-items {
+    position: relative;
+    float: right;
+    border: 1px solid #e0e0e0;
+    padding: 19px 11px 0;
+    background: #fff;
+    width: 300px;
+    height: 300px;
+    box-sizing: border-box;
+    overflow: hidden;
+    overflow-y: auto;
+    margin-top: 60px;
+}
+
+.recent {
+    padding-left: 6px;
+    font-size: 15px;
+    font-weight: normal;
+}
 
 .btn {
     text-align: center;
@@ -316,6 +340,39 @@ span.search-filter {
     color: #333;
 }
 
+.my_tmp_sch .dt_area .dt {
+    display: inline-block;
+    margin: 0 5px;
+    position: relative;
+}
+
+.my_tmp_sch .tt, .my_tmp_sch .ct {
+    display: table-cell;
+    padding: 12px 8px;
+    vertical-align: middle;
+}
+
+.my_tmp_sch .dt_area {
+    display: inline-block;
+    margin-left: 20px;
+    vertical-align: top;
+}
+
+    .my_tmp_sch .dt_area .dt {
+        display: inline-block;
+        margin: 0 5px;
+        position: relative;
+    }
+
+    .my_tmp_sch .dt_area .inpt_dt {
+        padding: 0 20px 0 5px;
+        font-size: 12px;
+        text-align: center;
+    }
+
+
+
+
 .shop-items {
     display: flex;
     flex-wrap: wrap;
@@ -323,7 +380,7 @@ span.search-filter {
 }
 
 .cart-header {
-    font-weight: bold;
+    font-weight: 100;
     font-size: 1.25em;
     color: #333;
 }
@@ -442,9 +499,9 @@ span.search-filter {
     width: 102px;
     height: 40px;
     border-radius: 6px;
-    margin-left: 40%;
     margin-top: 20px;
     font-size: 1.4rem;
+    margin-left: auto;
 }
 
 #table {
@@ -454,6 +511,26 @@ span.search-filter {
     padding: 0 1.5em;
 }
 
+#table1 {
+    font-size: 1.4rem;
+    max-width: 900px;
+    margin-left: 0px;
+    padding: 0 1.5em;
+    margin-top: 10px;
+}
+
+.paginationjs {
+    line-height: 1.6;
+    font-family: Marmelad,"Lucida Grande",Arial,"Hiragino Sans GB",Georgia,sans-serif;
+    font-size: 14px;
+    box-sizing: initial;
+}
+
+    .paginationjs .paginationjs-pages {
+        float: left;
+    }
+
+
 .del-up-add {
     font-size: 1.4rem;
     max-width: 900px;
@@ -461,12 +538,50 @@ span.search-filter {
     padding: 0 1.5em;
 }
 
+.my_tmp_sch {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    margin: 0 0 16px;
+    border: 1px solid #d1d1d1;
+    border-width: 1px 0;
+
+}
+
+.my_tmp_sch_dt {
+    display: table;
+    width: 100%;
+}
+
+.my_tmp_sch_flt {
+    display: table;
+    border-top: 1px solid #eaeaea;
+    width: 100%;
+}
+
+
+
+.my_tmp_sch .tt {
+    border-right: 1px solid #eaeaea;
+    background-color: #f7f7f7;
+    width: 15%;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+#mySelect {
+    margin-left: 25px;
+}
+
+
 .btn-primary {
     color: #fff;
     background-color: #007bff;
     border-color: #007bff;
     font-size: 1.4rem;
 }
+
+
+
 
 
 .stationery-header

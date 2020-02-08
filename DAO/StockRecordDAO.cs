@@ -67,27 +67,36 @@ namespace Team8ADProjectSSIS.DAO
 
         public List<StockRecord> FindVoucher()
         {
-            List<StockRecord> vouchers = context.StockRecords
+            List<StockRecord> temp = context.StockRecords // renamed to temp from vouchers
                 .Include("Operation")
                 .Include("Department")
                 .Include("Supplier")
                 .Include("StoreClerk")
                 .Include("Item")
                 .Where(
-                    x => x.IdOperation == 3 || 
-                    x.IdOperation == 4 || 
-                    x.IdOperation == 5 || 
-                    x.IdOperation == 6 &&
-                    x.Supplier.SupplierItems.Where(y => y.IdItem == x.IdItem).Select(y => y.Price).FirstOrDefault() >= 250
+                    x => x.IdOperation == 3 ||
+                    x.IdOperation == 4 ||
+                    x.IdOperation == 5 ||
+                    x.IdOperation == 6
+                //    x.Supplier.SupplierItems.Where(y => y.IdItem == x.IdItem).Select(y => y.Price).FirstOrDefault() >= 250
                 )
                 .ToList();
+
+            // James: added to check for $250 of total stockrecord value
+            SupplierItemDAO si = new SupplierItemDAO();
+            List<StockRecord> vouchers = new List<StockRecord>();
+            foreach (StockRecord voucher in temp)
+            {
+                if (Math.Abs(si.FindByItem(voucher.Item).Price * voucher.Unit) >= 250)
+                    vouchers.Add(voucher);
+            }
 
             return vouchers;
         }
 
         public List<StockRecord> FindJudgedVoucher()
         {
-            List<StockRecord> vouchers = context.StockRecords
+            List<StockRecord> temp = context.StockRecords // renamed to temp from vouchers
                 .Include("Operation")
                 .Include("Department")
                 .Include("Supplier")
@@ -95,17 +104,26 @@ namespace Team8ADProjectSSIS.DAO
                 .Include("Item")
                 .Where(
                     x => x.IdOperation >= 7 &&
-                    x.IdOperation <= 14 && 
-                    x.Supplier.SupplierItems.Where(y => y.IdItem == x.IdItem).Select(y => y.Price).FirstOrDefault() >= 250
+                    x.IdOperation <= 14
+                //    x.Supplier.SupplierItems.Where(y => y.IdItem == x.IdItem).Select(y => y.Price).FirstOrDefault() >= 250
                 )
                 .ToList();
+
+            // James: added to check for $250 of total stockrecord value
+            SupplierItemDAO si = new SupplierItemDAO();
+            List<StockRecord> vouchers = new List<StockRecord>();
+            foreach (StockRecord voucher in temp)
+            {
+                if (Math.Abs(si.FindByItem(voucher.Item).Price * voucher.Unit) >= 250)
+                    vouchers.Add(voucher);
+            }
 
             return vouchers;
         }
 
         public List<StockRecord> FindVoucherForSupervisor()
         {
-            List<StockRecord> vouchers = context.StockRecords
+            List<StockRecord> temp = context.StockRecords // renamed to temp from vouchers
                 .Include("Operation")
                 .Include("Department")
                 .Include("Supplier")
@@ -119,12 +137,21 @@ namespace Team8ADProjectSSIS.DAO
                 )
                 .ToList();
 
+            // James: added to check for $250 of total stockrecord value
+            SupplierItemDAO si = new SupplierItemDAO();
+            List<StockRecord> vouchers = new List<StockRecord>();
+            foreach (StockRecord voucher in temp)
+            {
+                if (Math.Abs(si.FindByItem(voucher.Item).Price * voucher.Unit) < 250)
+                    vouchers.Add(voucher);
+            }
+
             return vouchers;
         }
 
         public List<StockRecord> FindJudgedVoucherForSupervisor()
         {
-            List<StockRecord> vouchers = context.StockRecords
+            List<StockRecord> temp = context.StockRecords // renamed to temp from vouchers
                 .Include("Operation")
                 .Include("Department")
                 .Include("Supplier")
@@ -136,6 +163,15 @@ namespace Team8ADProjectSSIS.DAO
                     //x.Supplier.SupplierItems.Where(y => y.IdItem == x.IdItem).Select(y => y.Price).FirstOrDefault() >= 250
                 )
                 .ToList();
+
+            // James: added to check for $250 of total stockrecord value
+            SupplierItemDAO si = new SupplierItemDAO();
+            List<StockRecord> vouchers = new List<StockRecord>();
+            foreach (StockRecord voucher in temp)
+            {
+                if (Math.Abs(si.FindByItem(voucher.Item).Price * voucher.Unit) < 250)
+                    vouchers.Add(voucher);
+            }
 
             return vouchers;
         }
