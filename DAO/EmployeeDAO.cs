@@ -27,13 +27,15 @@ namespace Team8ADProjectSSIS.DAO
         {
             // Find the emp by empName--> change emp role to idRole=4
             Employee e = FindEmployeeByNameAndRole(name);
-            e.IdRole = 4;// set to idRole to 4
+            //e.IdRole = 4;// set to idRole to 4
+            e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("ActingHead")).FirstOrDefault();
+            int id= e.IdRole;
             context.SaveChanges();
         }
         //SH
         public Employee FindEmployeeByNameAndRole(string name)
         {
-            return context.Employees.Where(e => e.Name == name).Where(e=>e.IdRole==1).FirstOrDefault();
+            return context.Employees.Where(e => e.Name == name).Where(e=>e.IdRole==1).Include(x => x.Role).FirstOrDefault();
         }
         //SH
         public List<Employee> FindEmployeeListByDepartmentAndRole(string codeDepartment)

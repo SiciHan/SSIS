@@ -298,6 +298,7 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult PostDelegation(string emp,string cp,string judge, string StartDate, string EndDate)
         {
+            int idDepartmentHead=((int)Session["IdEmployee"]);
             string submit = judge;
             string empName = emp;
             string remarks = cp; // for notification
@@ -320,10 +321,12 @@ namespace Team8ADProjectSSIS.Controllers
                     if (EDate >= SDate)
                     {
                         // approve delegation
+                        // add one day
+                        EDate = EDate.AddDays(1);
                         _employeeDAO.DelegateEmployeeToActingRole(empName);
                         _delegationDAO.UpdateDelegation(empName, SDate, EDate);
 
-                        //@Shutong: send notification here
+                        //@Shutong: send notification to acting head
                         Employee e = _employeeDAO.FindEmployeeByName(empName);
                         int IdEmployee = e.IdEmployee;
                         Delegation d = _delegationDAO.FindDelegationById(IdEmployee);
@@ -336,6 +339,17 @@ namespace Team8ADProjectSSIS.Controllers
 
                         _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
                         emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+                        //end of notification sending 
+
+                        //@Shutong: send notification head who delegating acting head
+                        Employee headDept = _employeeDAO.FindEmployeeById(idDepartmentHead);
+                        hub.Clients.All.receiveNotification(idDepartmentHead);                        
+                        message = "Hi," + headDept.Name
+                            + " You have delegated "+empName+" as Acting Department Head from " + d.StartDate.ToString() + " to " + d.EndDate.ToString()
+                            + " to assist approve stationery requisition. \r\nRemarks: " + remarks;
+
+                        _notificationChannelDAO.CreateNotificationsToIndividual(idDepartmentHead, (int)Session["IdEmployee"], message);
+                        emailClass.SendTo(_employeeDAO.FindEmployeeById(idDepartmentHead).Email, "SSIS System Email", message);
                         //end of notification sending 
 
                     }
