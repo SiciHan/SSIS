@@ -70,11 +70,10 @@ namespace Team8ADProjectSSIS.Controllers
             List<int> amounts_groupbyCategory = new List<int>();
             List<int> amounts_groupbyDepartment = new List<int>();
             DateTime today = DateTime.Now;
-            DateTime temp = today;
 
-            for(int i=1; i<=30; i+=7)
+            for(int i=90; i>=1; i-=7)
             {
-                temp = temp.AddDays(-7);
+                DateTime temp = today.AddDays(-i);
                 times.Add(temp);
             }
             using (SqlConnection conn = new SqlConnection(("Server=.; Database=SSIS; Integrated Security=true")))
@@ -87,63 +86,76 @@ namespace Team8ADProjectSSIS.Controllers
                     string sql_groupbyDepartment;
                     if (category == "" || category == "Total")
                     {
-                        sql_groupbyCategory = @"SELECT SUM(Unit) AS unit
-                            FROM RequisitionItems ri INNER JOIN Requisitions r
-                            ON ri.IdRequiston = r.IdRequisition
-                            WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'";
+                        sql_groupbyCategory = @"SELECT isNull(SUM(OrderUnit), 0) AS unit
+                            FROM PurchaseOrderDetails pod
+                            INNER JOIN PurchaseOrders po ON pod.IdPurchaseOrder = po.IdPurchaseOrder
+                            WHERE po.DeliverDate BETWEEN '" + time + "' AND '" + time_nextweek + "'";
                     }
                     else
                     {
-                        sql_groupbyCategory = @"SELECT SUM(Unit) AS unit
-                            FROM RequisitionItems ri 
-                            INNER JOIN Requisitions r ON ri.IdRequiston = r.IdRequisition
-                            INNER JOIN Items i ON i.IdItem = ri.IdItem
-                            INNER JOIN Categories c ON c.IdCategory = i.IdCategory
-                            WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
-                            "AND c.Label = '" + category + "'";
+                        sql_groupbyCategory = @"SELECT isNull(SUM(OrderUnit), 0) AS unit
+                            FROM PurchaseOrderDetails pod
+                            INNER JOIN PurchaseOrders po ON pod.IdPurchaseOrder = po.IdPurchaseOrder
+                            INNER JOIN Items i ON pod.IdItem = i.IdItem
+                            INNER JOIN Categories c ON i.IdCategory = c.IdCategory
+                            WHERE po.DeliverDate BETWEEN '" + time + "' AND '" + time_nextweek + "'" + 
+                            " AND c.Lable = '" + category + "'";
                     }
                     if(department == "" || department == "Total")
                     {
-                        sql_groupbyDepartment = @"SELECT SUM(Unit) AS unit
+                        sql_groupbyDepartment = @"SELECT isNull(SUM(Unit), 0) AS unit
                             FROM RequisitionItems ri INNER JOIN Requisitions r
-                            ON ri.IdRequiston = r.IdRequisition
+                            ON ri.IdRequisiton = r.IdRequisition
                             INNER JOIN Employees emp
                             ON emp.IdEmployee = r.IdEmployee
                             WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'";
                     }
                     else
                     {
-                        sql_groupbyDepartment = @"SELECT SUM(Unit) AS unit
+                        sql_groupbyDepartment = @"SELECT isNull(SUM(Unit), 0) AS unit
                             FROM RequisitionItems ri INNER JOIN Requisitions r
-                            ON ri.IdRequiston = r.IdRequisition
+                            ON ri.IdRequisiton = r.IdRequisition
                             INNER JOIN Employees emp
                             ON emp.IdEmployee = r.IdEmployee
                             WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
-                            "AND emp.CodeDepartment = '" + department + "'" ;
+                            " AND emp.CodeDepartment = '" + department + "'" ;
                     }
                     SqlCommand cmd1 = new SqlCommand(sql_groupbyCategory, conn);
                     SqlCommand cmd2 = new SqlCommand(sql_groupbyDepartment, conn);
                     SqlDataReader reader1 = cmd1.ExecuteReader();
-                    SqlDataReader reader2 = cmd2.ExecuteReader();
-                    if (reader1.Read())
+
+                    if (reader1.HasRows)
                     {
-                        int t = (int)reader1["unit"];
-                        amounts_groupbyCategory.Add(t);
+                        while (reader1.Read())
+                        {
+                            if (reader1["unit"] != null)
+                            {
+                                int t = (int)reader1["unit"];
+                                amounts_groupbyCategory.Add(t);
+                            }
+                            else amounts_groupbyCategory.Add(0);
+                        }
                     }
                     else
                     {
                         amounts_groupbyCategory.Add(0);
                     }
+                    reader1.Close();
+                    SqlDataReader reader2 = cmd2.ExecuteReader();
                     if (reader2.Read())
                     {
-                        int t = (int)reader2["unit"];
-                        amounts_groupbyDepartment.Add(t);
+                        if(reader2["unit"] != null)
+                        {
+                            int t = (int)reader2["unit"];
+                            amounts_groupbyDepartment.Add(t);
+                        }
+                        else amounts_groupbyDepartment.Add(0);
                     }
                     else
                     {
                         amounts_groupbyDepartment.Add(0);
                     }
-                    
+                    reader2.Close();
                 }
             }
             List<DataPoint> dataPoints1 = new List<DataPoint>();
@@ -151,14 +163,28 @@ namespace Team8ADProjectSSIS.Controllers
             foreach(DateTime time in times)
             {
                 DataPoint d = new DataPoint();
-                d.x = time;
+                string tt = time.ToString("dd-MM-yyyy");
+                d.x = tt;
                 dataPoints1.Add(d);
                 dataPoints2.Add(d);
             }
+            int j = 0;
             foreach(int amount in amounts_groupbyCategory)
             {
+                dataPoints1[j].y = amount;
+                j++;
 
             }
+            int k = 0;
+            foreach (int amount in amounts_groupbyDepartment)
+            {
+                dataPoints2[k].y = amount;
+                k++;
+
+            }
+            JsonSerializerSettings _jsonSetting = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore };
+            ViewBag.DataPoints1 = JsonConvert.SerializeObject(dataPoints1, _jsonSetting);
+            ViewBag.DataPoints2 = JsonConvert.SerializeObject(dataPoints2, _jsonSetting);
             return View();
         }
 
