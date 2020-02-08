@@ -11,7 +11,10 @@
         <p>You can view the details of each disbursement here!</p>
     </div>
 </div>
-
+<div class="row">
+    <input class="form-control" id="myInput" type="text" placeholder="Search.." style="margin-left:15px">
+</div>
+<br />
 <table>
     <tr>
         <th style="width:30%">Department Name</th>
@@ -19,15 +22,17 @@
         <th colspan="2">Status</th>
         <th>Details</th>
     </tr>
-    @foreach (Disbursement i in AllDisbursement)
-    {
-        <tr>
-            <td>@i.Department.Name</td>
-            <td>@i.Date.ToString("dd-MM-yyyy")</td>
-            <td>@i.Status.Label</td>
-            <td>@Html.ActionLink("View", "DisbursementDetails", "StoreManager", new { IdDisbursement = i.IdDisbursement }, null)</td>
-        </tr>
-    }
+    <tbody id="myTable">
+        @foreach (Disbursement i in AllDisbursement)
+        {
+            <tr>
+                <td>@i.Department.Name</td>
+                <td>@i.Date.ToString("dd-MM-yyyy")</td>
+                <td>@i.Status.Label</td>
+                <td>@Html.ActionLink("View", "DisbursementDetails", "StoreManager", new { IdDisbursement = i.IdDisbursement }, null)</td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 <style>
@@ -45,3 +50,17 @@
         text-align: center;
     }
 </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>

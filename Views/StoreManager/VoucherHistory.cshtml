@@ -14,7 +14,10 @@
         <p>You can review the adjustment voucher history here!</p>
     </div>
 </div>
-
+<div class="row">
+    <input class="form-control" id="myInput" type="text" placeholder="Search.." style="margin-left:15px">
+</div>
+<br />
 <div class="container-fluid">
     <table>
         <tr>
@@ -37,30 +40,32 @@
                 Status
             </th>
         </tr>
-        @foreach (StockRecord voucher in vouchers)
-        {
-            <tr>
-                <td>
-                    @voucher.Item.Description
-                </td>
-                <td>
-                    @voucher.Unit
-                </td>
-                <td>
-                    @prices[i]
-                </td>
-                <td>
-                    @voucher.StoreClerk.Name
-                </td>
-                <td>
-                    @voucher.Operation.Label
-                </td>
-                <td>
-                    @status[i]
-                </td>
-            </tr>
-            i++;
-        }
+        <tbody id="myTable">
+            @foreach (StockRecord voucher in vouchers)
+            {
+                <tr>
+                    <td>
+                        @voucher.Item.Description
+                    </td>
+                    <td>
+                        @voucher.Unit
+                    </td>
+                    <td>
+                        @prices[i]
+                    </td>
+                    <td>
+                        @voucher.StoreClerk.Name
+                    </td>
+                    <td>
+                        @voucher.Operation.Label
+                    </td>
+                    <td>
+                        @status[i]
+                    </td>
+                </tr>
+                i++;
+            }
+        </tbody>
     </table>
     <input type="button" class="btn btn-primary" value="Back" onclick="location.href='@Url.Action("Voucher", "StoreManager")'"
            style="margin-top:24px" />
@@ -81,4 +86,18 @@
         text-align: center;
     }
 </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
 

@@ -6,13 +6,16 @@
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
 
-    <div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
-        <div class="container">
-            <h2><b>Purchase Order History</b></h2>
-            <p>You can view the details of each Purchase Order here!</p>
-        </div>
+<div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+    <div class="container">
+        <h2><b>Purchase Order History</b></h2>
+        <p>You can view the details of each Purchase Order here!</p>
     </div>
-
+</div>
+<div class="row">
+    <input class="form-control" id="myInput" type="text" placeholder="Search.." style="margin-left:15px">
+</div>
+<br />
 <table>
     <tr>
         <th style="width:10%">Purchase Order Id</th>
@@ -24,19 +27,21 @@
         <th>Remarks</th>
         <th>Details</th>
     </tr>
-    @foreach (PurchaseOrder i in AllPO)
-    {
-        <tr>
-            <td>@i.IdPurchaseOrder</td>
-            <td>@i.Supplier.CodeSupplier</td>
-            <td>@i.ApprovedDate</td>
-            <td>@i.OrderDate</td>
-            <td>@i.DeliverDate</td>
-            <td>@i.Status.Label</td>
-            <td>@i.PurchaseRemarks</td>
-            <td>@Html.ActionLink("View", "PODetails", "StoreManager", new { IdPurchaseOrder = i.IdPurchaseOrder }, null)</td>
-        </tr>
-    }
+    <tbody id="myTable">
+        @foreach (PurchaseOrder i in AllPO)
+        {
+            <tr>
+                <td>@i.IdPurchaseOrder</td>
+                <td>@i.Supplier.CodeSupplier</td>
+                <td>@i.ApprovedDate</td>
+                <td>@i.OrderDate</td>
+                <td>@i.DeliverDate</td>
+                <td>@i.Status.Label</td>
+                <td>@i.PurchaseRemarks</td>
+                <td>@Html.ActionLink("View", "PODetails", "StoreManager", new { IdPurchaseOrder = i.IdPurchaseOrder }, null)</td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 <style>
@@ -54,3 +59,17 @@
         text-align: center;
     }
 </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
