@@ -42,7 +42,7 @@
             {
                 <tr>
                     <td>
-                        <input type="checkbox" name="vouchersId" value="@voucher.IdStockRecord" />
+                        <input type="checkbox" name="vouchersId" value="@voucher.IdStockRecord" onclick="onCheck()"/>
                     </td>
 
                     <td>
@@ -69,9 +69,9 @@
                onclick="location.href='@Url.Action("VoucherHistory", "StoreManager")'" style="margin-top:24px" />
 
         <input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-top:24px"
-               onclick="ConfirmReject()" />
+               onclick="ConfirmReject()" disabled/>
         <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-right:24px; margin-top:24px"
-               onclick="ConfirmApprove()" />
+               onclick="ConfirmApprove()" disabled/>
     </div>
 }
 
@@ -82,6 +82,8 @@
         for (var i = 0; i < vouchers.length; i++) {
             vouchers[i].checked = isChecked;
         }
+        // enable button
+        onCheck();
     }
 
     function ConfirmApprove() {
@@ -102,7 +104,29 @@
         }
     }
 
-    window.onload = function () {
+    function onCheck() {
+        var vouchers = document.getElementsByName("vouchersId");
+        var buttons = document.getElementsByName("judge");
+        var checkedNum = 0;
+        for (var i = 0; i < vouchers.length; i++) {
+            if (vouchers[i].checked) {
+                checkedNum++;
+            }
+        }
+        if (checkedNum != 0) {
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = false;
+            }
+        } else {
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = true;
+            }
+        }
+            
+    }
+
+
+    /*window.onload = function () {
         var vouchers = document.getElementsByName("vouchersId");
         var buttons = document.getElementsByName("judge");
         var checkedNum = 0;
@@ -116,7 +140,7 @@
                 buttons[i].disabled = true;
             }
         }
-    }
+    }*/
 </script>
 
 <style>

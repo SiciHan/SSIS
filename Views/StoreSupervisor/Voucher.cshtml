@@ -73,7 +73,7 @@
             {
                 <tr>
                     <td>
-                        <input type="checkbox" name="vouchersId" value="@voucher.IdStockRecord" />
+                        <input type="checkbox" name="vouchersId" value="@voucher.IdStockRecord" onclick="onCheck()"/>
                     </td>
 
                     <td>
@@ -112,6 +112,8 @@
         for (var i = 0; i < vouchers.length; i++) {
             vouchers[i].checked = isChecked;
         }
+        // enable button
+        onCheck();
     }
 </script>
 
@@ -154,7 +156,28 @@
             }
         }
 
-        window.onload = function () {
+        function onCheck() {
+            var vouchers = document.getElementsByName("vouchersId");
+            var buttons = document.getElementsByName("handle");
+            var checkedNum = 0;
+            for (var i = 0; i < vouchers.length; i++) {
+                if (vouchers[i].checked) {
+                    checkedNum++;
+                }
+            }
+            if (checkedNum != 0) {
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = false;
+                }
+            } else {
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].disabled = true;
+                }
+            }
+            
+        }
+
+        /*window.onload = function () {
             var vouchers = document.getElementsByName("vouchersId");
             var buttons = document.getElementsByName("handle");
             var checkedNum = 0;
@@ -168,6 +191,6 @@
                     buttons[i].disabled = true;
                 }
             }
-        }
+        }*/
     </script>
 }
