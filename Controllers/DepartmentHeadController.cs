@@ -96,7 +96,7 @@ namespace Team8ADProjectSSIS.Controllers
                 hub.Clients.All.receiveNotification(IdEmployee);
                 EmailClass emailClass = new EmailClass();
                 string message = "Hi," + _employeeDAO.FindEmployeeById(IdEmployee).Name
-                    + " your requisition: " + req.IdRequisition + " raised on " + req.RaiseDate + " has been approved.";
+                    + " your requisition: " + req.IdRequisition + " raised on " + req.RaiseDate + " has been approved. Remarks: "+remarks;
 
                 _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
                 emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
@@ -114,7 +114,7 @@ namespace Team8ADProjectSSIS.Controllers
                 hub.Clients.All.receiveNotification(IdEmployee);
                 EmailClass emailClass = new EmailClass();
                 string message = "Hi," + _employeeDAO.FindEmployeeById(IdEmployee).Name
-                    + " your requisition: " + req.IdRequisition + " raised on " + req.RaiseDate + " has been approved.";
+                    + " your requisition: " + req.IdRequisition + " raised on " + req.RaiseDate + " has been rejected. Remarks: "+remarks;
 
                 _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
                 emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
