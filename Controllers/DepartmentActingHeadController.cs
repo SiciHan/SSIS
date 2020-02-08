@@ -78,7 +78,49 @@ namespace Team8ADProjectSSIS.Controllers
 
             return View();
         }
+        public ActionResult ApproveReject(string judge, int idRequisition, string remarks)
+        {
+            int id = idRequisition;
+            string r = remarks;
+            string w = r;
+            if (judge.Equals("Approve"))
+            {
+                _requisitionDAO.UpdateApproveStatusAndRemarks(idRequisition, remarks);
 
+                //@Shutong: send notification here
+                Requisition req = _requisitionDAO.FindRequisitionByRequisionId(idRequisition);
+                int IdEmployee = req.IdEmployee;
+                var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                string message = "Hi," + _employeeDAO.FindEmployeeById(IdEmployee).Name
+                    + " your requisition: " + req.IdRequisition + " raised on " + req.RaiseDate + " has been approved. Remarks: "+remarks;
+
+                _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+                //end of notification sending 
+                return RedirectToAction("PendingLists", "DepartmentActingHead");
+            }
+            else if (judge.Equals("Reject"))
+            {
+                _requisitionDAO.UpdateRejectStatusAndRemarks(idRequisition, remarks);
+
+                //@Shutong: send notification here
+                Requisition req = _requisitionDAO.FindRequisitionByRequisionId(idRequisition);
+                int IdEmployee = req.IdEmployee;
+                var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                hub.Clients.All.receiveNotification(IdEmployee);
+                EmailClass emailClass = new EmailClass();
+                string message = "Hi," + _employeeDAO.FindEmployeeById(IdEmployee).Name
+                    + " your requisition: " + req.IdRequisition + " raised on " + req.RaiseDate + " has been rejected. Remarks: "+remarks;
+
+                _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+                //end of notification sending 
+                return RedirectToAction("PendingLists", "DepartmentActingHead");
+            }
+            return RedirectToAction("PendingLists", "DepartmentActingHead");
+        }
         public ActionResult Approve(int idRequisition)
         {
             _requisitionDAO.UpdateApproveStatus(idRequisition);
@@ -122,11 +164,19 @@ namespace Team8ADProjectSSIS.Controllers
         // view CurrentRep and CP
         public ActionResult CurrentRepCP()
         {
-            String codeDepartment = "CPSC";
+            //string codeDepartment = "CPSC";
+            string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
             Employee employee = _employeeDAO.FindDepartmentRep(codeDepartment);
             Department department = _departmentDAO.FindDepartmentCollectionPoint(codeDepartment);
-            ViewData["employee"] = employee;
-            ViewData["department"] = department;
+            if (employee == null)
+            {
+
+            }
+            else
+            {
+                ViewData["employee"] = employee;
+                ViewData["department"] = department;
+            }
             return View();
         }
 
@@ -134,10 +184,11 @@ namespace Team8ADProjectSSIS.Controllers
         public ActionResult ChangeRepCP()
         {
             // find employee from the department
-            String codeDepartment = "CPSC";
+            //String codeDepartment = "CPSC";
+            string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
             List<Employee> empList = _employeeDAO.FindEmployeeListByDepartment(codeDepartment);
             List<CollectionPoint> cpList = _collectionPointDAO.FindAll();
-            ViewBag.Employee = new SelectList(empList, "IdEmployee", "Name"); // put inside drop down list
+            //ViewBag.Employee = new SelectList(empList, "IdEmployee", "Name"); // put inside drop down list
             ViewBag.EmployeeList = empList;
             ViewBag.CollectionPoint = cpList;
             return View();
@@ -160,54 +211,128 @@ namespace Team8ADProjectSSIS.Controllers
                     string codeDepartment = newRep.CodeDepartment;
                     string oldCollectionPoint = _collectionPointDAO.FindByDepartment(codeDepartment);
                     Employee oldRep = _employeeDAO.FindDepartmentRep(codeDepartment);
-
-                    //change old rep to employee
-                    _employeeDAO.PutOldRepBack(oldRep.Name);
-
-                    _employeeDAO.ChangeNewRepCP(newRep.Name, location);
-
-
-                    if (newRep.Name != oldRep.Name)
+                    if (oldRep == null)
                     {
+                        //if there is no oldRep then do not need to set idrole etc
+                        //but need set new rep
+                        _employeeDAO.ChangeNewRepCP(newRep.Name, location);
+
                         //@Shutong: send notification here
-                        int IdEmployee = oldRep.IdEmployee;
+                        Employee e = _employeeDAO.FindEmployeeByName(newRep.Name);
+                        int IdEmployee = e.IdEmployee;
                         var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
                         hub.Clients.All.receiveNotification(IdEmployee);
                         EmailClass emailClass = new EmailClass();
-                        string message = "Hi " + oldRep.Name
-                            + ", you are not Department Rep anymore.";
-                        _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
-                        emailClass.SendTo(oldRep.Email, "SSIS System Email", message);
+                        string message = "Hi " + newRep.Name
+                               + ", you are appointed as Department Rep. Collection Point is " + location;
 
-                        IdEmployee = newRep.IdEmployee;
-                        hub.Clients.All.receiveNotification(IdEmployee);
-                        message = "Hi " + newRep.Name
-                           + ", you are appointed as Department Rep.";
                         _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
-                        emailClass.SendTo(newRep.Email, "SSIS System Email", message);
-                        //end of notification sending
+                        emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+                        //end of notification sending 
                     }
-                    //if rep didnot change but only cp changes
                     else
                     {
-                        if (oldCollectionPoint != location)
+                        // old rep is not null
+                        //change old rep back to employee                   
+                        //change the current employee to rep and change collection point
+                        _employeeDAO.PutOldRepBack(oldRep.Name);
+                        _employeeDAO.ChangeNewRepCP(newRep.Name, location);
+
+                        if (newRep.Name != oldRep.Name)
                         {
+                            //@Shutong: send notification here
                             int IdEmployee = oldRep.IdEmployee;
                             var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
                             hub.Clients.All.receiveNotification(IdEmployee);
                             EmailClass emailClass = new EmailClass();
                             string message = "Hi " + oldRep.Name
-                                + ", your collection point has been changed by your head.";
+                                + ", you are not Department Rep anymore.";
                             _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
                             emailClass.SendTo(oldRep.Email, "SSIS System Email", message);
 
+                            IdEmployee = newRep.IdEmployee;
+                            hub.Clients.All.receiveNotification(IdEmployee);
+                            message = "Hi " + newRep.Name
+                               + ", you are appointed as Department Rep. Collection Point is " + location;
+                            _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                            emailClass.SendTo(newRep.Email, "SSIS System Email", message);
+                            //end of notification sending
                         }
+                        //if rep didnot change but only cp changes
+                        else
+                        {
+                            if (oldCollectionPoint != location)
+                            {
+                                int IdEmployee = oldRep.IdEmployee;
+                                var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                                hub.Clients.All.receiveNotification(IdEmployee);
+                                EmailClass emailClass = new EmailClass();
+                                string message = "Hi " + oldRep.Name
+                                    + ", your collection point has been changed by your head.";
+                                _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                                emailClass.SendTo(oldRep.Email, "SSIS System Email", message);
 
+                            }
+
+                        }
                     }
 
-                    //end of notification sending
                     return RedirectToAction("CurrentRepCP", "DepartmentActingHead");
                 }
+                //if (location != null && empName != null)
+                //{
+                //    Employee newRep = _employeeDAO.FindEmployeeByName(empName);
+                //    string codeDepartment = newRep.CodeDepartment;
+                //    string oldCollectionPoint = _collectionPointDAO.FindByDepartment(codeDepartment);
+                //    Employee oldRep = _employeeDAO.FindDepartmentRep(codeDepartment);
+
+                //    //change old rep to employee
+                //    _employeeDAO.PutOldRepBack(oldRep.Name);
+
+                //    _employeeDAO.ChangeNewRepCP(newRep.Name, location);
+
+
+                //    if (newRep.Name != oldRep.Name)
+                //    {
+                //        //@Shutong: send notification here
+                //        int IdEmployee = oldRep.IdEmployee;
+                //        var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                //        hub.Clients.All.receiveNotification(IdEmployee);
+                //        EmailClass emailClass = new EmailClass();
+                //        string message = "Hi " + oldRep.Name
+                //            + ", you are not Department Rep anymore.";
+                //        _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                //        emailClass.SendTo(oldRep.Email, "SSIS System Email", message);
+
+                //        IdEmployee = newRep.IdEmployee;
+                //        hub.Clients.All.receiveNotification(IdEmployee);
+                //        message = "Hi " + newRep.Name
+                //           + ", you are appointed as Department Rep.";
+                //        _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                //        emailClass.SendTo(newRep.Email, "SSIS System Email", message);
+                //        //end of notification sending
+                //    }
+                //    //if rep didnot change but only cp changes
+                //    else
+                //    {
+                //        if (oldCollectionPoint != location)
+                //        {
+                //            int IdEmployee = oldRep.IdEmployee;
+                //            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+                //            hub.Clients.All.receiveNotification(IdEmployee);
+                //            EmailClass emailClass = new EmailClass();
+                //            string message = "Hi " + oldRep.Name
+                //                + ", your collection point has been changed by your head.";
+                //            _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+                //            emailClass.SendTo(oldRep.Email, "SSIS System Email", message);
+
+                //        }
+
+                //    }
+
+                //    //end of notification sending
+                //    return RedirectToAction("CurrentRepCP", "DepartmentActingHead");
+                //}
             }
 
 

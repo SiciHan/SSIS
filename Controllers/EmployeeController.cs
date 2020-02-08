@@ -131,9 +131,14 @@ namespace Team8ADProjectSSIS.Controllers
                 message = "Hi Department Acting Head," + _employeeDAO.FindEmployeeById(idEmployee).Name
                + "has raised a stationery requisition: " + req.IdRequisition + " on " + req.RaiseDate + ". Please kindly approve or reject it.";
                 hub.Clients.All.receiveNotification(IdActingHead);
-                _notificationChannelDAO.CreateNotificationsToIndividual(IdHead, (int)Session["IdEmployee"], message);
-                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdHead).Email, "SSIS System Email", message);
+                _notificationChannelDAO.CreateNotificationsToIndividual(IdActingHead, (int)Session["IdEmployee"], message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdActingHead).Email, "SSIS System Email", message);
             }
+
+            message = "Hi "+_employeeDAO.FindEmployeeById(idEmployee).Name+ "you has raised a stationery requisition: " + req.IdRequisition + " on " + req.RaiseDate + ". Your Head/Acting Head will handle it in 5 working days.";
+            hub.Clients.All.receiveNotification(idEmployee);
+            _notificationChannelDAO.CreateNotificationsToIndividual(idEmployee, idEmployee, message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(idEmployee).Email, "SSIS System Email", message);
             //end of notification sending 
 
             //replace with below

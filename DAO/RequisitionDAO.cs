@@ -25,6 +25,25 @@ namespace Team8ADProjectSSIS.DAO
             return context.Requisitions.OfType<Requisition>().Include("Employee").Where(r => r.IdRequisition == idRequisition ).FirstOrDefault();
         }
         //SH
+        public void UpdateApproveStatusAndRemarks(int idRequisition,string remarks)
+        {
+            Requisition r = FindRequisitionByRequisionId(idRequisition);
+            r.ApprovedDate = DateTime.Now;
+            r.IdStatusCurrent = 3;
+            r.HeadRemark = remarks;
+            DateTime saveNow = DateTime.Now;
+            r.ApprovedDate = saveNow;
+            context.SaveChanges();
+        }
+        //SH
+        public void UpdateRejectStatusAndRemarks(int idRequisition, string remarks)
+        {
+            Requisition r = FindRequisitionByRequisionId(idRequisition);
+            r.IdStatusCurrent = 4;
+            r.HeadRemark = remarks;
+            context.SaveChanges();
+        }
+        //SH
         public void UpdateApproveStatus(int idRequisition)
         {
             Requisition r = FindRequisitionByRequisionId(idRequisition);

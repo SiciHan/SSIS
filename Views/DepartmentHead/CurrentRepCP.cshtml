@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_HeadLayout.cshtml";
     Employee e = (Employee)ViewData["employee"];
     Department d = (Department)ViewData["department"];
-    
+
 }
 
 <h2>Current Department Representative</h2>
@@ -17,7 +17,8 @@
         <th>Action</th>
 
     </tr>
-    
+    @if (e != null)
+    {
         <tr>
             <td>@e.Name</td>
             <td>@e.IdEmployee</td>
@@ -25,7 +26,9 @@
             <td>@d.CollectionPt.Location</td>
             <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentHead")</td>
         </tr>
-    
+    }
+
+
 </table>
 
 <style>
