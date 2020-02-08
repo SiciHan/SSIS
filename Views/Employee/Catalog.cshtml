@@ -4,6 +4,8 @@
     string searchStr = (string)ViewBag.searchStr;
     var found = false;
      
+     var recentItems = ViewBag.recentItems;
+    var Emp = ViewData["Emp"] as Employee;
 
 }
 
@@ -28,10 +30,10 @@
 
 </head>
 
-<body class="stationery-catalog">
-    <h3 style="margin-top:50px;">Stationery Catalog</h3>
+<div class="stationery-catalog">
+    <h3 style="font-weight: bolder;">Stationery Catalog</h3>
     <div class="catalog">
-        <form class="form-inline my-2 my-lg-0" style="margin-left: 50%;">
+        <form class="form-inline my-2 my-lg-0" style="margin-left: 70%;">
             <b>Search:</b>
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" input id="searchBox" value="@searchStr">
         </form>
@@ -74,11 +76,11 @@
         </div>
 
         <div class="add-to-request">
-            <button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>
+            <button onclick="addToCartClicked()" class="btn-primary shop-item-button"  style="margin-left: 83%;">Add to request</button>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-</body>
+</div>
 </html>
