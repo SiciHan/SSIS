@@ -46,6 +46,7 @@ namespace Team8ADProjectSSIS.DAO
             Employee e = FindEmployeeByName(name);
             //change to rep
             e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("Representative")).FirstOrDefault();
+            //e.IdRole = 3;
             context.SaveChanges();
             //change cp
             Department dep = context.Departments.Where(d => d.CodeDepartment.Equals(e.CodeDepartment)).Include(x=>x.CollectionPt).FirstOrDefault();
@@ -57,25 +58,29 @@ namespace Team8ADProjectSSIS.DAO
         {
             Employee e = FindEmployeeByName(name);
             //change to employee
-            e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("Employee")).FirstOrDefault();
+            //e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("Employee")).FirstOrDefault();
+            e.IdRole = 1;
             context.SaveChanges();
         }
         //SH
         public Employee FindEmployeeByName(string name)
         {
-            return context.Employees.Where(e => e.Name == name).Include(x=>x.Role).FirstOrDefault();
+            //return context.Employees.Include("Role").Where(e => e.Name == name).Include(x=>x.Role).FirstOrDefault();
+            return context.Employees.Where(e => e.Name == name).Include(x => x.Role).FirstOrDefault();
         }
         //SH
         public Employee FindDepartmentRep(String codeDepartment)
         {
-            
-            return context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).Where(e => e.IdRole == 3).FirstOrDefault();
+            return context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment) && e.IdRole == 3).FirstOrDefault();
+            //return context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).Where(e => e.IdRole == 3).FirstOrDefault();
             //return context.Employees.Where(e => e.IdRole==3).FirstOrDefault();
         }
         // SH
         public List<Employee> FindEmployeeListByDepartment(string codeDepartment)
         {
-            return context.Employees.OfType<Employee>().Where(x =>x.Role.Label.Equals("Employee") && x.CodeDepartment.Equals(codeDepartment)).ToList();
+            // so dep rep will also appear in the collection point list for head to change cp.
+            return context.Employees.OfType<Employee>().Where(x => (x.Role.Label.Equals("Employee") || x.Role.Label.Equals("Representative")) && x.CodeDepartment.Equals(codeDepartment)).ToList();
+            //return context.Employees.OfType<Employee>().Where(x =>x.Role.Label.Equals("Employee") && x.CodeDepartment.Equals(codeDepartment)).ToList();
         }
         //SH
         public List<Requisition> RaisesRequisitions(string codeDepartment)

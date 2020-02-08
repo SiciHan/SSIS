@@ -17,7 +17,9 @@
         <th>Action</th>
 
     </tr>
-    
+
+    @if (e != null)
+    {
         <tr>
             <td>@e.Name</td>
             <td>@e.IdEmployee</td>
@@ -25,7 +27,8 @@
             <td>@d.CollectionPt.Location</td>
             <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentActingHead")</td>
         </tr>
-    
+    }
+
 </table>
 
 <style>

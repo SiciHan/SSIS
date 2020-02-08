@@ -31,8 +31,28 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
         }
         //SH
+        public List<Delegation> FindDelegationListByDepartment(string codeDepartment)
+        {
+           List<Delegation> delegationAllDepartment= context.Delegations.Include("Employee").ToList();
+            List<Employee> employeeListByDepartment = context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).ToList();
+            List<Delegation> delegationDepartmentList = new List<Delegation>();
+            foreach(Delegation d in delegationAllDepartment)
+            {
+                // put each delegation id  to test with specific 
+                foreach(Employee e in employeeListByDepartment)
+                {
+                    if (d.IdEmployee == e.IdEmployee)
+                    {
+                        delegationDepartmentList.Add(d);
+                    }
+                }
+            }
+            return delegationDepartmentList;
+        }
+        //SH
         public List<Delegation> FindDelegationlist()
         {
+            //
             return context.Delegations.Include("Employee").ToList();
         }
         //SH
