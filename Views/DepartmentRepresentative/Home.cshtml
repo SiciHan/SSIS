@@ -74,7 +74,7 @@
         console.log("value", value);
 
 
-/*            var department = "*/@Rep.CodeDepartment/*";
+/*            var department = "*//*";
             var data = {
                     "role": "Clerk",
                     "message":"Hi Store Clerk, the Represenative of the Department "+department+" has changed the Collection Point."
@@ -90,7 +90,7 @@
                         console.log(error);
                     }
                 });
-        $.connection.chatHub.server.sendNotificationByGroupByRole(*/@Rep.IdEmployee/*,"Clerk",data["message"]);*/
+        $.connection.chatHub.server.sendNotificationByGroupByRole(*//*,"Clerk",data["message"]);*/
 
         self.location.href = 'UpdateCollectionPoint?idDisbursement=' + @disbursement.IdDisbursement +'&idCollectionPt=' + value;
     }
@@ -189,7 +189,7 @@ else
 
         <div class="form-group" style="margin-top: 0%">
             <div class="input-group col-sm-3 col-xs-offset-6">
-                <input type="button" style="height:25px" value="Comfirm" onclick="onCollectionPointChange()" />&nbsp;&nbsp;&nbsp;
+                <input type="button" style="height:25px" value="Confirm" onclick="onCollectionPointChange()" />&nbsp;&nbsp;&nbsp;
                 <button style="height:25px" onclick="onViewMapClick()">View Map</button>
             </div>
         </div>
