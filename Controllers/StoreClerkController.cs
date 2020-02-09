@@ -550,7 +550,7 @@ namespace Team8ADProjectSSIS.Controllers
                 DateTime SDate = DateTime.ParseExact(pickDate, "yyyy-MM-dd",
                                 System.Globalization.CultureInfo.InvariantCulture);
 
-                _disbursementDAO.UpdateStatus(disbIdsToSchedule, 10, SDate, IdStoreClerk);
+                _disbursementDAO.UpdateStatus(disbIdsToSchedule, 10, SDate, null);
 
                 // add in notification here upon updating status
                 foreach (var disbId in disbIdsToSchedule)
@@ -624,7 +624,7 @@ namespace Team8ADProjectSSIS.Controllers
                 emailClass.SendTo(depRep.Email, "SSIS System Email", message);
             }
 
-            _disbursementDAO.UpdateStatus(disbId, 10, SDate, IdStoreClerk);
+            _disbursementDAO.UpdateStatus(disbId, 10, SDate, null);
             return RedirectToAction("Disbursement");
         }
 
