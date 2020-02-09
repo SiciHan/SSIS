@@ -109,10 +109,13 @@ namespace Team8ADProjectSSIS.Controllers
             int IdStoreClerk=_disbursementDAO.FindById(idDisbursement).IdDisbursedBy.GetValueOrDefault(0);
             hub.Clients.All.receiveNotification(IdStoreClerk);
             EmailClass emailClass = new EmailClass();
-            string message = "Hi," + _employeeDAO.FindEmployeeById(IdStoreClerk).Name +
-                employee.Name + "from Department " + employee.CodeDepartment + "has acknowledged the disbursement received just now. Please counter sign ";
-            _notificationChannelDAO.CreateNotificationsToIndividual(IdStoreClerk, (int)Session["IdEmployee"], message);
-            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdStoreClerk).Email, "SSIS System Email", message);
+            if (IdStoreClerk != 0)
+            {
+                string message = "Hi," + _employeeDAO.FindEmployeeById(IdStoreClerk).Name +employee.Name + "from Department " + employee.CodeDepartment + "has acknowledged the disbursement received just now. Please counter sign ";
+                _notificationChannelDAO.CreateNotificationsToIndividual(IdStoreClerk, (int)Session["IdEmployee"], message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdStoreClerk).Email, "SSIS System Email", message);
+            }
+           
             return RedirectToAction("Home");
         }
 
