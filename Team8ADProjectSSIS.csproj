@@ -450,6 +450,7 @@
     <Content Include="Scripts\EmployeeNotification.js" />
     <Content Include="Scripts\FormRetrieve.js" />
     <Content Include="Scripts\history.js" />
+    <Content Include="Scripts\item.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -542,13 +543,11 @@
     <Content Include="Views\StoreManager\DisbursementDetails.cshtml" />
     <Content Include="Views\StoreClerk\PurchaseOrderCart.cshtml" />
     <Content Include="Views\Employee\Catalog.cshtml" />
-    <Content Include="Views\Employee\CheckOut.cshtml" />
     <Content Include="Views\Employee\CheckStatus.cshtml" />
     <Content Include="Views\Employee\Create.cshtml" />
     <Content Include="Views\Employee\History.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
     <Content Include="Views\Employee\PopUp.cshtml" />
-    <Content Include="Views\Employee\store.cshtml" />
     <Content Include="Views\Employee\Update.cshtml" />
     <Content Include="Views\Employee\UpdatereqId.cshtml" />
     <Content Include="Views\StoreClerk\CollectPO.cshtml" />
@@ -593,7 +592,7 @@
     <Content Include="Views\DepartmentActingHead\PendingLists.cshtml" />
     <Content Include="Views\Shared\_ActingHeadLayout.cshtml" />
     <Content Include="Views\DepartmentHead\ViewDelegations.cshtml" />
-    <Content Include="Views\Employee\History1.cshtml" />
+    <Content Include="Views\Employee\CreatePopup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

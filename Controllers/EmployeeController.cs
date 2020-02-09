@@ -670,7 +670,8 @@ namespace Team8ADProjectSSIS.Controllers
                     Item it = new Item()
                     {
                      
-                        Description = (String)readerr["Description"]
+                        Description = (String)readerr["Description"],
+                        unitOfMeasure = (String)readerr["unitOfMeasure"]
 
                     };
                     items.Add(it);
