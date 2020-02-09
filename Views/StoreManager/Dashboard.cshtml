@@ -2,10 +2,14 @@
 @{
     ViewBag.Title = "Manager Dasboard";
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+    List<Category> categories = (List<Category>)ViewBag.categories;
+    List<Department> departments = (List<Department>)ViewBag.departments;
+    string categorySelected = (string)ViewBag.categorySelected;
+    string departmentSelected = (string)ViewBag.departmentSelected;
 }
-
-<script>
-    window.onload = function () {
+<!--Create Bar Chart-->
+<script type="text/javascript">
+    window.onload = function ChartCreate() {
         var result = JSON.parse('@Html.Raw(ViewBag.DataPoints1)');
         var dataPoints1 = [];
         for (var i = 0; i < result.length; i++) {
@@ -15,10 +19,9 @@
             animationEnabled: true,
             theme: "light2", // "light1", "light2", "dark1", "dark2"
             title: {
-                text: "Trend of Re-order in current three months"
+                text: "Trend of Re-order in current three months(" + "@Html.Raw(ViewBag.categorySelected)" + ")"
             },
             axisX: {
-                valueFormatString: "YYYY-MM-DD",
                 title: "Time"
             },
             axisY: {
@@ -26,9 +29,10 @@
             },
             data: [{
                 type: "column",
-                //showInLegend: true,
-                //legendMarkerColor: "grey",
-                //legendText: "MMbbl = one million barrels",
+                dataPoints: dataPoints1
+            },
+            {
+                type: "line",
                 dataPoints: dataPoints1
             }]
         });
@@ -43,10 +47,9 @@
             animationEnabled: true,
             theme: "light2", // "light1", "light2", "dark1", "dark2"
             title: {
-                text: "Trend of Requisition in current three months"
+                text: "Trend of Requisition in current three months(" + "@Html.Raw(ViewBag.departmentSelected)" + ")"
             },
             axisX: {
-                valueFormatString: "YYYY-MM-DD",
                 title: "Time"
             },
             axisY: {
@@ -54,15 +57,25 @@
             },
             data: [{
                 type: "column",
-                //showInLegend: true,
-                //legendMarkerColor: "grey",
-                //legendText: "MMbbl = one million barrels",
+                dataPoints: dataPoints2
+            },
+            {
+                type: "line",
                 dataPoints: dataPoints2
             }]
         });
         chart2.render();
+        //var canvas1 = $("#chartContainer1 .canvasjs-chart-canvas").get(0);
+        //var dataURL1 = canvas1.toDataURL('image/jpeg');
+        //var canvas2 = $("#chartContainer2 .canvasjs-chart-canvas").get(0);
+        //var dataURL2 = canvas2.toDataURL('image/jpeg');
 
+        $("#exportPDF").click(function () {
+            chart1.exportChart({ format: "jpg" });
+            chart2.exportChart({ format: "jpg" });
+        });
     }
+
 </script>
 
 <div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
@@ -72,23 +85,58 @@
     </div>
 </div>
 
-<div id="chartContainer1" style="height: 370px; width: 100%;"></div>
+<div style="margin-bottom:20px">
+    <label for="category">Categories: </label>&nbsp;
+    <select id="category">
+        <option value="@categorySelected">@categorySelected</option>
+        @foreach (Category c in categories)
+        {
+            <option value="@c.Label">@c.Label</option>
+        }
+        <option value="Total">Total</option>
+    </select>
+    <button class="btn btn-primary" type="button" onclick="Change();" style="margin-left:20px">Submit</button>
+</div>
 
-<div id="chartContainer2" style="height: 370px; width: 100%;"></div>
+<div id="chartContainer1" style="height: 370px; width: 85%; margin-top:20px; margin:auto"></div>
+
+<div style="margin-top:30px;  margin-bottom:20px">
+    <label for="department">Departments: </label>&nbsp;
+    <select id="department">
+        <option value="@departmentSelected">@departmentSelected</option>
+        @foreach (Department d in departments)
+        {
+            <option value="@d.CodeDepartment">@d.CodeDepartment</option>
+        }
+        <option value="Total">Total</option>
+    </select>
+    <button class="btn btn-primary" type="button" onclick="Change();" style="margin-left:20px">Submit</button>
+</div>
+
+<div id="chartContainer2" style="height: 370px; width: 85%; margin-top:20px; margin:auto"></div>
 
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.min.js"></script>
+<script>
+    function Change() {
+        var category = document.getElementById("category");
+        var department = document.getElementById("department");
+        var index1 = category.selectedIndex;
+        var index2 = department.selectedIndex;
+        var value1 = category.options[index1].value;
+        var value2 = department.options[index2].value;
+        window.location.href = 'https://localhost:44304/StoreManager/Dashboard?category=' + value1 + '&department=' + value2;
+    }
 
-<!--You can start your code here ^ ^-->
+</script>
+
 <div class="box">
     @using (Html.BeginForm("ExportExcel", "StoreSupervisor", FormMethod.Post))
     {
-        <button class="download"><i class="fa fa-download"></i></button>
+        <button class="download" id="exportExcel"><i class="fa fa-download"></i></button>
     }
-    @using (Html.BeginForm("PrintPDF", "StoreSupervisor", FormMethod.Post))
-    {
-        <button class="print"><i class="fa fa-print"></i></button>
-    }
+    <button class="print" id="exportPDF"><i class="fa fa-print"></i></button>
 </div>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
