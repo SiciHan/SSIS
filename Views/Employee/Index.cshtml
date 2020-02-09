@@ -61,18 +61,19 @@
         <h3> Hi, @Emp.Title @Emp.Name From @Emp.Department.Name !</h3>
         <p style="font-size: 1.5rem;">Please Raise the Stationary Requisiton Here. </p>
     </div>
-    
-   
+    <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+    <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+
 
     <div class="recent-items">
         <h2 class="recent">
             Recent Items You've Requested
         </h2>
 
-  
-     
-  
-     
+
+
+
+
 
         @if (recentItems.Count == 0 || recentItems == null)
         {
@@ -82,43 +83,43 @@
         }
         else
         {
-    <div>
-       
-        <table class="table">
-            <tr>
-                <th></th>
-                <th>Description</th>
-                 <th>Unit</th>
-            </tr>
+            <div>
 
-            @foreach (Item ite in recentItems)
-            {
-
-                string des = ite.Description;
-                int id = ite.IdCategory;
-                string unit = ite.unitOfMeasure;
-                int aU = ite.AvailableUnit;
-
-                <tbody id="myTable">
+                <table class="table">
                     <tr>
-
-                        <td><input type="checkbox" id="chkbox" value="@Html.Raw(@id)"></td>
-                        <td><span class="shop-item-title" value="itemName">@Html.Raw(@des)</td>
-                        <td> <span class="shop-item-price" value="quantity">@Html.Raw(@unit)</td>
-                        <td>
-                            <button class="fa fa-shopping-cart" type="button" name="button" onclick="addToCartRecentClicked()">
-                            </button>
-
-                        </td>
-
+                        <th></th>
+                        <th>Description</th>
+                        <th>Unit</th>
                     </tr>
 
+                    @foreach (Item ite in recentItems)
+                    {
 
-                </tbody>
-            }
+                        string des = ite.Description;
+                        int id = ite.IdCategory;
+                        string unit = ite.unitOfMeasure;
+                        int aU = ite.AvailableUnit;
 
-        </table>
-    </div>
+                        <tbody id="myTable">
+                            <tr>
+
+                                <td><input type="checkbox" id="chkbox" value="@Html.Raw(@id)"></td>
+                                <td><span class="shop-item-title" value="itemName">@Html.Raw(@des)</td>
+                                <td> <span class="shop-item-price" value="quantity">@Html.Raw(@unit)</td>
+                                <td>
+                                    <button class="fa fa-shopping-cart" type="button" name="button" onclick="addToCartRecentClicked()">
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+                    }
+
+                </table>
+            </div>
         }
 
 
@@ -133,41 +134,41 @@
 
 
 
-<div class="container content-section">
-    <h2 style="margin-left: 450px;font-weight: bolder;">Request Cart</h2>
-    <div class="cart-row">
-        <span class="cart-item cart-header cart-column" style="font-weight: 100;">Description</span>
-        <span class="cart-price cart-header cart-column" style="font-weight: 100;">Unit</span>
-        <span class="cart-quantity cart-header cart-column" style="font-weight: 100;">Quantity</span>
-    </div>
-    <div class="cart-items">
+    <div class="container content-section">
+        <h2 style="margin-left: 450px;font-weight: bolder;">Request Cart</h2>
         <div class="cart-row">
-            <div class="cart-item cart-column">
+            <span class="cart-item cart-header cart-column" style="font-weight: 100;">Description</span>
+            <span class="cart-price cart-header cart-column" style="font-weight: 100;">Unit</span>
+            <span class="cart-quantity cart-header cart-column" style="font-weight: 100;">Quantity</span>
+        </div>
+        <div class="cart-items">
+            <div class="cart-row">
+                <div class="cart-item cart-column">
+
+                </div>
+
 
             </div>
 
-
         </div>
 
+        @if (list.Count == 0 || list == null)
+        {
+            <button class="btn-primary btn-purchase" type="submit" disabled="disabled">Create Request</button>
+        }
+        else
+        {
+            <button class="btn-primary btn-purchase" type="submit">Create Request</button>
+        }
+
     </div>
-
-    @if (list.Count == 0 || list == null)
-    {
-        <button class="btn-primary btn-purchase" type="submit" disabled="disabled">Create Request</button>
-    }
-    else
-    {
-        <button class="btn-primary btn-purchase" type="submit">Create Request</button>
-    }
-
-</div>
 
 
 
 
     @*<button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>*@
 
- 
+
 
     @section scripts{
         <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>

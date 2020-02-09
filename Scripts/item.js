@@ -213,10 +213,10 @@ function addToCartClicked(event) {
         if (inputs[i].checked == true) {
            
 
-            var title = titles[i-1].innerText;
+            var title = titles[i-3].innerText;
             console.log(title);
 
-            var price = prices[i-1].innerText;
+            var price = prices[i-3].innerText;
             console.log(price);
             addItemToCart(title, price);
         }
@@ -257,10 +257,10 @@ function addToCartRecentClicked(event) {
         if (inputs[i].checked == true) {
 
 
-            var title = titles[i].innerText;
+            var title = titles[i-2].innerText;
             console.log(title);
 
-            var price = prices[i].innerText;
+            var price = prices[i-2].innerText;
             console.log(price);
             addItemToCart(title, price);
         }
