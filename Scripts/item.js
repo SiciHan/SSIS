@@ -212,9 +212,12 @@ function addToCartClicked(event) {
     for (var i = 0; i < inputs.length; i++) {
         if (inputs[i].checked == true) {
            
-            str = inputs[i].value;
-            var title = titles[i-1].innerText;
-            var price = prices[i-1].innerText;
+
+            var title = titles[i-3].innerText;
+            console.log(title);
+
+            var price = prices[i-3].innerText;
+            console.log(price);
             addItemToCart(title, price);
         }
  
@@ -230,6 +233,50 @@ function addToCartClicked(event) {
 
   //  addItemToCart(title, price)
  //   updateCartTotal()
+}
+
+function uncheck() {
+    var uncheck = document.getElementsByTagName('input');
+    for (var i = 0; i < uncheck.length; i++) {
+        if (uncheck[i].type == 'checkbox') {
+            uncheck[i].checked = false;
+        }
+    }
+}
+
+function addToCartRecentClicked(event) {
+
+    var inputs = document.getElementsByTagName("input");
+    var titles = document.getElementsByClassName('shop-item-title');
+    var prices = document.getElementsByClassName('shop-item-price');
+
+    var str = ' ';
+    var pos;
+
+    for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].checked == true) {
+
+
+            var title = titles[i-2].innerText;
+            console.log(title);
+
+            var price = prices[i-2].innerText;
+            console.log(price);
+            addItemToCart(title, price);
+        }
+
+    }
+    uncheck();
+
+
+    //   var button = event.target
+    //  var shopItem = button.parentElement.parentElement
+    //  var title = shopItem.getElementsByClassName('shop-item-title')[0].innerText
+    //   var price = shopItem.getElementsByClassName('shop-item-price')[0].innerText
+
+
+    //  addItemToCart(title, price)
+    //   updateCartTotal()
 }
 
 function uncheck() {

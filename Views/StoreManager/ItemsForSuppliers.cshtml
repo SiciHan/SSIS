@@ -12,6 +12,10 @@
     </div>
 </div>
 
+<div class="row">
+    <input class="form-control" id="myInput" type="text" placeholder="Search.." style="margin-left:15px">
+</div>
+<br />
 <table>
     <tr>
         <th>Serial NO.</th>
@@ -19,15 +23,17 @@
         <th>Description</th>
         <th>Suppliers</th>
     </tr>
-    @foreach (Item i in items)
-    {
-        <tr>
-            <td>@i.IdItem</td>
-            <td>@i.Category.Label</td>
-            <td>@i.Description</td>
-            <td>@Html.ActionLink("View", "Suppliers", "StoreManager", new { itemId = i.IdItem}, null)</td>
-        </tr>
-    }
+    <tbody id="myTable">
+        @foreach (Item i in items)
+        {
+            <tr>
+                <td>@i.IdItem</td>
+                <td>@i.Category.Label</td>
+                <td>@i.Description</td>
+                <td>@Html.ActionLink("View", "Suppliers", "StoreManager", new { itemId = i.IdItem }, null)</td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 <style>
@@ -45,6 +51,20 @@
         text-align: center;
     }
 </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
 
 
 

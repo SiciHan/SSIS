@@ -475,10 +475,9 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Dashboard", "Index", "Employee")</li>
-                    <li>@Html.ActionLink("Create", "Index", "Employee")</li>
-                    <li>@Html.ActionLink("Update", "Update", "Employee")</li>
-                    <li>@Html.ActionLink("Check Status", "Update", "Employee")</li>
-                    <li>@Html.ActionLink("History", "Update", "Employee")</li>
+                    <li>@Html.ActionLink("Create", "Create", "Employee")</li>
+                    <li>@Html.ActionLink("Update/Check Status", "Update", "Employee")</li>
+                    <li>@Html.ActionLink("History", "History", "Employee")</li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" id="noti-logout">
                     <li style="padding-right:8px">
@@ -516,6 +515,16 @@
 
         </div>
 
+        @if (list.Count == 0 || list == null)
+        {
+            <button class="btn-primary btn-purchase" type="submit" disabled="disabled">Create Request</button>
+        }
+        else
+        {
+            <button class="btn-primary btn-purchase" type="submit">Create Request</button>
+        }
+
+
     </section>
 
     <table style="display: none;">
@@ -532,14 +541,6 @@
 
     @*<button onclick="addToCartClicked()" class="btn btn-primary shop-item-button">Add to request</button>*@
 
-    @if (list.Count == 0 || list == null)
-    {
-        <button class="btn-primary btn-purchase" type="submit" disabled="disabled">Create Request</button>
-    }
-    else
-    {
-        <button class="btn-primary btn-purchase" type="submit">Create Request</button>
-    }
 
 
 

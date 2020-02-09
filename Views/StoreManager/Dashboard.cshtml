@@ -1,8 +1,69 @@
-﻿
+﻿@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "Manager Dasboard";
     Layout = "~/Views/Shared/_ManagerLayout.cshtml";
 }
+
+<script>
+    window.onload = function () {
+        var result = JSON.parse('@Html.Raw(ViewBag.DataPoints1)');
+        var dataPoints1 = [];
+        for (var i = 0; i < result.length; i++) {
+            dataPoints1.push({ x: result[i].x, y: result[i].y });
+        }
+        var chart1 = new CanvasJS.Chart("chartContainer1", {
+            animationEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: "Trend of Re-order in current three months"
+            },
+            axisX: {
+                valueFormatString: "YYYY-MM-DD",
+                title: "Time"
+            },
+            axisY: {
+                title: "Amount"
+            },
+            data: [{
+                type: "column",
+                //showInLegend: true,
+                //legendMarkerColor: "grey",
+                //legendText: "MMbbl = one million barrels",
+                dataPoints: dataPoints1
+            }]
+        });
+        chart1.render();
+
+        var result2 = JSON.parse('@Html.Raw(ViewBag.DataPoints2)');
+        var dataPoints2 = [];
+        for (var i = 0; i < result2.length; i++) {
+            dataPoints2.push({ label: result2[i].x, y: result2[i].y });
+        }
+        var chart2 = new CanvasJS.Chart("chartContainer2", {
+            animationEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: "Trend of Requisition in current three months"
+            },
+            axisX: {
+                valueFormatString: "YYYY-MM-DD",
+                title: "Time"
+            },
+            axisY: {
+                title: "Amount"
+            },
+            data: [{
+                type: "column",
+                //showInLegend: true,
+                //legendMarkerColor: "grey",
+                //legendText: "MMbbl = one million barrels",
+                dataPoints: dataPoints2
+            }]
+        });
+        chart2.render();
+
+    }
+</script>
 
 <div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
     <div class="container">
@@ -10,6 +71,13 @@
         <p>This is the Stationery page for Manager. You can manage stationery store here!</p>
     </div>
 </div>
+
+<div id="chartContainer1" style="height: 370px; width: 100%;"></div>
+
+<div id="chartContainer2" style="height: 370px; width: 100%;"></div>
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 
 <!--You can start your code here ^ ^-->
 <div class="box">
@@ -22,10 +90,6 @@
         <button class="print"><i class="fa fa-print"></i></button>
     }
 </div>
-
-
-
-
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
@@ -46,7 +110,8 @@
     .print {
         color: blue;
     }
+
     .box form {
-        display:inline-block;
+        display: inline-block;
     }
 </style>

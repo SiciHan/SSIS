@@ -11,6 +11,10 @@
         <p>You can view the details of each requisition here!</p>
     </div>
 </div>
+<div class="row">
+    <input class="form-control" id="myInput" type="text" placeholder="Search.." style="margin-left:15px">
+</div>
+<br />
 <table>
     <tr>
         <th>Requisition No</th>
@@ -19,16 +23,18 @@
         <th colspan="2">Remark</th>
         <th>Details</th>
     </tr>
-    @foreach (Requisition i in AllRequisitions)
-    {
-        <tr>
-            <td>@i.IdRequisition</td>
-            <td>@i.Employee.CodeDepartment</td>
-            <td>@i.ApprovedDate</td>
-            <td colspan="2">@i.HeadRemark</td>
-            <td>@Html.ActionLink("View", "RequisitionDetails", "StoreManager", new { IdRequisition = i.IdRequisition }, null)</td>
-        </tr>
-    }
+    <tbody id="myTable">
+        @foreach (Requisition i in AllRequisitions)
+        {
+            <tr>
+                <td>@i.IdRequisition</td>
+                <td>@i.Employee.CodeDepartment</td>
+                <td>@i.ApprovedDate</td>
+                <td colspan="2">@i.HeadRemark</td>
+                <td>@Html.ActionLink("View", "RequisitionDetails", "StoreManager", new { IdRequisition = i.IdRequisition }, null)</td>
+            </tr>
+        }
+    </tbody>
 </table>
 
 <style>
@@ -46,4 +52,18 @@
         text-align: center;
     }
 </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
 
