@@ -1,6 +1,8 @@
 ﻿
 @using Team8ADProjectSSIS.Models;
 
+
+
 @{
     ViewBag.Title = "Home";
     var disbursement = ViewBag.disbursement as Disbursement;
@@ -12,6 +14,94 @@
     var Rep = ViewData["Rep"] as Employee;
 }
 
+<script type="text/javascript">
+    function onChange() {
+        var checkbox = $("#QtyCheck");
+        var checked = checkbox.is(':checked');
+        var btnAck = $("#btnAck");
+        if (checked) {
+            btnAck.removeAttr("disabled");
+        } else {
+            btnAck.attr("disabled",true);
+        }
+    }
+
+    function onAckClick() {
+        var prompt = confirm("Are you sure to acknowledge disbursement collection?");
+	    if (prompt)
+        {
+            value = @disbursement.IdDisbursement;
+            var department = "@Rep.CodeDepartment";
+            if (@storeClerk.IdEmployee!=null) {
+                //send a notification here
+                var idreceiver = @storeClerk.IdEmployee;
+                var receiver="@storeClerk.Name";
+            }
+            var data = {
+                    "idreceiver": idreceiver,
+                    "message":"hi store clerk "+ receiver +", the represenative of the department "+department+" has acknowledged disbursement: "+value+"."
+            };
+            $.ajax({
+                    type: 'post',
+                    url: '/home/createnotificationstoindividual',
+                    data: data,
+                    success: function (response) {
+                        console.log("success");
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+            });
+            console.log($.connection);
+            $.connection.chathub.server.sendnotificationbyid(idreceiver);
+
+    		self.location.href = 'AcknowledgeCollection?idDisbursement=' + value;
+	    }
+	    else
+	    {
+
+	    }
+    }
+
+    function onViewMapClick() {
+        var value = @disbursement.IdCollectionPt;
+        self.location.href = 'LocationMap?idCollectionPt=' + value;
+    }
+
+    function onCollectionPointChange() {
+        var options = $("#collectionPt");
+        var value = options.val();
+        console.log("value", value);
+
+
+            var department = "@Rep.CodeDepartment";
+            var data = {
+                    "role": "Clerk",
+                    "message":"Hi Store Clerk, the Represenative of the Department "+department+" has changed the Collection Point."
+            };
+            $.ajax({
+                    type: 'POST',
+                    url: '/Home/CreateNotificationsToGroup',
+                    data: data,
+                    success: function (response) {
+                        console.log("success");
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+        $.connection.chatHub.server.sendNotificationByGroupByRole(@Rep.IdEmployee,"Clerk",data["message"]);
+
+        self.location.href = 'UpdateCollectionPoint?idDisbursement=' + @disbursement.IdDisbursement +'&idCollectionPt=' + value;
+    }
+</script>
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    @*<script src="~/Scripts/DepartmentRepresentativeNotification.js"></script>
+        <script src="~/Scripts/DepartmentRepresentative.js"></script>*@
+}
 
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -51,192 +141,104 @@
     <div class="col-md-2 col-md-offset-6" style="margin-top:10px ">
         <a href="@Url.Action("","Employee")"><i><u>I'm an employee</u></i></a>
     </div>
+</div>
+<h2 class="text-center" style="margin-top:30px">Disbursement Detail</h2>
+
+<input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
+<input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+@if (disbursement.IdDisbursement == 0)
+{
+    <div class="row" style="margin: 10%">
+        <div class="col-md-12">
+            <h3 style="text-align:center">There is no any scheduled disbursement to collect!</h3>
+        </div>
     </div>
-    <h2 class="text-center" style="margin-top:30px">Disbursement Detail</h2>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-3 col-md-offset-2">
+            <p>Collected Date: @disbursement.Date</p>
+        </div>
+        <div class="col-md-2 col-md-offset-3">
+            <p>Status: @status.Label</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-2">
+            <p>Delivery by:@storeClerk.Name </p>
+        </div>
+        <div class="col-md-4 col-md-offset-3">
+            <p>Contact Number:@storeClerk.Tel </p>
+        </div>
+    </div>
 
-    <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
-    <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
-    @if (disbursement.IdDisbursement == 0)
-    {
-        <div class="row" style="margin: 10%">
-            <div class="col-md-12">
-                <h3 style="text-align:center">There is no any scheduled disbursement to collect!</h3>
+
+    <div class="row">
+        <div class="col-md-2 col-md-offset-2">
+            <p>Collection Point: </p>
+        </div>
+        <select class="col-md-2" style="width: 15%; height:25px" align="left" id="collectionPt">
+            <option value=@collectionPt.IdCollectionPt>@collectionPt.Location</option>
+            <option value=1>Management School</option>
+            <option value=2>Stationery Store</option>
+            <option value=3>Medical School</option>
+            <option value=4>Engineering School</option>
+            <option value=5>Science School</option>
+            <option value=6>University Hospital</option>
+        </select>
+
+        <div class="form-group" style="margin-top: 0%">
+            <div class="input-group col-sm-3 col-xs-offset-6">
+                <input type="button" style="height:25px" value="Comfirm" onclick="onCollectionPointChange()" />&nbsp;&nbsp;&nbsp;
+                <button style="height:25px" onclick="onViewMapClick()">View Map</button>
             </div>
         </div>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-md-3 col-md-offset-2">
-                <p>Collected Date: @disbursement.Date</p>
-            </div>
-            <div class="col-md-2 col-md-offset-3">
-                <p>Status: @status.Label</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 col-md-offset-2">
-                <p>Delivery by:@storeClerk.Name </p>
-            </div>
-            <div class="col-md-4 col-md-offset-3">
-                <p>Contact Number:@storeClerk.Tel </p>
-            </div>
-        </div>
+    </div>
 
+    <div class="row" style="margin-left:30px; margin-right:30px;margin-top:20px">
+        <table class="table table-bordered table-hover text-center">
+            <th class="text-center">Serial No.</th>
+            <th class="text-center">DESCREPTION</th>
+            <th class="text-center">QTY REQUIRED</th>
+            <th class="text-center">QTY ACTUAL</th>
+            @foreach (DisbursementItem model in disbursementItems)
+            {
+                Item item = model.Item;
+                DisbursementItem disbursementItem = model;
+                iterator++;
+                <tr>
+                    <td>@iterator</td>
+                    <td>@item.Description</td>
+                    <td>@disbursementItem.UnitRequested</td>
+                    <td>@disbursementItem.UnitIssued</td>
+                </tr>
 
-        <div class="row">
-            <div class="col-md-2 col-md-offset-2">
-                <p>Collection Point: </p>
-            </div>
-            <select class="col-md-2" style="width: 15%; height:25px" align="left" id="collectionPt">
-                <option value=@collectionPt.IdCollectionPt>@collectionPt.Location</option>
-                <option value=1>Management School</option>
-                <option value=2>Stationery Store</option>
-                <option value=3>Medical School</option>
-                <option value=4>Engineering School</option>
-                <option value=5>Science School</option>
-                <option value=6>University Hospital</option>
-            </select>
-
-            <div class="form-group" style="margin-top: 0%">
-                <div class="input-group col-sm-3 col-xs-offset-6">
-                    <input type="button" style="height:25px" value="Comfirm" onclick="onCollectionPointChange()" />&nbsp;&nbsp;&nbsp;
-                    <button style="height:25px" onclick="onViewMapClick()">View Map</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="row" style="margin-left:30px; margin-right:30px;margin-top:20px">
-            <table class="table table-bordered table-hover text-center">
-                <th class="text-center">Serial No.</th>
-                <th class="text-center">DESCREPTION</th>
-                <th class="text-center">QTY REQUIRED</th>
-                <th class="text-center">QTY ACTUAL</th>
-                @foreach (DisbursementItem model in disbursementItems)
-                {
-                    Item item = model.Item;
-                    DisbursementItem disbursementItem = model;
-                    iterator++;
-                    <tr>
-                        <td>@iterator</td>
-                        <td>@item.Description</td>
-                        <td>@disbursementItem.UnitRequested</td>
-                        <td>@disbursementItem.UnitIssued</td>
-                    </tr>
-
-                }
-            </table>
-        </div>
-
-        <div style="margin-right: 3%; float:right">
-            <input type="checkbox" id="QtyCheck" name="QtyCheck" onchange="onCheckBoxChange()" /> I have check the quantity of all items and
-            agreed with the acknowledgment
-        </div>
-
-        <div class="form-group" style="margin-top: 4%; margin-right: 32px">
-            <div class="input-group col-sm-3 col-sm-offset-9">
-                <button type="submit" name="btn_dark" id="btnAck"
-                        class="btn btn-primary" disabled style="width: 40%; float: right;" onclick="onAckClick()">
-                    Acknowledge
-                </button>
-                <button name="btn_dark" id="btn_cancel" class="btn btn-dark" type="reset"
-                        style="margin-right: 3%; width: 40%; float: right;" onclick="window.location.href='#'">
-                    Back
-                </button>
-            </div>
-        </div>
-    }
-
-
-
-
-
-
-
-
-    <script type="text/javascript">
-    function onCollectionPointChange() {
-        var options = $("#collectionPt");
-        var value = options.val();
-        console.log("value", value);
-
-
-            var department = @Rep.CodeDepartment;
-            var data = {
-                    "role": "Clerk",
-                    "message":"Hi Store Clerk, the Represenative of the Department "+department+" has changed the Collection Point."
-            };
-            $.ajax({
-                    type: 'POST',
-                    url: '/Home/CreateNotificationsToGroup',
-                    data: data,
-                    success: function (response) {
-                        console.log("success");
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
-        $.connection.chatHub.server.sendNotificationByGroupByRole(@Rep.IdEmployee,"Clerk",data["message"]);
-
-        self.location.href = 'UpdateCollectionPoint?idDisbursement=' + @disbursement.IdDisbursement +'&idCollectionPt=' + value;
-    }
-
-    function onCheckBoxChange() {
-        var checkbox = $("#QtyCheck");
-        var checked = checkbox.is(':checked');
-        var btnAck = $("#btnAck");
-        if (checked) {
-            btnAck.removeAttr("disabled");
-        } else {
-            btnAck.attr("disabled",true);
-        }
-    }
-
-    function onAckClick() {
-        var prompt = confirm("Are you sure to acknowledge disbursement collection?");
-	    if (prompt)
-        {
-            value = @disbursement.IdDisbursement;
-            var department = @Rep.CodeDepartment;
-            if (@storeClerk!=null) {
-                //send a notification here
-                var idreceiver = @storeClerk.IdEmployee;
-                var receiver=@storeClerk.Name;
             }
-            var data = {
-                    "idReceiver": idreceiver,
-                    "message":"Hi Store Clerk "+ receiver +", the Represenative of the Department "+department+" has acknowledged disbursement: "+value+"."
-            };
-            $.ajax({
-                    type: 'POST',
-                    url: '/Home/CreateNotificationsToIndividual',
-                    data: data,
-                    success: function (response) {
-                        console.log("success");
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
-                });
-            $.connection.chatHub.server.sendNotificationById(idreceiver);
+        </table>
+    </div>
 
-    		self.location.href = 'AcknowledgeCollection?idDisbursement=' + value;
-	    }
-	    else
-	    {
+    <div style="margin-right: 3%; float:right">
+        <input type="checkbox" id="QtyCheck" name="QtyCheck" onchange="onChange()" /> I have check the quantity of all items and
+        agreed with the acknowledgment
+    </div>
 
-	    }
-    }
+    <div class="form-group" style="margin-top: 4%; margin-right: 32px">
+        <div class="input-group col-sm-3 col-sm-offset-9">
+            <button type="submit" name="btn_dark" id="btnAck"
+                    class="btn btn-primary" disabled style="width: 40%; float: right;" onclick="onAckClick()">
+                Acknowledge
+            </button>
+            <button name="btn_dark" id="btn_cancel" class="btn btn-dark" type="reset"
+                    style="margin-right: 3%; width: 40%; float: right;" onclick="window.location.href='#'">
+                Back
+            </button>
+        </div>
+    </div>
+}
 
-    function onViewMapClick() {
-        var value = @disbursement.IdCollectionPt;
-        self.location.href = 'LocationMap?idCollectionPt=' + value;
-    }
-    </script>
 
-    @section scripts{
-        <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
-        <script src="~/signalr/hubs"></script>
-        <script src="~/Scripts/DepartmentRepresentativeNotification.js"></script>
-    }
+
+
+
+

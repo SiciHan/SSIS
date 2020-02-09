@@ -472,6 +472,7 @@
     <Content Include="Scripts\POCart.js" />
     <Content Include="Scripts\POList.js" />
     <Content Include="Scripts\SignalR.js" />
+    <Content Include="Scripts\DepartmentRepresentative.js" />
     <Content Include="Scripts\StoreClerkIndex.js" />
     <Content Include="Scripts\DepartmentRepresentativeNotification.js" />
     <Content Include="Scripts\StoreManagerNotification.js" />
