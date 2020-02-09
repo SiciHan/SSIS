@@ -32,6 +32,8 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly NotificationChannelDAO _notificationChannelDAO;
         private readonly RequisitionDAO _requisitionDAO;
         private readonly RequisitionItemDAO _requisitionItemDAO;
+        private readonly CategoryDAO _categoryDAO;
+        private readonly DepartmentDAO _departmentDAO;
 
         public StoreManagerController()
         {
@@ -45,12 +47,13 @@ namespace Team8ADProjectSSIS.Controllers
             _notificationChannelDAO = new NotificationChannelDAO();
             _requisitionDAO = new RequisitionDAO();
             _requisitionItemDAO = new RequisitionItemDAO();
+            _categoryDAO = new CategoryDAO();
+            _departmentDAO = new DepartmentDAO();
         }
 
         // GET: StoreManager
         public ActionResult Home()
         {
-            
             return View();
         }
         public ActionResult Notification()
@@ -99,7 +102,7 @@ namespace Team8ADProjectSSIS.Controllers
                             INNER JOIN Items i ON pod.IdItem = i.IdItem
                             INNER JOIN Categories c ON i.IdCategory = c.IdCategory
                             WHERE po.DeliverDate BETWEEN '" + time + "' AND '" + time_nextweek + "'" + 
-                            " AND c.Lable = '" + category + "'";
+                            " AND c.Label = '" + category + "'";
                     }
                     if(department == "" || department == "Total")
                     {
@@ -182,6 +185,10 @@ namespace Team8ADProjectSSIS.Controllers
                 k++;
 
             }
+            ViewBag.categories = _categoryDAO.FindAllCategories();
+            ViewBag.departments = _departmentDAO.FindAllDepartments();
+            ViewBag.categorySelected = category == ""?"Total" : category;
+            ViewBag.departmentSelected = department == ""?"Total" : department;
             JsonSerializerSettings _jsonSetting = new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore };
             ViewBag.DataPoints1 = JsonConvert.SerializeObject(dataPoints1, _jsonSetting);
             ViewBag.DataPoints2 = JsonConvert.SerializeObject(dataPoints2, _jsonSetting);

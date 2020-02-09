@@ -49,5 +49,11 @@ namespace Team8ADProjectSSIS.DAO
             Department department = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == v).Select(x => x.Department).FirstOrDefault();
             return department.CodeDepartment;
         }
+
+        public List<Department> FindAllDepartments()
+        {
+            List<Department> departments = context.Departments.ToList();
+            return departments;
+        }
     }
 }
