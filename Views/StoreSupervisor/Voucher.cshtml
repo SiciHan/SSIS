@@ -45,7 +45,7 @@
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
 
-@using (Html.BeginForm("JudgeAdjustment", "StoreManager", FormMethod.Post))
+@using (Html.BeginForm("HandleAdjustment", "StoreSupervisor", FormMethod.Post))
 {
     <div class="container">
         <table>

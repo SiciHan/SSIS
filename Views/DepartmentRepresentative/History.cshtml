@@ -3,6 +3,7 @@
     ViewBag.Title = "History";
     var disbursements = ViewBag.disbursements;
     var searchContext = ViewBag.searchContext;
+    var futureDisbursedBy = ViewBag.disbursedBy;
 }
 
 <div class="navbar navbar-default navbar-fixed-top">
@@ -63,11 +64,34 @@
         CollectionPoint cp = d.CollectionPoint;
         Employee collectedBy = d.CollectedBy;
         Employee disbursedBy = d.DisbursedBy;
+
         <tr>
             <td>@d.Date</td>
             <td>@cp.Location</td>
-            <td>@disbursedBy.Name</td>
-            <td>@collectedBy.Name</td>
+            <td>
+                @{
+                    if (disbursedBy == null)
+                    {
+                        <span>@futureDisbursedBy.Name</span>
+                    }
+                    else
+                    {
+                        <span>@disbursedBy.Name</span>
+                    }
+                }
+            </td>
+            <td>
+                @{
+                    if (collectedBy == null)
+                    {
+                        <span>No Person Collected</span>
+                    }
+                    else
+                    {
+                        <span>@collectedBy.Name</span>
+                    }
+                }
+            </td>
             <td><a class="btn btn-default" href="Details?idDisbursement=@d.IdDisbursement" role="button">Details</a></td>
         </tr>
     }

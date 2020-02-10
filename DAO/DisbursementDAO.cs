@@ -172,13 +172,56 @@ namespace Team8ADProjectSSIS.DAO
             return RetrievalForm;
         }
 
-        public List<Retrieval> CheckRetrievalFormExist(List<Retrieval> RetrievalItem)
+        internal List<Disbursement> GetReceivedAndDisbursedDisbursements(string codeDepartment, string searchContext)
+        {
+            List<Disbursement> model = new List<Disbursement>();
+            using (SSISContext db = new SSISContext())
+            {
+                if (string.IsNullOrEmpty(searchContext))
+                {
+                    model = db.Disbursements
+                        .Include("DisbursementItems.Item")
+                        .Include("Department")
+                        .Include("CollectedBy")
+                        .Include("DisbursedBy")
+                        .Include("CollectionPoint")
+                        .Include("Status")
+                        .Where(x => (x.IdStatus == 11||x.IdStatus==7) && x.CodeDepartment == codeDepartment)
+                        .ToList();
+                }
+                else
+                {
+                    model = db.Disbursements
+                        .Include("DisbursementItems.Item")
+                        .Include("Department")
+                        .Include("CollectedBy")
+                        .Include("DisbursedBy")
+                        .Include("CollectionPoint")
+                        .Include("Status")
+                        .Where(x => (x.IdStatus == 11 || x.IdStatus == 7) && x.CodeDepartment == codeDepartment &&
+                        (x.Date.ToString().Contains(searchContext) || x.CollectionPoint.Location.ToString().Contains(searchContext) || x.DisbursedBy.Name.ToString().Contains(searchContext) || x.CollectedBy.Name.ToString().Contains(searchContext)))
+                        .ToList();
+                }
+
+            }
+            return model;
+
+        }
+
+        public List<Retrieval> CheckRetrievalFormExist(List<Retrieval> RetrievalItem, DateTime LastThu)
         {
             List<int> IdDisbursementItem = context.DisbursementItems
                                         .Select(x => x.IdDisbursementItem).ToList();
             List<int> ExistingIdRequisition = new List<int>();
             foreach (var id in IdDisbursementItem)
             {
+                /*var existing = context.DisbursementItems
+                                .Include(di => di.Item)
+                                .Include(di => di.Item.RequisitionItems)
+                                .Include(di => di.Item.RequisitionItems.Select(x => x.Requisition))
+                                .Where(di => di.IdDisbursementItem == id);*/
+
+
                 var existing = context.RequisitionItems
                                     .Join(context.Requisitions,
                                     ri => ri.IdRequisiton, r => r.IdRequisition,
@@ -190,6 +233,7 @@ namespace Team8ADProjectSSIS.DAO
                                     riri => riri.rir.ri.IdItem, di => di.IdItem,
                                     (riri, di) => new { riri, di })
                                     .Where(x => x.di.IdDisbursementItem == id)
+                                    .Where(x => x.riri.rir.r.ApprovedDate < LastThu)
                                     .Select(x => x.riri.rir.r.IdRequisition);
 
                 if (existing != null)
@@ -203,6 +247,7 @@ namespace Team8ADProjectSSIS.DAO
                     }
                 }
             }
+
             List<Retrieval> NewRetrievalItem = new List<Retrieval>();
             List<Retrieval> ExistingRetrievalItem = new List<Retrieval>();
             if (ExistingIdRequisition.Any())
@@ -337,13 +382,8 @@ namespace Team8ADProjectSSIS.DAO
                     .Where(x => x.IdDisbursement == idDisbursement)
                     .FirstOrDefault();
                 if (disbursement == null) return false;
-                List<DisbursementItem> disbursementItems = db.DisbursementItems.OfType<DisbursementItem>()
-                   .Where(x => x.IdDisbursement == idDisbursement)
-                   .ToList();
-                disbursement.IdStatus = 11;
+                disbursement.IdStatus = 11;//Received
                 disbursement.IdCollectedBy = IdCollectedBy;
-                foreach (DisbursementItem di in disbursementItems)
-                    di.IdStatus = 11;
                 db.SaveChanges();
             }
             return true;
@@ -358,14 +398,14 @@ namespace Team8ADProjectSSIS.DAO
                     .Where(x => x.IdDisbursement == idDisbursement)
                     .FirstOrDefault();
                 if (model == null) return false;
-                CollectionPoint collectionPt = db.CollectionPoints
+/*                CollectionPoint collectionPt = db.CollectionPoints
                    .Include("CPClerks")
                    .OfType<CollectionPoint>()
                    .Where(x => x.IdCollectionPt == idCollectionPt)
                    .FirstOrDefault();
-                if (collectionPt == null) return false;
+                if (collectionPt == null) return false;*/
                 model.IdCollectionPt = idCollectionPt;
-                model.IdDisbursedBy = collectionPt.CPClerks.FirstOrDefault().IdStoreClerk;
+                //model.IdDisbursedBy = collectionPt.CPClerks.FirstOrDefault().IdStoreClerk;
                 db.SaveChanges();
             }
             return true;

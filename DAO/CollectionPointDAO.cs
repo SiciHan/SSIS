@@ -68,6 +68,13 @@ namespace Team8ADProjectSSIS.DAO
             return CPs;
         }
 
+        internal Employee FindClerkByCollectionPointId(int idCollectionPt)
+        {
+            return context.CPClerks.Where(x => x.IdCollectionPt == idCollectionPt)
+                .Select(x =>x.StoreClerk)
+                .FirstOrDefault();//assume only one clerk handle the cp.
+        }
+
         public void ChangeCPTo(int ClerkId, List<int> new_IdCPs)
         {
             List<int> IdTables = context.CPClerks

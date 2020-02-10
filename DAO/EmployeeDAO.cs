@@ -16,6 +16,14 @@ namespace Team8ADProjectSSIS.DAO
             this.context = new SSISContext();
         }
         //SH
+        public Employee FindCurrentRepAndCPByHeadId(int idHead)
+        {
+            Employee head = context.Employees.Where(e => e.IdEmployee == idHead).FirstOrDefault();
+            string codeDepartment = head.CodeDepartment;
+            Employee currentRep = context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment) && e.Role.Label.Equals("Representative")).Include(x=>x.Department.CollectionPt).FirstOrDefault();
+            return currentRep;
+        }
+        //SH
         public void RemoveDelegate(int idEmployee)
         {
             Employee emp = context.Employees.Where(e=>e.IdEmployee == idEmployee).FirstOrDefault();
@@ -29,7 +37,7 @@ namespace Team8ADProjectSSIS.DAO
             Employee e = FindEmployeeByNameAndRole(name);
             //e.IdRole = 4;// set to idRole to 4
             e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("ActingHead")).FirstOrDefault();
-            int id= e.IdRole;
+            
             context.SaveChanges();
         }
         //SH
@@ -94,7 +102,7 @@ namespace Team8ADProjectSSIS.DAO
             {
                 foreach(Requisition r in reqList)
                 {
-                    if (r.IdEmployee==e.IdEmployee && r.IdStatusCurrent==1)
+                    if (r.IdEmployee==e.IdEmployee && r.IdStatusCurrent==2)
                     {
                         empReqList.Add(r);
                     }
