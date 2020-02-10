@@ -92,21 +92,27 @@
                 <ul class="nav navbar-nav navbar-right" style="margin-right:8px">
 
                     <li class="navbar-brand" style="padding-right:0px; padding-top:18px">
-                        Welcome Back, Head &nbsp;
+                        @*Welcome Back, Head &nbsp;*@
+                        Welcome <span id="username"></span>, Head of <span id="department"></span> &nbsp;
                     </li>
 
-
                     <li style="padding-right:8px">
+                        <a href="@Url.Action("Notification","DepartmentHead")" style="padding-right:0px">
+                            <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"></span>
+                            <span id="noti-count" class="badge badge-danger"></span>
+                        </a>
+                    </li>
+                    @*<li style="padding-right:8px">
                         <a href="@Url.Action("Notification","DepartmentHead")" style="padding-right:0px">
                             <span class="glyphicon glyphicon-bell" style="top:4px"></span>
                             <span class="badge badge-danger"></span>
                         </a>
-                    </li>
+                    </li>*@
 
 
                     <li>
 
-                        <a href="@Url.Action("Login", "Home")" style="padding-top:18px">
+                        <a href="@Url.Action("Logout", "Home")" style="padding-top:18px">
                             <span class="glyphicon glyphicon-log-out"></span>
                             Logout
                         </a>

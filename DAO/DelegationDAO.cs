@@ -28,12 +28,12 @@ namespace Team8ADProjectSSIS.DAO
             d.EndDate = today;
             // change idRole as well
             Employee e = context.Employees.Where(x => x.Role.Label.Equals("ActingHead")).FirstOrDefault();
-            if (e != null)
-            {
-                int id = e.Role.IdRole;
-                e.IdRole = 1; // if idrole set to 1==> can find in the employee list for delegation acting head
-            }
-
+            //if (e != null)
+            //{
+            //    int id = e.Role.IdRole;
+            //    e.IdRole = 1; // if idrole set to 1==> can find in the employee list for delegation acting head
+            //}
+            e.IdRole = 1;
             context.SaveChanges();
         }
         public void DeactivateDelegationById(int idEmployee)
