@@ -136,39 +136,35 @@ namespace Team8ADProjectSSIS.Controllers
                     string sql_groupbyDepartment;
                     if (category == "" || category == "Total")
                     {
-                        sql_groupbyCategory = @"SELECT isNull(SUM(OrderUnit), 0) AS unit
-                            FROM PurchaseOrderDetails pod
-                            INNER JOIN PurchaseOrders po ON pod.IdPurchaseOrder = po.IdPurchaseOrder
-                            WHERE po.DeliverDate BETWEEN '" + time + "' AND '" + time_nextweek + "'";
+                        sql_groupbyCategory = @"SELECT isNull(SUM(Unit), 0) AS unit
+                            FROM StockRecords sr
+                            WHERE sr.Date BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
+                            " AND sr.IdOperation = '2'";
                     }
                     else
                     {
-                        sql_groupbyCategory = @"SELECT isNull(SUM(OrderUnit), 0) AS unit
-                            FROM PurchaseOrderDetails pod
-                            INNER JOIN PurchaseOrders po ON pod.IdPurchaseOrder = po.IdPurchaseOrder
-                            INNER JOIN Items i ON pod.IdItem = i.IdItem
+                        sql_groupbyCategory = @"SELECT isNull(SUM(Unit), 0) AS unit
+                            FROM StockRecords sr
+                            INNER JOIN Items i ON sr.IdItem = i.IdItem
                             INNER JOIN Categories c ON i.IdCategory = c.IdCategory
-                            WHERE po.DeliverDate BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
+                            WHERE sr.Date BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
+                            " AND sr.IdOperation = '2'" +
                             " AND c.Label = '" + category + "'";
                     }
                     if (department == "" || department == "Total")
                     {
                         sql_groupbyDepartment = @"SELECT isNull(SUM(Unit), 0) AS unit
-                            FROM RequisitionItems ri INNER JOIN Requisitions r
-                            ON ri.IdRequisiton = r.IdRequisition
-                            INNER JOIN Employees emp
-                            ON emp.IdEmployee = r.IdEmployee
-                            WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'";
+                            FROM StockRecords sr
+                            WHERE sr.Date BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
+                            " AND sr.IdOperation = '1'";
                     }
                     else
                     {
                         sql_groupbyDepartment = @"SELECT isNull(SUM(Unit), 0) AS unit
-                            FROM RequisitionItems ri INNER JOIN Requisitions r
-                            ON ri.IdRequisiton = r.IdRequisition
-                            INNER JOIN Employees emp
-                            ON emp.IdEmployee = r.IdEmployee
-                            WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
-                            " AND emp.CodeDepartment = '" + department + "'";
+                            FROM StockRecords sr
+                            WHERE sr.Date BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
+                            " AND sr.IdOperation = '1'" +
+                            " AND sr.IdDepartment = '" + department + "'";
                     }
                     SqlCommand cmd1 = new SqlCommand(sql_groupbyCategory, conn);
                     SqlCommand cmd2 = new SqlCommand(sql_groupbyDepartment, conn);
@@ -192,19 +188,23 @@ namespace Team8ADProjectSSIS.Controllers
                     }
                     reader1.Close();
                     SqlDataReader reader2 = cmd2.ExecuteReader();
-                    if (reader2.Read())
+                    if (reader2.HasRows)
                     {
-                        if (reader2["unit"] != null)
+                        while (reader2.Read())
                         {
-                            int t = (int)reader2["unit"];
-                            amounts_groupbyDepartment.Add(t);
+                            if (reader2["unit"] != null)
+                            {
+                                int t = (int)reader2["unit"];
+                                amounts_groupbyDepartment.Add(t);
+                            }
+                            else amounts_groupbyDepartment.Add(0);
                         }
-                        else amounts_groupbyDepartment.Add(0);
                     }
                     else
                     {
                         amounts_groupbyDepartment.Add(0);
                     }
+                    
                     reader2.Close();
                 }
             }
@@ -299,7 +299,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
           
         [HttpPost]
-        public ActionResult Handlejustment(string handle, List<int> vouchersId)
+        public ActionResult HandleAdjustment(string handle, List<int> vouchersId)
         {
             List<StockRecord> vouchers = new List<StockRecord>();
             foreach (int id in vouchersId)
