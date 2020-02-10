@@ -80,7 +80,8 @@
                     </tr>
                 }
             </table>
-            <h2>Approve/Reject Remarks</h2><input type="text" name="remarks" value="" />
+            @*<h2>Approve/Reject Remarks</h2><input type="text" name="remarks" value="" />*@
+            <h2>Approve/Reject Remarks</h2><textarea name="remarks"></textarea>
         </div>
     </div>
 
@@ -89,9 +90,9 @@
            
         </div>
 
-        <input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-top:24px" />
+        <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-top:24px" />
 
-        <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-right:24px; margin-top:24px" />
+        <input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-right:24px; margin-top:24px" />
     </div>
 
 }

@@ -16,6 +16,14 @@ namespace Team8ADProjectSSIS.DAO
             this.context = new SSISContext();
         }
         //SH
+        public Employee FindCurrentRepAndCPByHeadId(int idHead)
+        {
+            Employee head = context.Employees.Where(e => e.IdEmployee == idHead).FirstOrDefault();
+            string codeDepartment = head.CodeDepartment;
+            Employee currentRep = context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment) && e.Role.Label.Equals("Representative")).Include(x=>x.Department.CollectionPt).FirstOrDefault();
+            return currentRep;
+        }
+        //SH
         public void RemoveDelegate(int idEmployee)
         {
             Employee emp = context.Employees.Where(e=>e.IdEmployee == idEmployee).FirstOrDefault();
