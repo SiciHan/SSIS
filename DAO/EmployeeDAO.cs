@@ -94,7 +94,7 @@ namespace Team8ADProjectSSIS.DAO
             {
                 foreach(Requisition r in reqList)
                 {
-                    if (r.IdEmployee==e.IdEmployee && r.IdStatusCurrent==1)
+                    if (r.IdEmployee==e.IdEmployee && r.IdStatusCurrent==2)
                     {
                         empReqList.Add(r);
                     }
