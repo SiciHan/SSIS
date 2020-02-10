@@ -33,6 +33,7 @@
             var inputs = document.getElementsByTagName("input");
             var titles = document.getElementsByClassName('shop-item-title');
             var prices = document.getElementsByClassName('shop-item-price');
+            var quantity = document.getElementsByClassName('shop-item-quantity');
 
             var str = ' ';
             var pos;
@@ -43,12 +44,13 @@
                     str = inputs[i].value;
                     var title = titles[i - 1].innerText;
                     var price = prices[i - 1].innerText;
+                     var quan = quantity[i-1].innerText;
                     //  console.log(title);
                   //  window.opener.console.log(title);
                    // window.opener.document.getElementsByClassName('itemName')[0].innerText = title;
                    // window.opener.document.getElementsByClassName('itemPrice')[0].innerText = price;
 
-                    addItemToCart(title, price, i);
+                    addItemToCart(title, price, i,quan);
 
 
                 }
@@ -66,7 +68,7 @@
             }
         }
 
-        function addItemToCart(title, price, index) {
+        function addItemToCart(title, price, index,quan) {
 
             var cartRow = window.opener.document.createElement('tr')
             var cartItems = window.opener.document.getElementsByClassName('tItems')[0]
@@ -79,24 +81,18 @@
                     return
                 }
             }
-            //  var cartRowContents = `
-            //<span class="cart-item-title">${title}</span>
-            //<span class="cart-title cart-column">${price}</span>
-            //<div class="cart-quantity cart-column">
-            //    <input class="cart-quantity-input" type="number" value="1">
-            //    <button class="btn btn-danger" type="button">REMOVE</button>
-            //</div>`
 
             var cartRowContents = `
                    <td> <span class="req-item-id">-</td>
                    <td> </td>
                    <td> <span class="cart-item-title" value="${index}">${title}</span> </td>
-                   <td> <input class="cart-quantity-input" type="number" value="1"><button class="btn btn-remove" onclick="removeCart()" type="button">REMOVE</button>
+                   <td> <input class="cart-quantity-input" type="number" max="${quan}" value="1"><button class="btn btn-remove" onclick="removeCart()" type="button">REMOVE</button>
                     </td></tr>`
             cartRow.innerHTML = cartRowContents
             cartItems.append(cartRow)
-          //  cartRow.getElementsByClassName('btn-remove')[0].addEventListener('click', removeCart)
-            //  cartRow.getElementsByClassName('cart-quantity-input')[0].addEventListener('change', quantityChanged)
+
+
+          
         }
 
         //function removeCart(event) {
@@ -143,7 +139,7 @@
                     <td><input type="checkbox" id="chkbox" value="@Html.Raw(id)"></td>
                     <td><span class="shop-item-title" value="itemName">@Html.Raw(@des)</td>
                     <td> <span class="shop-item-price" value="quantity">@Html.Raw(@unit)</td>
-                    <td>@Html.Raw(@aU)</td>
+                    <td><span class="shop-item-quantity" value="quantity">@Html.Raw(@aU)</td>
                 </tr>
 
 

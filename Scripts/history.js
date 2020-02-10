@@ -60,6 +60,8 @@ function searchReqHistory() {
 
 
             var json = parseJsonDate(response.Req[i].RaiseDate);
+            let date = JSON.stringify(json);
+            date = date.slice(1, 11);
             if (response.Req[i].HeadRemark == null) {
                 response.Req[i].HeadRemark = "-";
             }
@@ -106,7 +108,7 @@ function searchReqHistory() {
             current = $('<tr/>');
             current.append("<td>" + '<a href ="https://localhost:44304/Employee/Update">' + response.Req[i].IdRequisition + "</td>");
             current.append("<td>" + response.Req[i].IdStatusCurrent + "</td>");
-            current.append("<td>" + '<span class="cart-item-title" value=' + i + '>' + json + '</span>' + "</td>");
+            current.append("<td>" + '<span class="cart-item-title" value=' + i + '>' + date + '</span>' + "</td>");
             current.append("<td>" + response.Req[i].HeadRemark + "</td>");
 
             $('table').append(current);

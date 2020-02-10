@@ -13,6 +13,8 @@
     <script src="~/Scripts/EmployeeNotification.js"></script>
 }
 
+
+
 <!DOCTYPE html>
 <html>
 
@@ -413,6 +415,9 @@
                 var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
                 var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
 
+                if (cartItemNames.length == 0) {
+                    alert("There is no items in the requisition.");
+                }
                 var f = {};
                 f.url = '/Employee/reqId/';
                 f.type = "POST";
