@@ -194,6 +194,11 @@ namespace Team8ADProjectSSIS.Controllers
             //ViewBag.Employee = new SelectList(empList, "IdEmployee", "Name"); // put inside drop down list
             ViewBag.EmployeeList = empList;
             ViewBag.CollectionPoint = cpList;
+
+            // find current rep
+            int idHead = (int)Session["IdEmployee"];
+            Employee oldRep = _employeeDAO.FindCurrentRepAndCPByHeadId(idHead);
+            ViewBag.oldRep = oldRep;
             return View();
         }
         [HttpPost]
@@ -385,6 +390,13 @@ namespace Team8ADProjectSSIS.Controllers
             _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
             emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
             //end of notification sending 
+            return RedirectToAction("ViewDelegations", "DepartmentHead");
+        }
+        public ActionResult DeactivateDelegation(int idEmployee)
+        {
+            // set the end date to today's date
+            _delegationDAO.DeactivateDelegationById(idEmployee);
+
             return RedirectToAction("ViewDelegations", "DepartmentHead");
         }
     }

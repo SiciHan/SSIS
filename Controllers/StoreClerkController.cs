@@ -713,6 +713,8 @@ namespace Team8ADProjectSSIS.Controllers
             Disbursement targetDisbursement = _disbursementDAO.FindById(disbId.First());
             ViewBag.disb = targetDisbursement;
             List<DisbursementItem> targetList = targetDisbursement.DisbursementItems.ToList();
+            Employee sup = _employeeDAO.FindByRole(7).FirstOrDefault();
+            Employee man = _employeeDAO.FindByRole(6).FirstOrDefault();
 
             // if qtyDisbursed < disbItem.UnitIssued then raise a SA-broken and a reversal entry to qtyDisbursed
             for (int i = 0; i < targetList.Count; i++)
@@ -721,6 +723,30 @@ namespace Team8ADProjectSSIS.Controllers
                 {
                     _stockRecordDAO.StockAdjustmentDuringDisbursement(qtyDisbursed[i], targetList[i], IdStoreClerk);
                     _itemDAO.UpdateUnits(targetList[i].Item, -(targetList[i].UnitIssued - qtyDisbursed[i]));
+
+                    // sends a notification to either supervisor or manager on stock record's value
+                    #region Send notification
+                    String message = $"Stock adjustment raised for Item ({targetList[i].Item.Description}). Please approve/reject.";
+                    int notifId = _notificationDAO.CreateNotification(message);
+                    var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+
+                    SupplierItem si = _supplierItemDAO.FindByItem(targetList[i].Item);
+                    if (Math.Abs((targetList[i].UnitIssued - qtyDisbursed[i]) * si.Price) >= 250)
+                    {
+                        _notificationChannelDAO.SendNotification(IdStoreClerk, man.IdEmployee, notifId, DateTime.Now);
+                        hub.Clients.All.receiveNotification(man.IdEmployee);
+                        EmailClass emailClass = new EmailClass();
+                        emailClass.SendTo(man.Email, "SSIS System Email", message);
+                    }
+                    else
+                    {
+                        _notificationChannelDAO.SendNotification(IdStoreClerk, sup.IdEmployee, notifId, DateTime.Now);
+                        hub.Clients.All.receiveNotification(sup.IdEmployee);
+                        EmailClass emailClass = new EmailClass();
+                        emailClass.SendTo(sup.Email, "SSIS System Email", message);
+                    }
+                    #endregion
+
                 }
             }
 
