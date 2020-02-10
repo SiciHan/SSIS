@@ -11,6 +11,7 @@
         <p>Please select employee, start date and end date of delegation</p>
     </div>
 </div>
+@Html.ValidationSummary(false, "", new { @class = "text-danger", @style = "color:red" })
 @using (Html.BeginForm("PostDelegation", "DepartmentHead", FormMethod.Post, new { @id = "form" }))
 {
     @Html.Label("Employee")
@@ -24,15 +25,15 @@
     <br />
     <br />
     @*<input name="StartDate" id="StartDate" class="form-control input-sm datepicker">
-    <input name="EndDate" id="EndDate" class="form-control input-sm datepicker">
-    <div id="error"></div>*@
+        <input name="EndDate" id="EndDate" class="form-control input-sm datepicker">
+        <div id="error"></div>*@
     @*<p>From:<input type="text" id="StartDate" /></p>
         <p>To:<input type="text" id="EndDate" /></p>*@
 
     @Html.Editor("StartDate", new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", placeholder = "Start Date..." } })
-        @:&nbsp;&nbsp;&nbsp;&nbsp;
-        @Html.Editor("EndDate", new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", placeholder = "End Date..." } })
-        @:&nbsp;&nbsp;&nbsp;&nbsp;
+    @:&nbsp;&nbsp;&nbsp;&nbsp;
+    @Html.Editor("EndDate", new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", placeholder = "End Date..." } })
+    @:&nbsp;&nbsp;&nbsp;&nbsp;
 
     <div class="cities" style="padding-left:320px">
 
@@ -67,93 +68,93 @@
 </script>
 
 @*@section Scripts{
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" />
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
-    <script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
-    <script src="~/Scripts/jquery.validate.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-    <script type="text/javascript">
-        $('.datepicker').each(function () {
-            $(this).datepicker({
-                autoclose: true,
-                format: 'dd-mm-yyyy',
-                todayBtn: "linked"
-            });
-        });
-        var sDate, eDate;
-        $("#StartDate").datepicker().on('changeDate', function (e) {
-            sDate = new Date($(this).datepicker('getUTCDate'));
-            checkDate();
-        });
-
-        $("#EndDate").datepicker().on('changeDate', function (date) {
-            eDate = new Date($(this).datepicker('getUTCDate'));
-            checkDate();
-        });
-
-        function checkDate() {
-            if (sDate && eDate && (eDate < sDate)) {
-                $('#error').text("Date should lesser than start date");
-            }
-            else {
-                $('#error').text("");
-            }
-        }
-    </script>
-
-}*@
-
-@section Scripts{
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" />
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
         <script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+        <script src="~/Scripts/jquery.validate.js"></script>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
         <script type="text/javascript">
-            var Today = new Date();
-                    $(function () {
-                        $("#StartDate").datepicker({
-                            dateFormat: "dd-mm-yy",
-                            minDate: Today,
+            $('.datepicker').each(function () {
+                $(this).datepicker({
+                    autoclose: true,
+                    format: 'dd-mm-yyyy',
+                    todayBtn: "linked"
+                });
+            });
+            var sDate, eDate;
+            $("#StartDate").datepicker().on('changeDate', function (e) {
+                sDate = new Date($(this).datepicker('getUTCDate'));
+                checkDate();
+            });
 
-                            autohide: true,
-                            
+            $("#EndDate").datepicker().on('changeDate', function (date) {
+                eDate = new Date($(this).datepicker('getUTCDate'));
+                checkDate();
+            });
 
-                        });
-                        $("#EndDate").datepicker({
-                            dateFormat: "dd-mm-yy",
-                            minDate: Today,
-
-                            autohide: true,
-                            
-                        });
-                    });
-                    //$(document).ready(function () {
-
-                    //    $("#StartDate").datepicker({
-
-                    //        numberOfMonths: 2,
-
-                    //        onSelect: function (selected) {
-
-                    //            $("#StartDate").datepicker("option", "minDate", selected)
-
-                    //        }
-
-                    //    });
-
-                    //    $("#EndDate").datepicker({
-
-                    //        numberOfMonths: 2,
-
-                    //        onSelect: function (selected) {
-
-                    //            $("#EndDate").datepicker("option", "maxDate", selected)
-
-                    //        }
-
-                    //    });
-
-                    //});
+            function checkDate() {
+                if (sDate && eDate && (eDate < sDate)) {
+                    $('#error').text("Date should lesser than start date");
+                }
+                else {
+                    $('#error').text("");
+                }
+            }
         </script>
-    }
+
+    }*@
+
+@section Scripts{
+    <script type="text/javascript" src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript">
+        var Today = new Date();
+        $(function () {
+            $("#StartDate").datepicker({
+                dateFormat: "dd-mm-yy",
+                minDate: Today,
+
+                autohide: true,
+
+
+            });
+            $("#EndDate").datepicker({
+                dateFormat: "dd-mm-yy",
+                minDate: Today,
+
+                autohide: true,
+
+            });
+        });
+                        //$(document).ready(function () {
+
+                        //    $("#StartDate").datepicker({
+
+                        //        numberOfMonths: 2,
+
+                        //        onSelect: function (selected) {
+
+                        //            $("#StartDate").datepicker("option", "minDate", selected)
+
+                        //        }
+
+                        //    });
+
+                        //    $("#EndDate").datepicker({
+
+                        //        numberOfMonths: 2,
+
+                        //        onSelect: function (selected) {
+
+                        //            $("#EndDate").datepicker("option", "maxDate", selected)
+
+                        //        }
+
+                        //    });
+
+                        //});
+    </script>
+}

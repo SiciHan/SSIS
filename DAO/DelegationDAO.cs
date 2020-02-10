@@ -19,6 +19,23 @@ namespace Team8ADProjectSSIS.DAO
         //{
         //    this.context = new SSISContext();
         //}
+        public void DeactivateDelegationByDelegationId(int idDelegation)
+        {
+            Delegation d = context.Delegations.Where(x => x.IdDelegation == idDelegation).FirstOrDefault();
+            // set d. end date
+            DateTime today = DateTime.Today;
+            d.StartDate = today;
+            d.EndDate = today;
+            // change idRole as well
+            Employee e = context.Employees.Where(x => x.Role.Label.Equals("ActingHead")).FirstOrDefault();
+            if (e != null)
+            {
+                int id = e.Role.IdRole;
+                e.IdRole = 1; // if idrole set to 1==> can find in the employee list for delegation acting head
+            }
+
+            context.SaveChanges();
+        }
         public void DeactivateDelegationById(int idEmployee)
         {
            Delegation d= FindDelegationById(idEmployee);
@@ -26,6 +43,14 @@ namespace Team8ADProjectSSIS.DAO
             DateTime today = DateTime.Today;
             d.StartDate = today;
             d.EndDate = today;
+            // change idRole as well
+            Employee e = context.Employees.Where(x => x.Role.Label.Equals("ActingHead")).FirstOrDefault();
+            if (e != null)
+            {
+                int id = e.Role.IdRole;
+                e.IdRole = 1; // if idrole set to 1==> can find in the employee list for delegation acting head
+            }
+           
             context.SaveChanges();
         }
         public Delegation FindDelegationById(int idEmployee)

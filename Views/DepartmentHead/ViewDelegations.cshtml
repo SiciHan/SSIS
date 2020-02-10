@@ -30,7 +30,7 @@
             <td>@d.IdEmployee</td>
             <td>@d.StartDate</td>
             <td>@d.EndDate</td>
-            <td>@Html.ActionLink("Deactivate", "DeactivateDelegation", "DepartmentHead", new { idEmployee = d.IdEmployee }, null)</td>
+            <td>@Html.ActionLink("Deactivate", "DeactivateDelegation", "DepartmentHead", new { idDelegation = d.IdDelegation }, null)</td>
             <td>@Html.ActionLink("Remove", "RemoveDelegation", "DepartmentHead", new { idEmployee = d.IdEmployee}, null)</td>
         </tr>
     }
