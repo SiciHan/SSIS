@@ -208,13 +208,20 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
-        public List<Retrieval> CheckRetrievalFormExist(List<Retrieval> RetrievalItem)
+        public List<Retrieval> CheckRetrievalFormExist(List<Retrieval> RetrievalItem, DateTime LastThu)
         {
             List<int> IdDisbursementItem = context.DisbursementItems
                                         .Select(x => x.IdDisbursementItem).ToList();
             List<int> ExistingIdRequisition = new List<int>();
             foreach (var id in IdDisbursementItem)
             {
+                /*var existing = context.DisbursementItems
+                                .Include(di => di.Item)
+                                .Include(di => di.Item.RequisitionItems)
+                                .Include(di => di.Item.RequisitionItems.Select(x => x.Requisition))
+                                .Where(di => di.IdDisbursementItem == id);*/
+
+
                 var existing = context.RequisitionItems
                                     .Join(context.Requisitions,
                                     ri => ri.IdRequisiton, r => r.IdRequisition,
@@ -226,6 +233,7 @@ namespace Team8ADProjectSSIS.DAO
                                     riri => riri.rir.ri.IdItem, di => di.IdItem,
                                     (riri, di) => new { riri, di })
                                     .Where(x => x.di.IdDisbursementItem == id)
+                                    .Where(x => x.riri.rir.r.ApprovedDate < LastThu)
                                     .Select(x => x.riri.rir.r.IdRequisition);
 
                 if (existing != null)
@@ -239,6 +247,7 @@ namespace Team8ADProjectSSIS.DAO
                     }
                 }
             }
+
             List<Retrieval> NewRetrievalItem = new List<Retrieval>();
             List<Retrieval> ExistingRetrievalItem = new List<Retrieval>();
             if (ExistingIdRequisition.Any())

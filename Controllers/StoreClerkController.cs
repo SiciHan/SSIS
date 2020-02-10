@@ -174,7 +174,7 @@ namespace Team8ADProjectSSIS.Controllers
                                             .RetrieveRequisition(DClerk, SDate, EDate);
             // Check if the the RetrievalForm has been created 
             // return retrieval item that have not created to disbursement and disbursementitem  
-            List<Retrieval> NewRetrievalItem = _disbursementDAO.CheckRetrievalFormExist(RetrievalItem);
+            List<Retrieval> NewRetrievalItem = _disbursementDAO.CheckRetrievalFormExist(RetrievalItem, SDate);
 
             // New Retrieval Item is null when all IdRequisition is disbursed
             if (NewRetrievalItem.Any())
