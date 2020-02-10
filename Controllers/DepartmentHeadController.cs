@@ -392,5 +392,12 @@ namespace Team8ADProjectSSIS.Controllers
             //end of notification sending 
             return RedirectToAction("ViewDelegations", "DepartmentHead");
         }
+        public ActionResult DeactivateDelegation(int idEmployee)
+        {
+            // set the end date to today's date
+            _delegationDAO.DeactivateDelegationById(idEmployee);
+
+            return RedirectToAction("ViewDelegations", "DepartmentHead");
+        }
     }
 }

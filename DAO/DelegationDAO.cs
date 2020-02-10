@@ -19,6 +19,15 @@ namespace Team8ADProjectSSIS.DAO
         //{
         //    this.context = new SSISContext();
         //}
+        public void DeactivateDelegationById(int idEmployee)
+        {
+           Delegation d= FindDelegationById(idEmployee);
+            // set d. end date
+            DateTime today = DateTime.Today;
+            d.StartDate = today;
+            d.EndDate = today;
+            context.SaveChanges();
+        }
         public Delegation FindDelegationById(int idEmployee)
         {
             return context.Delegations.Where(d => d.IdEmployee == idEmployee).FirstOrDefault();
