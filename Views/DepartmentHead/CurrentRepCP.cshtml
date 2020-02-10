@@ -7,29 +7,44 @@
 
 }
 
-<h2>Current Department Representative</h2>
-<table>
-    <tr>
-        <th>Department Rep</th>
-        <th>Employee Number</th>
-        <th>Email Address</th>
-        <th>Collection Point</th>
-        <th>Action</th>
-
-    </tr>
-    @if (e != null)
-    {
+<div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+    <div class="container">
+        <h2><b>View Current Representative and Collection Point</b></h2>
+        <p>Please click edit hyperlink to change rep and collection point</p>
+    </div>
+</div>
+@if (e != null)
+{
+    <table>
         <tr>
-            <td>@e.Name</td>
-            <td>@e.IdEmployee</td>
-            <td>@e.Email</td>
-            <td>@d.CollectionPt.Location</td>
-            <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentHead")</td>
+            <th>Department Rep</th>
+            <th>Employee Number</th>
+            <th>Email Address</th>
+            <th>Collection Point</th>
+            <th>Action</th>
+
         </tr>
-    }
+        @if (e != null)
+        {
+            <tr>
+                <td>@e.Name</td>
+                <td>@e.IdEmployee</td>
+                <td>@e.Email</td>
+                <td>@d.CollectionPt.Location</td>
+                <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentHead")</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div style="padding:32px">
+        <div class="container">
+            <h2>There is currently no department rep, please add a department rep</h2>
+        </div>
+    </div>
+}
 
-
-</table>
 
 <style>
 

@@ -47,6 +47,7 @@ namespace Team8ADProjectSSIS.DAO
                     }
                 }
             }
+            delegationDepartmentList=delegationDepartmentList.OrderBy(c => c.StartDate).OrderBy(d=>d.EndDate).ToList();
             return delegationDepartmentList;
         }
         //SH
