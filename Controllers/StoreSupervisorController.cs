@@ -168,7 +168,7 @@ namespace Team8ADProjectSSIS.Controllers
                             INNER JOIN Employees emp
                             ON emp.IdEmployee = r.IdEmployee
                             WHERE r.RaiseDate BETWEEN '" + time + "' AND '" + time_nextweek + "'" +
-                            " AND emp.CodeDepartment = '" + department + "'";
+                            " AND emp.CodeDepartment = '" + department + "';";
                     }
                     SqlCommand cmd1 = new SqlCommand(sql_groupbyCategory, conn);
                     SqlCommand cmd2 = new SqlCommand(sql_groupbyDepartment, conn);
@@ -192,20 +192,25 @@ namespace Team8ADProjectSSIS.Controllers
                     }
                     reader1.Close();
                     SqlDataReader reader2 = cmd2.ExecuteReader();
-                    if (reader2.Read())
+                    if (reader2.HasRows)
                     {
-                        if (reader2["unit"] != null)
+                        if (reader2.Read())
                         {
-                            int t = (int)reader2["unit"];
-                            amounts_groupbyDepartment.Add(t);
+                            if (reader2["unit"] != null)
+                            {
+                                int t = (int)reader2["unit"];
+                                amounts_groupbyDepartment.Add(t);
+                            }
+                            else amounts_groupbyDepartment.Add(0);
                         }
-                        else amounts_groupbyDepartment.Add(0);
+
                     }
                     else
                     {
                         amounts_groupbyDepartment.Add(0);
                     }
                     reader2.Close();
+
                 }
             }
             List<DataPoint> dataPoints1 = new List<DataPoint>();

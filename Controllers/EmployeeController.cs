@@ -177,10 +177,10 @@ namespace Team8ADProjectSSIS.Controllers
             //    return RedirectToAction("Login", "Home");
 
             int idEmployee = (int)Session["IdEmployee"];
-            Requisition req = _requisitionDAO.CreateRequisition(idEmployee);
+            //Requisition req = _requisitionDAO.CreateRequisition(idEmployee);
 
 
-            //@Shutong: send notification here
+           /* //@Shutong: send notification here
             int IdHead = _employeeDAO.FindHeadIdByIdEmployee(idEmployee);
             int IdActingHead = _employeeDAO.FindActingHeadIdByIdEmployee(idEmployee);
             var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
@@ -198,16 +198,12 @@ namespace Team8ADProjectSSIS.Controllers
                 _notificationChannelDAO.CreateNotificationsToIndividual(IdHead, (int)Session["IdEmployee"], message);
                 emailClass.SendTo(_employeeDAO.FindEmployeeById(IdHead).Email, "SSIS System Email", message);
             }
-            //end of notification sending 
+            //end of notification sending */
 
             //  status = GetIdStatus(req);
             //   des = GetDescription(req);
           
             List<Requisition> reqs = ListHistoryReqItems(startDate, endDate, status);
-
-            
-
-
 
             var result = new { Req = reqs };
             return Json(result, JsonRequestBehavior.AllowGet);
