@@ -212,11 +212,13 @@ namespace Team8ADProjectSSIS.Controllers
             List<DataPoint> dataPoints2 = new List<DataPoint>();
             foreach (DateTime time in times)
             {
-                DataPoint d = new DataPoint();
+                DataPoint d1 = new DataPoint();
+                DataPoint d2 = new DataPoint();
                 string tt = time.ToString("dd-MM-yyyy");
-                d.x = tt;
-                dataPoints1.Add(d);
-                dataPoints2.Add(d);
+                d1.x = tt;
+                d2.x = tt;
+                dataPoints1.Add(d1);
+                dataPoints2.Add(d2);
             }
             int j = 0;
             foreach (int amount in amounts_groupbyCategory)
