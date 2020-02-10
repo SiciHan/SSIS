@@ -15,11 +15,6 @@ namespace Team8ADProjectSSIS.DAO
             this.context=new SSISContext();
         }
 
-/*        public CategoryDAO(SSISContext context)
-        {
-            this.context = context;
-        }*/
-
         public Category Create(Category category)
         {
             context.Categories.Add(category);
@@ -40,9 +35,10 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
-        public IEnumerable<Category> FindAllCategories()
+        public List<Category> FindAllCategories()
         {
-            throw new NotImplementedException();
+            List<Category> categories = context.Categories.ToList();
+            return categories;
         }
 
         public Category Update(Category category)

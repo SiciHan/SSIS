@@ -4,13 +4,24 @@
 }
 
 <h2>Test1</h2>
+@{
+    var myChart = new Chart(width: 600, height: 400)
+        .AddTitle("Chart Title")
+        .AddSeries(
+            name: "Employee",
+            xValue: new[] { "Peter", "Andrew", "Julie", "Mary", "Dave" },
+            yValues: new[] { "2", "6", "4", "5", "3" })
+        .Write();
+}
 
-@using (Html.BeginForm("Test2", "Test", new {  }, FormMethod.Post, new { @id = "form"}))
+@using (Html.BeginForm("Test2", "Test", new { }, FormMethod.Post, new { @id = "form" }))
 {
     <input type="submit" class="btn btn-danger" name="handle" value="Reject" style="float:right; margin-top:24px"
            onclick="ConfirmReject()" />
-    
+
 }
+
+
 
 <script type="text/javascript">
     function ConfirmReject() {

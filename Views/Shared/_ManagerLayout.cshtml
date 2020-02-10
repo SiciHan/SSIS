@@ -10,6 +10,8 @@
     @*<link href="~/Scripts/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">*@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 </head>
 
 <body>
@@ -125,6 +127,7 @@
         <!--Content-->
         <div class="container-fluid">
             @RenderBody()
+            <br />
             <hr />
             <footer>
                 <p>&copy; @DateTime.Now.Year - Stationery Store Inventory System, Logic University</p>

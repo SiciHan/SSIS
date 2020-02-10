@@ -15,6 +15,89 @@
     <script src="~/Scripts/EmployeeNotification.js"></script>
 }
 
+@*<script>
+        if (document.readyState == 'loading') {
+            document.addEventListener('DOMContentLoaded', ready)
+        } else {
+            ready()
+        }
+
+        function ready() {
+
+
+            document.getElementsByClassName('btn-search')[0].addEventListener('click', function () {
+
+
+
+                var startDate = document.getElementsByClassName('start-date')[0].value;
+                var endDate = document.getElementsByClassName('end-date')[0].value;
+                var e = document.getElementById("mySelect");
+                var strSelected = e.options[e.selectedIndex].value;
+
+                //     console.log(strSelected);
+                //     console.log(startDate);
+                //     console.log(endDate);
+
+                searchReqHistory()
+
+
+            });
+
+        }
+
+        function searchReqHistory() {
+
+            var current = $('<tbody class="tItems">')
+            var startDate = document.getElementsByClassName('start-date')[0].value;
+            var endDate = document.getElementsByClassName('end-date')[0].value;
+            var e = document.getElementById("mySelect");
+            var status = e.options[e.selectedIndex].value;
+
+            console.log(startDate);
+            console.log(endDate);
+            console.log(status);
+
+
+            var f = {};
+            f.url = '/Employee/searchReqHistory/';
+            f.type = "POST";
+            f.dataType = "json";
+            f.data = JSON.stringify({ startDate: startDate, endDate: endDate, status: status });
+            f.contentType = "application/json";
+            f.success = function (response) {
+
+                console.log(response);
+                console.log(response.Req.length);
+
+                for (var i = 0; i < response.Req.length; i++) {
+
+
+                    current = $('<tr/>');
+                    current.append("<td>" + '<span class="req-item-id">' + response.Req[i].IdRequisition + "</td>");
+                    current.append("<td>" + response.Req[i].IdStatusCurrent + "</td>");
+                    current.append("<td>" + '<span class="cart-item-title" value=' + i + '>' + response.Req[i].RaiseDate + '</span>' + "</td>");
+                    current.append("<td>" + '<input class="cart-quantity-input" type="number" value=' + response.Req[i].HeadRemark + '><button class="btn btn-danger" type="button" value=' + i + ' onclick="removeCartItem(' + i + ')">REMOVE</button>' + "</td>");
+
+                    $('table').append(current);
+
+
+
+
+                    //  console.log(response[i].IdReqItem );
+                }
+                alert("History Read success");
+
+
+            };
+            f.error = function (response) {
+                alert("History Read failed");
+            };
+            $.ajax(f);
+
+
+        }
+    </script>*@
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -26,12 +109,10 @@
     <link href="~/Styles/styles.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    @*<script src="~/Scripts/item.js"></script>*@
-
-
+    <script src="~/Scripts/history.js"></script>
+    <link href="~/Styles/css/styles.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link href="~/Styles/styles.css" rel="stylesheet" />
+
 
 
 </head>
@@ -51,8 +132,7 @@
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Dashboard", "Index", "Employee")</li>
                 <li>@Html.ActionLink("Create", "Create", "Employee")</li>
-                <li>@Html.ActionLink("Update", "Update", "Employee")</li>
-                <li>@Html.ActionLink("Check Status", "CheckStatus", "Employee")</li>
+                <li>@Html.ActionLink("Update/Check Status", "Update", "Employee")</li>
                 <li>@Html.ActionLink("History", "History", "Employee")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="noti-logout">
@@ -73,67 +153,102 @@
     <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
     <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 </div>
-@Html.Partial("UpdatereqId")
+
+
 
 <body>
 
-    @*<div class="container">
-            <h2>Update Requisition Form</h2>
-            <form>
-                <div class="form-group">
-                    <label for="sel1">Form ID</label>
-                    <select class="req">
-                        @foreach (var q in reqs)
-                        {
-                            <option>@q.IdRequisition</option>
+    <div class="my_tmp_sch">
 
-                        }
-                    </select>
 
+        <input type="hidden" id="calendar_search_period" name="calendar_search_period" value="M3">
+        <input type="hidden" id="param_srch_balance_code" name="param_srch_balance_code" value="0">
+        <div class="my_tmp_sch_dt">
+            <div class="tt">Select Date</div>
+            <div class="ct">
+                <div class="dt_area">
+                    <span class="dt">
+                        <input type="date" id="calendar_start_dt" name="calendar_start_dt" class="start-date">
+                        @*<img class="ui-datepicker-trigger" src="~/Images/ic_calendar.png" alt="Select date" title="Select date">*@
+                    </span>
+                    <span class="dt">
+                        <input type="date" id="calendar_end_dt" name="calendar_end_dt" class="end-date">
+                        @*<img class="ui-datepicker-trigger" src="~/Images/ic_calendar.png" alt="Select date" title="Select date">*@
+                    </span>
+                    <button type="button" class="btn btn-search btn-primary" id="CUSTOM" style="font-size: 1.4rem;">Search</button>
                 </div>
-            </form>
-        </div>*@
-
-
-</body>
-
-
-
-
-@*<section class="container content-section">
-        <h2 class="section-header">Request Cart</h2>
-        <div class="cart-row">
-            <span class="cart-item cart-header cart-column">Description</span>
-            <span class="cart-price cart-header cart-column">Unit</span>
-            <span class="cart-quantity cart-header cart-column">Quantity</span>
-        </div>
-
-
-        <div class="cart-items">
-            <div class="cart-row">
-                <div class="cart-item cart-column">
-
-                </div>
-
 
             </div>
 
         </div>
 
-    </section>*@
 
-<script>
 
-</script>
 
+        <div class="my_tmp_sch_flt">
+            <div class="tt">Status</div>
+            <div class="ct">
+
+                <select name="trans_stat" id="mySelect" class="req">
+                    <option value="All">All</option>
+                    <option value="Incomplete">Incomplete</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+
+
+            </div>
+
+
+        </div>
+
+
+        @*<div class="paginationjs"> //will do later
+                <div class="paginationjs-pages">
+                <ul>
+                    <li class="paginationjs-prev disabled"><a>«</a>
+                    </li><li class="paginationjs-page J-paginationjs-page active" data-num="1"><a>1</a>
+                        </li><li class="paginationjs-page J-paginationjs-page" data-num="2"><a href="">2</a>
+                            </li><li class="paginationjs-page J-paginationjs-page" data-num="3"><a href="">3</a>
+                                </li><li class="paginationjs-page J-paginationjs-page" data-num="4"><a href="">4</a>
+                                    </li><li class="paginationjs-page J-paginationjs-page" data-num="5"><a href="">5</a>
+                                        </li><li class="paginationjs-ellipsis disabled"><a>...</a>
+                                            </li><li class="paginationjs-page paginationjs-last J-paginationjs-page" data-num="20"><a href="">20</a>
+                                                </li><li class="paginationjs-next J-paginationjs-next" data-num="2" title="Next page"><a href="">»</a></li>
+                    </ul></div>
+            </div>*@
+
+
+        <table class="table table-bordered table-condensed table-hover table-striped" id="table1">
+            <thead>
+                <tr>
+                    <th>IdRequisition</th>
+                    <th>IdStatusCurrent</th>
+                    <th>RaiseDate</th>
+                    <th>HeadRemark</th>
+                </tr>
+            </thead>
+
+            <tbody class="tItems">
+            </tbody>
+        </table>
+    </div>
+</body>
 
 </html>
 
-<script>
-
-
-
-</script>
+@*<script>
+        $('#table1').pagination({
+        dataSource: [1, 2, 3, 4, 5, 6, 7, ... , 195],
+        callback: function(data, pagination) {
+            // template method of yourself
+            var html = template(data);
+            tItems.html(html);
+        }
+    })
+    </script>*@
 
 
 

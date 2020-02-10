@@ -1,44 +1,165 @@
-﻿
+﻿@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "DashBoard";
+    List<Category> categories = (List<Category>)ViewBag.categories;
+    List<Department> departments = (List<Department>)ViewBag.departments;
+    string categorySelected = (string)ViewBag.categorySelected;
+    string departmentSelected = (string)ViewBag.departmentSelected;
 }
 
-    <div class="navbar navbar-default navbar-fixed-top">
-        <div class="container">
+<script type="text/javascript">
+    window.onload = function ChartCreate() {
+        var result = JSON.parse('@Html.Raw(ViewBag.DataPoints1)');
+        var dataPoints1 = [];
+        for (var i = 0; i < result.length; i++) {
+            dataPoints1.push({ x: result[i].x, y: result[i].y });
+        }
+        var chart1 = new CanvasJS.Chart("chartContainer1", {
+            animationEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: "Trend of Re-order in current three months(" + "@Html.Raw(ViewBag.categorySelected)" + ")"
+            },
+            axisX: {
+                title: "Time"
+            },
+            axisY: {
+                title: "Amount"
+            },
+            data: [{
+                type: "column",
+                dataPoints: dataPoints1
+            },
+            {
+                type: "line",
+                dataPoints: dataPoints1
+            }]
+        });
+        chart1.render();
 
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
+        var result2 = JSON.parse('@Html.Raw(ViewBag.DataPoints2)');
+        var dataPoints2 = [];
+        for (var i = 0; i < result2.length; i++) {
+            dataPoints2.push({ label: result2[i].x, y: result2[i].y });
+        }
+        var chart2 = new CanvasJS.Chart("chartContainer2", {
+            animationEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: "Trend of Requisition in current three months(" + "@Html.Raw(ViewBag.departmentSelected)" + ")"
+            },
+            axisX: {
+                title: "Time"
+            },
+            axisY: {
+                title: "Amount"
+            },
+            data: [{
+                type: "column",
+                dataPoints: dataPoints2
+            },
+            {
+                type: "line",
+                dataPoints: dataPoints2
+            }]
+        });
+        chart2.render();
+        //var canvas1 = $("#chartContainer1 .canvasjs-chart-canvas").get(0);
+        //var dataURL1 = canvas1.toDataURL('image/jpeg');
+        //var canvas2 = $("#chartContainer2 .canvasjs-chart-canvas").get(0);
+        //var dataURL2 = canvas2.toDataURL('image/jpeg');
 
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">@Html.ActionLink("Dashboard", "Dashboard", "StoreSupervisor")</li>
-                    <li>@Html.ActionLink("Purchase Order", "PurchaseOrder", "StoreSupervisor")</li>
-                    <li>@Html.ActionLink("Purchase Order History", "POHistory", "StoreSupervisor")</li>
-                    <li>@Html.ActionLink("Adjustment Voucher", "Voucher", "StoreSupervisor")</li>
-                    <li>@Html.ActionLink("Adjustment Voucher History", "VoucherHistory", "StoreSupervisor")</li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li style="padding-right:8px">
-                        <a href="@Url.Action("Notification","StoreSupervisor")" style="padding-right:0px">
-                            <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+        $("#exportPDF").click(function () {
+            chart1.exportChart({ format: "jpg" });
+            chart2.exportChart({ format: "jpg" });
+        });
+    }
+</script>
 
-                        </a>
-                    </li>
-                    <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                </ul>
-            </div>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("SSIS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">@Html.ActionLink("Dashboard", "Dashboard", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Purchase Order", "PurchaseOrder", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Purchase Order History", "POHistory", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Adjustment Voucher", "Voucher", "StoreSupervisor")</li>
+                <li>@Html.ActionLink("Adjustment Voucher History", "VoucherHistory", "StoreSupervisor")</li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li style="padding-right:8px">
+                    <a href="@Url.Action("Notification","StoreSupervisor")" style="padding-right:0px">
+                        <span id="noti-icon" class="glyphicon glyphicon-bell" style="top:4px"><span id="noti-count" class="badge badge-danger">&nbsp;</span></span>
+
+                    </a>
+                </li>
+                <li><a href="@Url.Action("Logout","Home")"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
         </div>
     </div>
+</div>
 <h2>DashBoard</h2>
+
+<div style="margin-bottom:20px">
+    <label for="category">Categories: </label>&nbsp;
+    <select id="category">
+        <option value="@categorySelected">@categorySelected</option>
+        @foreach (Category c in categories)
+        {
+            <option value="@c.Label">@c.Label</option>
+        }
+        <option value="Total">Total</option>
+    </select>
+    <button class="btn btn-primary" type="button" onclick="Change();" style="margin-left:20px">Submit</button>
+</div>
+
+<div id="chartContainer1" style="height: 370px; width: 85%; margin-top:20px; margin:auto"></div>
+
+<div style="margin-top:60px; margin-bottom:20px">
+    <label for="department">Departments: </label>&nbsp;
+    <select id="department">
+        <option value="@departmentSelected">@departmentSelected</option>
+        @foreach (Department d in departments)
+        {
+            <option value="@d.CodeDepartment">@d.CodeDepartment</option>
+        }
+        <option value="Total">Total</option>
+    </select>
+    <button class="btn btn-primary" type="button" onclick="Change();" style="margin-left:20px">Submit</button>
+</div>
+
+<div id="chartContainer2" style="height: 370px; width: 85%; margin-top:20px; margin:auto"></div>
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.min.js"></script>
+<script>
+    function Change() {
+        var category = document.getElementById("category");
+        var department = document.getElementById("department");
+        var index1 = category.selectedIndex;
+        var index2 = department.selectedIndex;
+        var value1 = category.options[index1].value;
+        var value2 = department.options[index2].value;
+        window.location.href = 'https://localhost:44304/StoreManager/Dashboard?category=' + value1 + '&department=' + value2;
+    }
+
+</script>
 
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
+
+
 
 
 <div class="box">
@@ -46,10 +167,7 @@
     {
         <button class="download"><i class="fa fa-download"></i></button>
     }
-    @using (Html.BeginForm("PrintPDF", "StoreSupervisor", FormMethod.Post))
-    {
-        <button class="print"><i class="fa fa-print"></i></button>
-    }
+    <button class="print" id="exportPDF"><i class="fa fa-print"></i></button>
 </div>
 
 

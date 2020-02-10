@@ -22,6 +22,7 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly CollectionPointDAO _collectionPointDAO;
         private readonly DepartmentDAO _departmentDAO;
         private readonly NotificationChannelDAO _notificationChannelDAO;
+
         public DepartmentRepresentativeController()
         {
             _disbursementDAO = new DisbursementDAO();
@@ -48,7 +49,8 @@ namespace Team8ADProjectSSIS.Controllers
                 ViewBag.status = disbursement.Status;
                 ViewBag.department = disbursement.Department;
                 ViewBag.collectionPt = disbursement.CollectionPoint;
-                ViewBag.storeClerk = disbursement.DisbursedBy;
+                //get the storeclerk from cpclerk
+                ViewBag.storeClerk = _collectionPointDAO.FindClerkByCollectionPointId(disbursement.CollectionPoint.IdCollectionPt);
                 ViewBag.disbursementItems = disbursement.DisbursementItems;
             }
             else
@@ -109,10 +111,13 @@ namespace Team8ADProjectSSIS.Controllers
             int IdStoreClerk=_disbursementDAO.FindById(idDisbursement).IdDisbursedBy.GetValueOrDefault(0);
             hub.Clients.All.receiveNotification(IdStoreClerk);
             EmailClass emailClass = new EmailClass();
-            string message = "Hi," + _employeeDAO.FindEmployeeById(IdStoreClerk).Name +
-                employee.Name + "from Department " + employee.CodeDepartment + "has acknowledged the disbursement received just now. Please counter sign ";
-            _notificationChannelDAO.CreateNotificationsToIndividual(IdStoreClerk, (int)Session["IdEmployee"], message);
-            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdStoreClerk).Email, "SSIS System Email", message);
+            if (IdStoreClerk != 0)
+            {
+                string message = "Hi," + _employeeDAO.FindEmployeeById(IdStoreClerk).Name +employee.Name + "from Department " + employee.CodeDepartment + "has acknowledged the disbursement received just now. Please counter sign ";
+                _notificationChannelDAO.CreateNotificationsToIndividual(IdStoreClerk, (int)Session["IdEmployee"], message);
+                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdStoreClerk).Email, "SSIS System Email", message);
+            }
+           
             return RedirectToAction("Home");
         }
 
@@ -123,8 +128,11 @@ namespace Team8ADProjectSSIS.Controllers
             //int idEmployee = 4;
             int idEmployee = (int)Session["IdEmployee"];
             Employee employee = _employeeDAO.FindEmployeeById(idEmployee);
-            List<Disbursement> disbursements = _disbursementDAO.GetReceivedDisbursements(employee.CodeDepartment, searchContext);
+            //List<Disbursement> disbursements = _disbursementDAO.GetReceivedDisbursements(employee.CodeDepartment, searchContext);
+            List<Disbursement> disbursements = _disbursementDAO.GetReceivedAndDisbursedDisbursements(employee.CodeDepartment, searchContext);
             ViewBag.disbursements = disbursements;
+            Disbursement disbursement = _disbursementDAO.GetReceivedDisbursements(employee.CodeDepartment, searchContext)[0];
+            ViewBag.disbursedBy = _collectionPointDAO.FindClerkByCollectionPointId(disbursement.CollectionPoint.IdCollectionPt);
             ViewBag.searchContext = searchContext;            
             return View();
         }
@@ -139,7 +147,16 @@ namespace Team8ADProjectSSIS.Controllers
                 ViewBag.department = disbursement.Department;
                 ViewBag.collectionPt = disbursement.CollectionPoint;
                 ViewBag.collectedBy = disbursement.CollectedBy;
-                ViewBag.disbursedBy = disbursement.DisbursedBy;
+                if (disbursement.DisbursedBy == null)
+                {
+                    ViewBag.disbursedBy = _collectionPointDAO.FindClerkByCollectionPointId(disbursement.CollectionPoint.IdCollectionPt);
+                }
+                else
+                {
+                    ViewBag.disbursedBy = disbursement.DisbursedBy;
+
+                }
+                ViewBag.storeClerk = _collectionPointDAO.FindClerkByCollectionPointId(disbursement.CollectionPoint.IdCollectionPt);
                 ViewBag.disbursementItems = disbursement.DisbursementItems;
             }
             else
