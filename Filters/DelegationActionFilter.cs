@@ -11,11 +11,12 @@ namespace Team8ADProjectSSIS.Filters
 {
     public class DelegationActionFilter : ActionFilterAttribute, IActionFilter
     {
-        private readonly DelegationDAO delegationDAO = new DelegationDAO();
-        private readonly EmployeeDAO employeeDAO = new EmployeeDAO();
+
         public override void OnActionExecuting(ActionExecutingContext aec)
         {
 
+            DelegationDAO delegationDAO = new DelegationDAO();
+            EmployeeDAO employeeDAO = new EmployeeDAO();
             Debug.WriteLine("OnActionExecuting", aec.RouteData);
             int IdEmployee = (int)aec.HttpContext.Session["IdEmployee"];
             string controllerName = aec.ActionDescriptor.ControllerDescriptor.ControllerName;
@@ -24,6 +25,7 @@ namespace Team8ADProjectSSIS.Filters
             {
                 if (delegationDAO.CheckIfInDelegationPeriod(IdEmployee))
                 {
+                    Debug.WriteLine("OnActionExecuting should be acting head");
                     employeeDAO.UpdateRoleToActingHead(IdEmployee);
                     HttpContext.Current.Session.Clear();
                     aec.Result = new RedirectToRouteResult(
@@ -39,6 +41,7 @@ namespace Team8ADProjectSSIS.Filters
             {
                 if (!delegationDAO.CheckIfInDelegationPeriod(IdEmployee))
                 {
+                    Debug.WriteLine("OnActionExecuting should be Employee");
                     employeeDAO.UpdateRoleToEmployee(IdEmployee);
                     HttpContext.Current.Session.Clear();
                     aec.Result = new RedirectToRouteResult(
