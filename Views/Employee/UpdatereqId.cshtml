@@ -142,19 +142,38 @@
 
 
     function UpdateReqitems(selectedId) {
-
         var cartItems = document.getElementsByClassName('tItems')[0]
         var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
         var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
         var cartRedIds = cartItems.getElementsByClassName('req-item-id');
-
         if (cartItemNames.length > 0) {
-          
-
-
+            //var f = {};
+            //f.url = '/Employee/updateReq';
+            //f.type = "POST";
+            //f.dataType = "json";
+            //f.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId });
+            //console.log(selectedId);
+            //f.contentType = "application/json";
+            //f.success = function (response) {
             for (var i = 0; i < cartItemNames.length; i++) {
-
-
+                console.log(cartRedIds[i].innerText);
+                if (cartRedIds[i].innerText == "-") {
+                    var gg = {};
+                    gg.url = '/Employee/insertReq';
+                    gg.type = "POST";
+                    gg.dataType = "json";
+                    gg.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId, itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
+                    gg.contentType = "application/json";
+                    gg.success = function (response) {
+                        console.log("Update New Req Items write success");
+                    };
+                    gg.error = function (response) {
+                        console.log("Update New Req Items write failed");
+                    };
+                    $.ajax(gg);
+                }
+            }
+            for (var i = 0; i < cartItemNames.length; i++) {
                 var g = {};
                 g.url = '/Employee/updateReq';
                 g.type = "POST";
@@ -173,14 +192,18 @@
             }
         }
         else {
-            if (!alert('There is no stationery requests left in the form.\n Do you want to delete the reqest?')) { window.location.reload(); }
-
+            alert("There is no stationery requests left in the form.\n Do you want to delete the reqest?");
         }
-
- 
-        if (!alert('Requisition form updated!')) { window.location.reload(); }
-
-
+        //    alert("Red Id Write success");
+        //    // while (cartItems.hasChildNodes()) {
+        //    //   cartItems.removeChild(cartItems.firstChild)
+        //    //}
+        //};
+        //f.error = function (response) {
+        //    alert("Red Id Write failed");
+        //};
+        //$.ajax(f);
+        alert("Requisition form updated!");
     }
 
     function DeleteReqitems(selectedId) {
@@ -218,8 +241,8 @@
         g.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId });
         g.contentType = "application/json";
         g.success = function (response) {
-           if (!alert('Requisition has been withdrawn!')) { window.location.reload(); }
-          
+            if (!alert('Requisition has been withdrawn!')) { window.location.reload(); }
+
         };
         g.error = function (response) {
             console.log("Req Items delete failed!");
