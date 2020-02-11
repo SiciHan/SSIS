@@ -65,7 +65,8 @@
                     current.append("<td>" + '<span class="req-item-id">' + response.Items[i].IdReqItem + "</td>");
                     current.append("<td>" + response.Items[i].IdItem + "</td>");
                     current.append("<td>" + '<span class="cart-item-title" value=' + i + '>' + response.descrip[i].Description + '</span>' + "</td>");
-                    current.append("<td>" + '<input class="cart-quantity-input" type="number" max ="' + response.descrip[i].AvailableUnit + '"value=' + response.Items[i].Unit + '><button class="btn btn-danger" type="button" value=' + i + ' onclick="removeCartItem(' + i + ')">REMOVE</button>' + "</td>");
+                    current.append( '<span class="avai-quantity"  style="display: none;">' + response.descrip[i].AvailableUnit + '</span>');
+                    current.append("<td>" + '<input class="cart-quantity-input" type="number" min="1" max ="' + response.descrip[i].AvailableUnit + '"value=' + response.Items[i].Unit + '><button class="btn btn-danger" type="button" value=' + i + ' onclick="removeCartItem(' + i + ')">REMOVE</button>' + "</td>");
 
                     $('table').append(current);
 
@@ -142,18 +143,62 @@
 
 
     function UpdateReqitems(selectedId) {
-
         var cartItems = document.getElementsByClassName('tItems')[0]
         var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
         var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
         var cartRedIds = cartItems.getElementsByClassName('req-item-id');
+        var avaiquantity = cartItems.getElementsByClassName('avai-quantity');
 
         if (cartItemNames.length > 0) {
-          
 
+             for (var i = 0; i < cartItemNames.length; i++) {
+                if (quantityInputs[i].value < 0) {
+                    alert("Item  " + cartItemNames[i].innerText + " raised quantity is not acceptable.\nPlease amend and submit again!");
+                    return
+                }
+            }
 
             for (var i = 0; i < cartItemNames.length; i++) {
 
+
+                if (quantityInputs[i].value > avaiquantity[i].innerText) {
+                    console.log(avaiquantity[i].innerText);
+                    console.log(quantityInputs[i].value);
+                    alert("Item  " + cartItemNames[i].innerText + " does not have enougth available quantity.\nPlease amend and submit again!\n");
+                    return
+                }
+
+
+            }
+
+
+
+            for (var i = 0; i < cartItemNames.length; i++) {
+                console.log(cartRedIds[i].innerText);
+                if (cartRedIds[i].innerText == "-") {
+                    var gg = {};
+                    gg.url = '/Employee/insertReq';
+                    gg.type = "POST";
+                    gg.dataType = "json";
+                    gg.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId, itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
+                    gg.contentType = "application/json";
+                    gg.success = function (response) {
+                        console.log("Update New Req Items write success");
+                    };
+                    gg.error = function (response) {
+                        console.log("Update New Req Items write failed");
+                    };
+                    $.ajax(gg);
+                }
+            }
+            for (var i = 0; i < cartItemNames.length; i++) {
+
+                console.log(avaiquantity[i].innerText);
+                console.log(quantityInputs[i].value);
+                   if (quantityInputs[i].value > avaiquantity[i].innerText) {
+                    alert("Item  " + cartItemNames[i].innerText + " does not have enougth available quantity.\nPlease amend and submit again!\n");
+                    return
+                }
 
                 var g = {};
                 g.url = '/Employee/updateReq';
@@ -164,7 +209,8 @@
                 console.log(quantityInputs[i].value);
                 g.contentType = "application/json";
                 g.success = function (response) {
-                    console.log("Requisition form updated!");
+                      if (!alert('Requisition form updated')) { window.location.reload(); }
+                  
                 };
                 g.error = function (response) {
                     console.log("Update Fail.Pls try again");
@@ -173,14 +219,19 @@
             }
         }
         else {
-            if (!alert('There is no stationery requests left in the form.\n Do you want to delete the reqest?')) { window.location.reload(); }
-
+            alert("There is no stationery requests left in the form.");
+            return
         }
-
- 
-        if (!alert('Requisition form updated!')) { window.location.reload(); }
-
-
+        //    alert("Red Id Write success");
+        //    // while (cartItems.hasChildNodes()) {
+        //    //   cartItems.removeChild(cartItems.firstChild)
+        //    //}
+        //};
+        //f.error = function (response) {
+        //    alert("Red Id Write failed");
+        //};
+        //$.ajax(f);
+        alert("Requisition form updated!");
     }
 
     function DeleteReqitems(selectedId) {
@@ -218,8 +269,8 @@
         g.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId });
         g.contentType = "application/json";
         g.success = function (response) {
-           if (!alert('Requisition has been withdrawn!')) { window.location.reload(); }
-          
+            if (!alert('Requisition has been withdrawn!')) { window.location.reload(); }
+
         };
         g.error = function (response) {
             console.log("Req Items delete failed!");

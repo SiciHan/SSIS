@@ -206,6 +206,7 @@ namespace Team8ADProjectSSIS.Controllers
                     }
                     
                     reader2.Close();
+
                 }
             }
             List<DataPoint> dataPoints1 = new List<DataPoint>();
