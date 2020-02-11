@@ -289,6 +289,7 @@
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\NotificationChannel.cs" />
     <Compile Include="Models\Operation.cs" />
+    <Compile Include="Models\PredictReorderQuantity.cs" />
     <Compile Include="Models\PurchaseOrder.cs" />
     <Compile Include="Models\PurchaseOrderDetail.cs" />
     <Compile Include="Models\Requisition.cs" />
