@@ -185,19 +185,36 @@ namespace Team8ADProjectSSIS.DAO
                     .FirstOrDefault();
                 if(temp.IdOperation == 3)
                 {
+                    Operation op = context.Operations
+                        .Where(o => o.IdOperation == 7)
+                        .FirstOrDefault();
+                        
                     temp.IdOperation = 7;
+                    temp.Operation = op;
                 }
                 else if(temp.IdOperation == 4)
                 {
+                    Operation op = context.Operations
+                        .Where(o => o.IdOperation == 9)
+                        .FirstOrDefault();
                     temp.IdOperation = 9;
+                    temp.Operation = op;
                 }
                 else if (temp.IdOperation == 5)
                 {
+                    Operation op = context.Operations
+                        .Where(o => o.IdOperation == 12)
+                        .FirstOrDefault();
                     temp.IdOperation = 12;
+                    temp.Operation = op;
                 }
                 else if (temp.IdOperation == 6)
                 {
+                    Operation op = context.Operations
+                        .Where(o => o.IdOperation == 14)
+                        .FirstOrDefault();
                     temp.IdOperation = 14;
+                    temp.Operation = op;
                 }
                 context.SaveChanges();
             }
@@ -212,19 +229,35 @@ namespace Team8ADProjectSSIS.DAO
                     .FirstOrDefault();
                 if (temp.IdOperation == 3)
                 {
+                    Operation op = context.Operations
+                        .Where(o => o.IdOperation == 8)
+                        .FirstOrDefault();
                     temp.IdOperation = 8;
+                    temp.Operation = op;
                 }
                 else if (temp.IdOperation == 4)
                 {
+                    Operation op = context.Operations
+                        .Where(o => o.IdOperation == 10)
+                        .FirstOrDefault();
                     temp.IdOperation = 10;
+                    temp.Operation = op;
                 }
                 else if (temp.IdOperation == 5)
                 {
+                    Operation op = context.Operations
+                        .Where(o => o.IdOperation == 11)
+                        .FirstOrDefault();
                     temp.IdOperation = 11;
+                    temp.Operation = op;
                 }
                 else if (temp.IdOperation == 6)
                 {
+                    Operation op = context.Operations
+                        .Where(o => o.IdOperation == 13)
+                        .FirstOrDefault();
                     temp.IdOperation = 13;
+                    temp.Operation = op;
                 }
                 context.SaveChanges();
             }
