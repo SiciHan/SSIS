@@ -3,6 +3,10 @@
     ViewBag.Title = "ViewDelegations";
     Layout = "~/Views/Shared/_HeadLayout.cshtml";
     List<Delegation> delegationList = (List<Delegation>)ViewBag.delegationList;
+
+    var currentDelegation = ViewData["currentDelegation"] as List<Delegation>;
+    var futureDelegation = ViewData["futureDelegation"] as List<Delegation>;
+    var pastDelegation = ViewData["pastDelegation"] as List<Delegation>;
 }
 
 
@@ -20,18 +24,38 @@
         <th>Start Date</th>
         <th>End Date</th>
         <th>Action</th>
-        <th>Action</th>
+
 
     </tr>
-    @foreach (Delegation d in delegationList)
+    @foreach (Delegation d in currentDelegation)
     {
         <tr>
             <td>@d.Employee.Name</td>
             <td>@d.IdEmployee</td>
             <td>@d.StartDate</td>
             <td>@d.EndDate</td>
-            <td>@Html.ActionLink("Deactivate", "DeactivateDelegation", "DepartmentHead", new { idDelegation = d.IdDelegation }, null)</td>
-            <td>@Html.ActionLink("Remove", "RemoveDelegation", "DepartmentHead", new { idEmployee = d.IdEmployee}, null)</td>
+            <td>@Html.ActionLink("Deactivate", "DeactivateDelegation", "DepartmentHead", new { idDelegation = d.IdDelegation, idEmployee = d.IdEmployee }, null)</td>
+        </tr>
+    }
+
+    @foreach (Delegation d in futureDelegation)
+    {
+        <tr>
+            <td>@d.Employee.Name</td>
+            <td>@d.IdEmployee</td>
+            <td>@d.StartDate</td>
+            <td>@d.EndDate</td>
+            <td>@Html.ActionLink("Remove", "RemoveDelegation", "DepartmentHead", new { idDelegation = d.IdDelegation, idEmployee = d.IdEmployee }, null)</td>
+        </tr>
+    }
+    @foreach (Delegation d in pastDelegation)
+    {
+        <tr>
+            <td>@d.Employee.Name</td>
+            <td>@d.IdEmployee</td>
+            <td>@d.StartDate</td>
+            <td>@d.EndDate</td>
+            <td></td>
         </tr>
     }
 </table>

@@ -84,7 +84,7 @@ namespace Team8ADProjectSSIS.Controllers
                         case "StockManager":
                             return RedirectToAction("Home", "StoreManager");
                         case "StockSupervisor":
-                            return RedirectToAction("Dashboard", "StoreSupervisor");
+                            return RedirectToAction("Notification", "StoreSupervisor");
                         case "ActingHead":
                             return RedirectToAction("Notification", "DepartmentActingHead");
                         default:
@@ -207,7 +207,7 @@ namespace Team8ADProjectSSIS.Controllers
         [AuthenticateFilter]
         public JsonResult GetUnreadNotificationCount(int IdReceiver)
         {
-            
+
             int count = _notificationChannelDAO.GetUnreadNotificationCount(IdReceiver);
             return Json(count, JsonRequestBehavior.AllowGet);
         }
@@ -225,7 +225,7 @@ namespace Team8ADProjectSSIS.Controllers
             return Json(department, JsonRequestBehavior.AllowGet);
         }
 
-        
+
 
     }
 }

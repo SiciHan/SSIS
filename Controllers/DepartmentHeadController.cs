@@ -331,13 +331,10 @@ namespace Team8ADProjectSSIS.Controllers
                         // approve delegation
                         // add one day
                         EDate = EDate.AddDays(1);
-                        _employeeDAO.DelegateEmployeeToActingRole(empName);
-                        _delegationDAO.UpdateDelegation(empName, SDate, EDate);
-
+                        Delegation d=_delegationDAO.CreateDelegation(empName, SDate, EDate);
                         //@Shutong: send notification to acting head
                         Employee e = _employeeDAO.FindEmployeeByName(empName);
                         int IdEmployee = e.IdEmployee;
-                        Delegation d = _delegationDAO.FindDelegationById(IdEmployee);
                         var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
                         hub.Clients.All.receiveNotification(IdEmployee);
                         EmailClass emailClass = new EmailClass();
@@ -447,14 +444,36 @@ namespace Team8ADProjectSSIS.Controllers
         {
             // display delegation
             string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
-            List<Delegation> delegationList = _delegationDAO.FindDelegationListByDepartment(codeDepartment);
-            ViewBag.delegationList = delegationList;
+
+            ViewData["currentDelegation"] = _delegationDAO.FindCurrentDelgatiobListByDepartment(codeDepartment);
+            ViewData["futureDelegation"] = _delegationDAO.FindFutureDelgatiobListByDepartment(codeDepartment);
+            ViewData["pastDelegation"] = _delegationDAO.FindPastDelgatiobListByDepartment(codeDepartment);
             return View();
         }
-        public ActionResult RemoveDelegation(int idEmployee)
+        public ActionResult RemoveDelegation(int idDelegation, int idEmployee)
         {
-            _delegationDAO.RemoveDelegate(idEmployee);
-            _employeeDAO.RemoveDelegate(idEmployee);
+            Delegation d= _delegationDAO.RemoveDelegate(idDelegation);
+            
+            //@Shutong: send notification here
+            Employee e = _employeeDAO.FindEmployeeById(idEmployee);
+            string empName = e.Name;
+            int IdEmployee = e.IdEmployee;
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            hub.Clients.All.receiveNotification(IdEmployee);
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi," + empName
+                + " your delegation assignment start on " + d.StartDate + " has been canceled.";
+                
+            _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+            //end of notification sending 
+            return RedirectToAction("ViewDelegations", "DepartmentHead");
+        }
+        public ActionResult DeactivateDelegation(int idDelegation, int idEmployee)
+        {
+            // set the end date to today's date
+            //_delegationDAO.DeactivateDelegationById(idEmployee);
+            Delegation d=_delegationDAO.DeactivateDelegationByDelegationId(idDelegation);
 
             //@Shutong: send notification here
             Employee e = _employeeDAO.FindEmployeeById(idEmployee);
@@ -470,13 +489,6 @@ namespace Team8ADProjectSSIS.Controllers
             _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
             emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
             //end of notification sending 
-            return RedirectToAction("ViewDelegations", "DepartmentHead");
-        }
-        public ActionResult DeactivateDelegation(int idDelegation)
-        {
-            // set the end date to today's date
-            //_delegationDAO.DeactivateDelegationById(idEmployee);
-            _delegationDAO.DeactivateDelegationByDelegationId(idDelegation);
 
             return RedirectToAction("ViewDelegations", "DepartmentHead");
         }
