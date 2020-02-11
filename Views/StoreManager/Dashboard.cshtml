@@ -82,6 +82,14 @@
     </div>
 </div>
 
+<div class="box">
+    @using (Html.BeginForm("ExportExcel", "StoreSupervisor", FormMethod.Post))
+    {
+        <button class="download" id="exportExcel"><i class="fa fa-download"></i></button>
+    }
+    <button class="print" id="exportPDF"><i class="fa fa-print"></i></button>
+</div>
+
 <div style="margin-bottom:20px">
     <label for="category">Categories: </label>&nbsp;
     <select id="category">
@@ -129,13 +137,7 @@
     
 </script>
 
-<div class="box">
-    @using (Html.BeginForm("ExportExcel", "StoreSupervisor", FormMethod.Post))
-    {
-        <button class="download" id="exportExcel"><i class="fa fa-download"></i></button>
-    }
-    <button class="print" id="exportPDF"><i class="fa fa-print"></i></button>
-</div>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>

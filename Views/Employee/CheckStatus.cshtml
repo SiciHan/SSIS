@@ -8,9 +8,7 @@
 
 }
 @section scripts{
-    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
-    <script src="~/signalr/hubs"></script>
-    <script src="~/Scripts/EmployeeNotification.js"></script>
+
 }
 
 
@@ -25,7 +23,9 @@
     <link href="~/Styles/styles.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/EmployeeNotification.js"></script>
     @*<script src="~/Scripts/item.js"></script>*@
 
 
@@ -50,8 +50,7 @@
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Dashboard", "Index", "Employee")</li>
                 <li>@Html.ActionLink("Create", "Create", "Employee")</li>
-                <li>@Html.ActionLink("Update", "Update", "Employee")</li>
-                <li>@Html.ActionLink("Check Status", "CheckStatus", "Employee")</li>
+                <li>@Html.ActionLink("Update/Check Status", "Update", "Employee")</li>
                 <li>@Html.ActionLink("History", "History", "Employee")</li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="noti-logout">

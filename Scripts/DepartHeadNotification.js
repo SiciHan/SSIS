@@ -120,17 +120,56 @@
             $('#noti-count').html(count);
         }
     };
-
     $.ajax({
         type: 'GET',
         url: '/Home/GetUnreadNotificationCount?IdReceiver=' + $("#hdnSession1").val(),
         success: function (response) {
             //alert("There are " + response + "unread notifications " + "for" + $("#hdnSession1").val());
             $('#noti-count').html(response);
+            $.ajax({
+                type: 'GET',
+                url: '/Home/GetName?Id=' + $("#hdnSession1").val(),
+                success: function (response) {
+                    //alert("user name updated");
+                    $('#username').html(response);
+                    $.ajax({
+                        type: 'GET',
+                        url: '/Home/GetDepartment?Id=' + $("#hdnSession1").val(),
+                        success: function (response) {
+                            //alert("department updated");
+                            $('#department').html(response);
+                        },
+                        error: function (error) {
+                            //alert("department cannot be updated");
+                            console.log(error);
+                        },
+                    });
+                },
+
+                error: function (error) {
+                    //alert("user name cannot be updated");
+                    console.log(error);
+                },
+            });
         },
         error: function (error) {
             console.log(error);
-        }
+        },
     });
+    //$.ajax({
+    //    type: 'GET',
+    //    url: '/Home/GetUnreadNotificationCount?IdReceiver=' + $("#hdnSession1").val(),
+    //    success: function (response) {
+    //        //alert("There are " + response + "unread notifications " + "for" + $("#hdnSession1").val());
+    //        $('#noti-count').html(response);
+    //    },
+    //    error: function (error) {
+    //        console.log(error);
+    //    }
+    //});
+
+
+    
+
 
 });

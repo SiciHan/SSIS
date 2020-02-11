@@ -19,25 +19,28 @@ namespace Team8ADProjectSSIS.DAO
         //{
         //    this.context = new SSISContext();
         //}
-        public void DeactivateDelegationById(int idEmployee)
+        public Delegation DeactivateDelegationByDelegationId(int idDelegation)
         {
-           Delegation d= FindDelegationById(idEmployee);
+            Delegation d = context.Delegations.Where(x => x.IdDelegation == idDelegation).FirstOrDefault();
             // set d. end date
-            DateTime today = DateTime.Today;
-            d.StartDate = today;
-            d.EndDate = today;
+            d.EndDate = DateTime.Now;
+            // change idRole as well
+            Employee e = context.Employees.Where(x => x.Role.Label.Equals("ActingHead")).FirstOrDefault();
+            e.IdRole = 1;
             context.SaveChanges();
+            return d;
         }
-        public Delegation FindDelegationById(int idEmployee)
+
+        public Delegation FindDelegationByDelegationId(int idDelegation)
         {
-            return context.Delegations.Where(d => d.IdEmployee == idEmployee).FirstOrDefault();
+            return context.Delegations.Where(d => d.IdDelegation == idDelegation).FirstOrDefault();
         }
-        //SH
-        public void RemoveDelegate(int idEmployee)
+        public Delegation RemoveDelegate(int idDelegation)
         {
-            Delegation deleg = context.Delegations.Where(d => d.IdEmployee == idEmployee).FirstOrDefault();
+            Delegation deleg = context.Delegations.Where(d => d.IdDelegation == idDelegation).FirstOrDefault();
             context.Delegations.Remove(deleg);
             context.SaveChanges();
+            return deleg;
         }
         //SH
         public List<Delegation> FindDelegationListByDepartment(string codeDepartment)
@@ -56,7 +59,7 @@ namespace Team8ADProjectSSIS.DAO
                     }
                 }
             }
-            delegationDepartmentList=delegationDepartmentList.OrderBy(c => c.StartDate).OrderBy(d=>d.EndDate).ToList();
+            delegationDepartmentList=delegationDepartmentList.OrderByDescending(c => c.StartDate).ToList();
             return delegationDepartmentList;
         }
         //SH
@@ -65,8 +68,8 @@ namespace Team8ADProjectSSIS.DAO
             //
             return context.Delegations.Include("Employee").ToList();
         }
-        //SH
-        public void UpdateDelegation(string name, DateTime startDate,DateTime endDate)
+        
+        public Delegation CreateDelegation(string name, DateTime startDate,DateTime endDate)
         {
             Employee ActingHead = context.Employees.Where(e => e.Name.Equals(name)).FirstOrDefault();
             int idEmployee = ActingHead.IdEmployee;
@@ -76,20 +79,10 @@ namespace Team8ADProjectSSIS.DAO
             deleg.EndDate = endDate;
             context.Delegations.Add(deleg);
             context.SaveChanges();
+            return deleg;
         }
 
-        
-        public void Update(Delegation d)
-        {
-            using (SSISContext context = new SSISContext())
-            {
-                Delegation del= context.Delegations.OfType<Delegation>().Where(x => x.IdDelegation==d.IdDelegation).FirstOrDefault();
-                del.IdEmployee = d.IdEmployee;
-                del.StartDate = d.StartDate;
-                del.EndDate = d.EndDate;
-                context.SaveChanges();
-            }
-        }
+     
         public void Create(Delegation d)
         {
             using (SSISContext context = new SSISContext())
@@ -135,6 +128,69 @@ namespace Team8ADProjectSSIS.DAO
                 context.Delegations.Remove(del);
                 context.SaveChanges();
             }
+        }
+
+        public List<Delegation> FindCurrentDelgatiobListByDepartment(string codeDepartment)
+        {
+         
+            List<Delegation> delegationAllDepartment = context.Delegations.Include("Employee").ToList();
+            List<Employee> employeeListByDepartment = context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).ToList();
+            List<Delegation> delegationDepartmentList = new List<Delegation>();
+            foreach (Delegation d in delegationAllDepartment)
+            {
+                // put each delegation id  to test with specific 
+                foreach (Employee e in employeeListByDepartment)
+                {
+                    if (d.IdEmployee == e.IdEmployee && d.StartDate<=DateTime.Now && d.EndDate>=DateTime.Now)
+                    {
+                        delegationDepartmentList.Add(d);
+                    }
+                }
+            }
+            delegationDepartmentList = delegationDepartmentList.OrderByDescending(c => c.StartDate).ToList();
+            return delegationDepartmentList;
+        }
+
+        public List<Delegation> FindFutureDelgatiobListByDepartment(string codeDepartment)
+        {
+
+            List<Delegation> delegationAllDepartment = context.Delegations.Include("Employee").ToList();
+            List<Employee> employeeListByDepartment = context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).ToList();
+            List<Delegation> delegationDepartmentList = new List<Delegation>();
+            foreach (Delegation d in delegationAllDepartment)
+            {
+                // put each delegation id  to test with specific 
+                foreach (Employee e in employeeListByDepartment)
+                {
+                    if (d.IdEmployee == e.IdEmployee && d.StartDate >= DateTime.Now)
+                    {
+                        delegationDepartmentList.Add(d);
+                    }
+                }
+            }
+            delegationDepartmentList = delegationDepartmentList.OrderByDescending(c => c.StartDate).ToList();
+            return delegationDepartmentList;
+        }
+
+        public List<Delegation> FindPastDelgatiobListByDepartment(string codeDepartment)
+        {
+
+            List<Delegation> delegationAllDepartment = context.Delegations.Include("Employee").ToList();
+            List<Employee> employeeListByDepartment = context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).ToList();
+            List<Delegation> delegationDepartmentList = new List<Delegation>();
+            foreach (Delegation d in delegationAllDepartment)
+            {
+                // put each delegation id  to test with specific 
+                foreach (Employee e in employeeListByDepartment)
+                {
+                    if (d.IdEmployee == e.IdEmployee && d.EndDate <= DateTime.Now)
+                    {
+                        delegationDepartmentList.Add(d);
+                    }
+                }
+            }
+            delegationDepartmentList = delegationDepartmentList.OrderByDescending(c => c.StartDate).ToList();
+            return delegationDepartmentList;
         }
     }
 }

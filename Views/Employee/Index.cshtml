@@ -10,7 +10,6 @@
 }
 
 
-
 <!DOCTYPE html>
 <html>
 
@@ -25,6 +24,7 @@
 </head>
 
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav">
         <div class="container">
 
@@ -90,6 +90,7 @@
                         <th></th>
                         <th>Description</th>
                         <th>Unit</th>
+
                     </tr>
 
                     @foreach (Item ite in recentItems)
@@ -105,7 +106,8 @@
 
                                 <td><input type="checkbox" id="chkbox" value="@Html.Raw(@id)"></td>
                                 <td><span class="shop-item-title" value="itemName">@Html.Raw(@des)</td>
-                                <td> <span class="shop-item-price" value="quantity">@Html.Raw(@unit)</td>
+                                <td><span class="shop-item-price" value="quantity">@Html.Raw(@unit)</td>
+                                <td><span class="shop-item-quantity" value="quantity" style="display: none;">@Html.Raw(@aU)</td>
                                 <td>
                                     <button class="fa fa-shopping-cart" type="button" name="button" onclick="addToCartRecentClicked()">
                                     </button>

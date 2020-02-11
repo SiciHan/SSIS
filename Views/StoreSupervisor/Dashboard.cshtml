@@ -105,7 +105,13 @@
     </div>
 </div>
 <h2>DashBoard</h2>
-
+<div class="box">
+    @using (Html.BeginForm("ExportExcel", "StoreSupervisor", FormMethod.Post))
+    {
+        <button class="download"><i class="fa fa-download"></i></button>
+    }
+    <button class="print" id="exportPDF"><i class="fa fa-print"></i></button>
+</div>
 <div style="margin-bottom:20px">
     <label for="category">Categories: </label>&nbsp;
     <select id="category">
@@ -142,13 +148,7 @@
 
 
 
-<div class="box">
-    @using (Html.BeginForm("ExportExcel", "StoreSupervisor", FormMethod.Post))
-    {
-        <button class="download"><i class="fa fa-download"></i></button>
-    }
-    <button class="print" id="exportPDF"><i class="fa fa-print"></i></button>
-</div>
+
 
 
 

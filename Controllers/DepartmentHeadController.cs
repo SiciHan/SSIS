@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -303,7 +304,7 @@ namespace Team8ADProjectSSIS.Controllers
         [HttpPost]
         public ActionResult PostDelegation(string emp,string cp,string judge, string StartDate, string EndDate)
         {
-            int idDepartmentHead=((int)Session["IdEmployee"]);
+            int idDepartmentHead = ((int)Session["IdEmployee"]);
             string submit = judge;
             string empName = emp;
             string remarks = cp; // for notification
@@ -311,12 +312,14 @@ namespace Team8ADProjectSSIS.Controllers
             string s2 = EndDate;
             if (submit.Equals("Back"))
             {
+                Debug.WriteLine("Back");
                 return RedirectToAction("ViewDelegations", "DepartmentHead");
             }
             else if (submit.Equals("Approve Delegate"))
             {
+                Debug.WriteLine("Approve");
                 // First check if they are null
-                if(empName!=null && !string.IsNullOrEmpty(s1) && !string.IsNullOrEmpty(s2) )
+                if (empName != null && !string.IsNullOrEmpty(s1) && !string.IsNullOrEmpty(s2))
                 {
                     DateTime SDate = DateTime.ParseExact(s1, "dd-MM-yyyy",
                                System.Globalization.CultureInfo.InvariantCulture);
@@ -328,19 +331,16 @@ namespace Team8ADProjectSSIS.Controllers
                         // approve delegation
                         // add one day
                         EDate = EDate.AddDays(1);
-                        _employeeDAO.DelegateEmployeeToActingRole(empName);
-                        _delegationDAO.UpdateDelegation(empName, SDate, EDate);
-
+                        Delegation d=_delegationDAO.CreateDelegation(empName, SDate, EDate);
                         //@Shutong: send notification to acting head
                         Employee e = _employeeDAO.FindEmployeeByName(empName);
                         int IdEmployee = e.IdEmployee;
-                        Delegation d = _delegationDAO.FindDelegationById(IdEmployee);
                         var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
                         hub.Clients.All.receiveNotification(IdEmployee);
                         EmailClass emailClass = new EmailClass();
                         string message = "Hi," + empName
-                            + " You are delegated to Acting Department Head from " + d.StartDate + " to " + d.EndDate 
-                            + " to assist approve stationery requisition. \r\nRemarks: "+remarks;
+                            + " You are delegated to Acting Department Head from " + d.StartDate + " to " + d.EndDate
+                            + " to assist approve stationery requisition. \r\nRemarks: " + remarks;
 
                         _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
                         emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
@@ -348,33 +348,132 @@ namespace Team8ADProjectSSIS.Controllers
 
                         //@Shutong: send notification head who delegating acting head
                         Employee headDept = _employeeDAO.FindEmployeeById(idDepartmentHead);
-                        hub.Clients.All.receiveNotification(idDepartmentHead);                        
+                        hub.Clients.All.receiveNotification(idDepartmentHead);
                         message = "Hi," + headDept.Name
-                            + " You have delegated "+empName+" as Acting Department Head from " + d.StartDate.ToString() + " to " + d.EndDate.ToString()
+                            + " You have delegated " + empName + " as Acting Department Head from " + d.StartDate.ToString() + " to " + d.EndDate.ToString()
                             + " to assist approve stationery requisition. \r\nRemarks: " + remarks;
 
                         _notificationChannelDAO.CreateNotificationsToIndividual(idDepartmentHead, (int)Session["IdEmployee"], message);
                         emailClass.SendTo(_employeeDAO.FindEmployeeById(idDepartmentHead).Email, "SSIS System Email", message);
                         //end of notification sending 
-
                     }
+                    else
+                    {
+                        ModelState.AddModelError("", "The end date should be later than startdate.");
+
+                        string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
+                        List<Employee> empList = _employeeDAO.FindEmployeeListByDepartmentAndRole(codeDepartment);
+                        ViewBag.EmployeeList = empList;
+                        return View("Delegation");
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "The fields are invalid.");
+
+                    string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
+                    List<Employee> empList = _employeeDAO.FindEmployeeListByDepartmentAndRole(codeDepartment);
+                    ViewBag.EmployeeList = empList;
+                    return View("Delegation");
                 }
                 return RedirectToAction("ViewDelegations", "DepartmentHead");
             }
             return RedirectToAction("ViewDelegations", "DepartmentHead");
+            //int idDepartmentHead=((int)Session["IdEmployee"]);
+            //string submit = judge;
+            //string empName = emp;
+            //string remarks = cp; // for notification
+            //string s1 = StartDate;
+            //string s2 = EndDate;
+            //if (submit.Equals("Back"))
+            //{
+            //    return RedirectToAction("ViewDelegations", "DepartmentHead");
+            //}
+            //else if (submit.Equals("Approve Delegate"))
+            //{
+            //    // First check if they are null
+            //    if(empName!=null && !string.IsNullOrEmpty(s1) && !string.IsNullOrEmpty(s2) )
+            //    {
+            //        DateTime SDate = DateTime.ParseExact(s1, "dd-MM-yyyy",
+            //                   System.Globalization.CultureInfo.InvariantCulture);
+            //        DateTime EDate = DateTime.ParseExact(s2, "dd-MM-yyyy",
+            //                        System.Globalization.CultureInfo.InvariantCulture);
+            //        // Find the emp by empName--> change emp role to idRole=4, get employee Id, pass id and startdate, end date into delegation
+            //        if (EDate >= SDate)
+            //        {
+            //            // approve delegation
+            //            // add one day
+            //            EDate = EDate.AddDays(1);
+            //            _employeeDAO.DelegateEmployeeToActingRole(empName);
+            //            _delegationDAO.UpdateDelegation(empName, SDate, EDate);
+
+            //            //@Shutong: send notification to acting head
+            //            Employee e = _employeeDAO.FindEmployeeByName(empName);
+            //            int IdEmployee = e.IdEmployee;
+            //            Delegation d = _delegationDAO.FindDelegationById(IdEmployee);
+            //            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            //            hub.Clients.All.receiveNotification(IdEmployee);
+            //            EmailClass emailClass = new EmailClass();
+            //            string message = "Hi," + empName
+            //                + " You are delegated to Acting Department Head from " + d.StartDate + " to " + d.EndDate 
+            //                + " to assist approve stationery requisition. \r\nRemarks: "+remarks;
+
+            //            _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+            //            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+            //            //end of notification sending 
+
+            //            //@Shutong: send notification head who delegating acting head
+            //            Employee headDept = _employeeDAO.FindEmployeeById(idDepartmentHead);
+            //            hub.Clients.All.receiveNotification(idDepartmentHead);                        
+            //            message = "Hi," + headDept.Name
+            //                + " You have delegated "+empName+" as Acting Department Head from " + d.StartDate.ToString() + " to " + d.EndDate.ToString()
+            //                + " to assist approve stationery requisition. \r\nRemarks: " + remarks;
+
+            //            _notificationChannelDAO.CreateNotificationsToIndividual(idDepartmentHead, (int)Session["IdEmployee"], message);
+            //            emailClass.SendTo(_employeeDAO.FindEmployeeById(idDepartmentHead).Email, "SSIS System Email", message);
+            //            //end of notification sending 
+
+            //        }
+            //    }
+            //    return RedirectToAction("ViewDelegations", "DepartmentHead");
+            //}
+            //return RedirectToAction("ViewDelegations", "DepartmentHead");
         }
         public ActionResult ViewDelegations()
         {
             // display delegation
             string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
-            List<Delegation> delegationList = _delegationDAO.FindDelegationListByDepartment(codeDepartment);
-            ViewBag.delegationList = delegationList;
+
+            ViewData["currentDelegation"] = _delegationDAO.FindCurrentDelgatiobListByDepartment(codeDepartment);
+            ViewData["futureDelegation"] = _delegationDAO.FindFutureDelgatiobListByDepartment(codeDepartment);
+            ViewData["pastDelegation"] = _delegationDAO.FindPastDelgatiobListByDepartment(codeDepartment);
             return View();
         }
-        public ActionResult RemoveDelegation(int idEmployee)
+        public ActionResult RemoveDelegation(int idDelegation, int idEmployee)
         {
-            _delegationDAO.RemoveDelegate(idEmployee);
-            _employeeDAO.RemoveDelegate(idEmployee);
+            Delegation d= _delegationDAO.RemoveDelegate(idDelegation);
+            
+            //@Shutong: send notification here
+            Employee e = _employeeDAO.FindEmployeeById(idEmployee);
+            string empName = e.Name;
+            int IdEmployee = e.IdEmployee;
+            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+            hub.Clients.All.receiveNotification(IdEmployee);
+            EmailClass emailClass = new EmailClass();
+            string message = "Hi," + empName
+                + " your delegation assignment start on " + d.StartDate + " has been canceled.";
+                
+            _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
+            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
+            //end of notification sending 
+            return RedirectToAction("ViewDelegations", "DepartmentHead");
+        }
+        public ActionResult DeactivateDelegation(int idDelegation, int idEmployee)
+        {
+            // set the end date to today's date
+            //_delegationDAO.DeactivateDelegationById(idEmployee);
+            Delegation d=_delegationDAO.DeactivateDelegationByDelegationId(idDelegation);
 
             //@Shutong: send notification here
             Employee e = _employeeDAO.FindEmployeeById(idEmployee);
@@ -390,12 +489,6 @@ namespace Team8ADProjectSSIS.Controllers
             _notificationChannelDAO.CreateNotificationsToIndividual(IdEmployee, (int)Session["IdEmployee"], message);
             emailClass.SendTo(_employeeDAO.FindEmployeeById(IdEmployee).Email, "SSIS System Email", message);
             //end of notification sending 
-            return RedirectToAction("ViewDelegations", "DepartmentHead");
-        }
-        public ActionResult DeactivateDelegation(int idEmployee)
-        {
-            // set the end date to today's date
-            _delegationDAO.DeactivateDelegationById(idEmployee);
 
             return RedirectToAction("ViewDelegations", "DepartmentHead");
         }
