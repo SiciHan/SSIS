@@ -27,8 +27,6 @@
 
             document.getElementsByClassName('btn-search')[0].addEventListener('click', function () {
 
-
-
                 var startDate = document.getElementsByClassName('start-date')[0].value;
                 var endDate = document.getElementsByClassName('end-date')[0].value;
                 var e = document.getElementById("mySelect");
@@ -175,7 +173,7 @@
                         <input type="date" id="calendar_end_dt" name="calendar_end_dt" class="end-date">
                         @*<img class="ui-datepicker-trigger" src="~/Images/ic_calendar.png" alt="Select date" title="Select date">*@
                     </span>
-                    <button type="button" class="btn btn-search btn-primary" id="CUSTOM" style="font-size: 1.4rem;">Search</button>
+                  
                 </div>
 
             </div>
@@ -198,7 +196,7 @@
                     <option value="Cancelled">Cancelled</option>
                 </select>
 
-
+                <button type="button" class="btn btn-search btn-primary" id="CUSTOM" style="font-size: 1.4rem;margin-left: 30px;height: 40px;width: 90px;">Search</button>
             </div>
 
 

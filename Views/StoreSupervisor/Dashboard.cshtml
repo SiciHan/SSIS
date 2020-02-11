@@ -8,11 +8,11 @@
 }
 
 <script type="text/javascript">
-    window.onload = function ChartCreate() {
-        var result = JSON.parse('@Html.Raw(ViewBag.DataPoints1)');
+    window.onload = function() {
+        var result1 = JSON.parse('@Html.Raw(ViewBag.DataPoints1)');
         var dataPoints1 = [];
-        for (var i = 0; i < result.length; i++) {
-            dataPoints1.push({ x: result[i].x, y: result[i].y });
+        for (var i = 0; i < result1.length; i++) {
+            dataPoints1.push({ label: result1[i].x, y: result1[i].y });
         }
         var chart1 = new CanvasJS.Chart("chartContainer1", {
             animationEnabled: true,
@@ -64,10 +64,6 @@
             }]
         });
         chart2.render();
-        //var canvas1 = $("#chartContainer1 .canvasjs-chart-canvas").get(0);
-        //var dataURL1 = canvas1.toDataURL('image/jpeg');
-        //var canvas2 = $("#chartContainer2 .canvasjs-chart-canvas").get(0);
-        //var dataURL2 = canvas2.toDataURL('image/jpeg');
 
         $("#exportPDF").click(function () {
             chart1.exportChart({ format: "jpg" });
@@ -140,22 +136,6 @@
 
 <div id="chartContainer2" style="height: 370px; width: 85%; margin-top:20px; margin:auto"></div>
 
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.min.js"></script>
-<script>
-    function Change() {
-        var category = document.getElementById("category");
-        var department = document.getElementById("department");
-        var index1 = category.selectedIndex;
-        var index2 = department.selectedIndex;
-        var value1 = category.options[index1].value;
-        var value2 = department.options[index2].value;
-        window.location.href = 'https://localhost:44304/StoreSupervisor/Dashboard?category=' + value1 + '&department=' + value2;
-    }
-
-</script>
-
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
@@ -203,4 +183,19 @@
     <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
     <script src="~/signalr/hubs"></script>
     <script src="~/Scripts/StoreSupervisorNotification.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.min.js"></script>
+    <script>
+        function Change() {
+            var category = document.getElementById("category");
+            var department = document.getElementById("department");
+            var index1 = category.selectedIndex;
+            var index2 = department.selectedIndex;
+            var value1 = category.options[index1].value;
+            var value2 = department.options[index2].value;
+            window.location.href = 'https://localhost:44304/StoreSupervisor/Dashboard?category=' + value1 + '&department=' + value2;
+        }
+
+    </script>
 }

@@ -37,7 +37,7 @@ namespace Team8ADProjectSSIS.DAO
             Employee e = FindEmployeeByNameAndRole(name);
             //e.IdRole = 4;// set to idRole to 4
             e.Role = context.Roles.OfType<Role>().Where(x => x.Label.Equals("ActingHead")).FirstOrDefault();
-            int id= e.IdRole;
+            
             context.SaveChanges();
         }
         //SH

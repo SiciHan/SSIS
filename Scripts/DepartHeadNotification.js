@@ -120,7 +120,6 @@
             $('#noti-count').html(count);
         }
     };
-
     $.ajax({
         type: 'GET',
         url: '/Home/GetUnreadNotificationCount?IdReceiver=' + $("#hdnSession1").val(),
@@ -157,6 +156,17 @@
             console.log(error);
         },
     });
+    //$.ajax({
+    //    type: 'GET',
+    //    url: '/Home/GetUnreadNotificationCount?IdReceiver=' + $("#hdnSession1").val(),
+    //    success: function (response) {
+    //        //alert("There are " + response + "unread notifications " + "for" + $("#hdnSession1").val());
+    //        $('#noti-count').html(response);
+    //    },
+    //    error: function (error) {
+    //        console.log(error);
+    //    }
+    //});
 
 
     

@@ -44,7 +44,7 @@
                     <th></th>
                     <th>Description</th>
                     <th>Unit</th>
-                    <th>Stock</th>
+                    <th>Available Stock</th>
                 </tr>
 
                 @foreach (Item ite in list)
@@ -64,7 +64,7 @@
                             <td><input type="checkbox" id="chkbox" value="@Html.Raw(@id)"></td>
                             <td><span class="shop-item-title" value="itemName">@Html.Raw(@des)</td>
                             <td> <span class="shop-item-price" value="quantity">@Html.Raw(@unit)</td>
-                            <td>@Html.Raw(@aU)</td>
+                            <td><span class="shop-item-quantity" value="quantity">@Html.Raw(@aU)</td>
                         </tr>
 
 

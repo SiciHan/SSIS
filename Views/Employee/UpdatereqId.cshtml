@@ -52,19 +52,20 @@
         g.success = function (response) {
             console.log(response);
             console.log(response.status);
-            console.log(response.descrip);
+            console.log(response.Req.HeadRemark);
 
 
             if (response.status != "Approved" && response.status != "Cancelled") {
 
                 for (var i = 0; i < response.Items.length; i++) {
 
-
+                    console.log(response.descrip[i].Description);
+                    console.log(response.descrip[i].AvailableUnit);
                     current = $('<tr/>');
                     current.append("<td>" + '<span class="req-item-id">' + response.Items[i].IdReqItem + "</td>");
                     current.append("<td>" + response.Items[i].IdItem + "</td>");
-                    current.append("<td>" + '<span class="cart-item-title" value=' + i + '>' + response.descrip[i] + '</span>' + "</td>");
-                    current.append("<td>" + '<input class="cart-quantity-input" type="number" value=' + response.Items[i].Unit + '><button class="btn btn-danger" type="button" value=' + i + ' onclick="removeCartItem(' + i + ')">REMOVE</button>' + "</td>");
+                    current.append("<td>" + '<span class="cart-item-title" value=' + i + '>' + response.descrip[i].Description + '</span>' + "</td>");
+                    current.append("<td>" + '<input class="cart-quantity-input" type="number" max ="' + response.descrip[i].AvailableUnit + '"value=' + response.Items[i].Unit + '><button class="btn btn-danger" type="button" value=' + i + ' onclick="removeCartItem(' + i + ')">REMOVE</button>' + "</td>");
 
                     $('table').append(current);
 
@@ -93,7 +94,7 @@
                     current = $('<tr/>');
                     current.append("<td>" + response.Items[i].IdReqItem + "</td>");
                     current.append("<td>" + response.Items[i].IdItem + "</td>");
-                    current.append("<td>" + response.descrip[i] + "</td>");
+                    current.append("<td>" + response.descrip[i].Description + "</td>");
                     current.append("<td>" + response.Items[i].Unit + "</td>");
                     $('table').append(current);
 
@@ -148,38 +149,7 @@
         var cartRedIds = cartItems.getElementsByClassName('req-item-id');
 
         if (cartItemNames.length > 0) {
-            //var f = {};
-            //f.url = '/Employee/updateReq';
-            //f.type = "POST";
-            //f.dataType = "json";
-            //f.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId });
-            //console.log(selectedId);
-            //f.contentType = "application/json";
-            //f.success = function (response) {
-            for (var i = 0; i < cartItemNames.length; i++) {
-                console.log(cartRedIds[i].innerText);
-                if (cartRedIds[i].innerText == "-") {
-
-                    var gg = {};
-                    gg.url = '/Employee/insertReq';
-                    gg.type = "POST";
-                    gg.dataType = "json";
-                    gg.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId, itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
-
-                    gg.contentType = "application/json";
-                    gg.success = function (response) {
-                        console.log("Update New Req Items write success");
-                    };
-                    gg.error = function (response) {
-                        console.log("Update New Req Items write failed");
-                    };
-                    $.ajax(gg);
-
-                }
-
-
-
-            }
+          
 
 
             for (var i = 0; i < cartItemNames.length; i++) {
@@ -203,49 +173,53 @@
             }
         }
         else {
-            alert("There is no stationery requests left in the form.\n Do you want to delete the reqest?");
+            if (!alert('There is no stationery requests left in the form.\n Do you want to delete the reqest?')) { window.location.reload(); }
+
         }
 
-        //    alert("Red Id Write success");
+ 
+        if (!alert('Requisition form updated!')) { window.location.reload(); }
 
-        //    // while (cartItems.hasChildNodes()) {
-        //    //   cartItems.removeChild(cartItems.firstChild)
-        //    //}
-
-        //};
-        //f.error = function (response) {
-        //    alert("Red Id Write failed");
-        //};
-        //$.ajax(f);
-        alert("Requisition form updated!");
 
     }
 
     function DeleteReqitems(selectedId) {
 
+
         var cartItems = document.getElementsByClassName('tItems')[0]
         var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
         var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
 
-        //var f = {};
-        //f.url = '/Employee/updateReq';
-        //f.type = "POST";
-        //f.dataType = "json";
-        //f.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId });
-        //console.log(selectedId);
-        //f.contentType = "application/json";
-        //f.success = function (response) {
+
+        for (var i = 0; i < cartItemNames.length; i++) {
+
+
+            var g = {};
+            g.url = '/Employee/updateItemAvai';
+            g.type = "POST";
+            g.dataType = "json";
+            g.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId, itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
+            console.log(cartItemNames[i].innerText);
+            console.log(quantityInputs[i].value);
+            g.contentType = "application/json";
+            g.success = function (response) {
+                console.log("Item Stock updated!");
+            };
+            g.error = function (response) {
+                console.log("Item Stock updated fail!.Pls try again");
+            };
+            $.ajax(g);
+        }
 
         var g = {};
         g.url = '/Employee/deleteReq';
         g.type = "POST";
         g.dataType = "json";
         g.data = JSON.stringify({ username: "Sam Worthington", selectedId: selectedId });
-
         g.contentType = "application/json";
         g.success = function (response) {
-            alert("Requisition has been withdrawn!");
-
+           if (!alert('Requisition has been withdrawn!')) { window.location.reload(); }
+          
         };
         g.error = function (response) {
             console.log("Req Items delete failed!");
@@ -253,17 +227,7 @@
         $.ajax(g);
 
 
-        //    alert("Red Id Write success");
 
-        //    // while (cartItems.hasChildNodes()) {
-        //    //   cartItems.removeChild(cartItems.firstChild)
-        //    //}
-
-        //};
-        //f.error = function (response) {
-        //    alert("Red Id Write failed");
-        //};
-        //$.ajax(f);
 
 
     }
@@ -276,7 +240,11 @@
         var value = document.getElementsByClassName('btn-danger')[selectedButton].value;
         var redId = document.getElementsByClassName('req-item-id')[selectedButton].innerHTML;
         var itemName = document.getElementsByClassName('cart-item-title')[selectedButton].innerHTML;
+        var itemQuantity = document.getElementsByClassName('cart-quantity-input')[selectedButton].value;
+        console.log(itemQuantity);
+
         console.log(itemName);
+
         var e = document.getElementById("mySelect");
         var strSelected = e.options[e.selectedIndex].value;
         console.log(strSelected);
@@ -290,7 +258,7 @@
         gg.url = '/Employee/deleteReqItem';
         gg.type = "POST";
         gg.dataType = "json";
-        gg.data = JSON.stringify({ username: "Sam Worthington", selectedId: strSelected, itemName: itemName });
+        gg.data = JSON.stringify({ username: "Sam Worthington", selectedId: strSelected, itemName: itemName, itemQuantity: itemQuantity });
 
         gg.contentType = "application/json";
         gg.success = function (response) {

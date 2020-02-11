@@ -65,7 +65,7 @@ namespace Team8ADProjectSSIS.DAO
         {
             Requisition requisition = new Requisition();
             requisition.IdEmployee = IdEmployee;
-            requisition.StatusCurrent = context.Status.OfType<Status>().Where(x => x.Label.Equals("Incomplete")).FirstOrDefault();
+            requisition.StatusCurrent = context.Status.OfType<Status>().Where(x => x.Label.Equals("Pending")).FirstOrDefault();
             requisition.RaiseDate = DateTime.Now;
             requisition.ApprovedDate = DateTime.Parse("01/01/1900");
             requisition.WithdrawlDate = DateTime.Parse("01/01/1900");

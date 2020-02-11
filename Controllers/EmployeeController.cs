@@ -23,16 +23,18 @@ namespace Team8ADProjectSSIS.Controllers
         private readonly RequisitionDAO _requisitionDAO;
         private readonly RequisitionItemDAO _requisitionItemDAO;
         private readonly NotificationChannelDAO _notificationChannelDAO;
+        private readonly ItemDAO _itemDAO;
         public EmployeeController()
         {
             _employeeDAO = new EmployeeDAO();
             _requisitionDAO = new RequisitionDAO();
             _requisitionItemDAO = new RequisitionItemDAO();
             _notificationChannelDAO = new NotificationChannelDAO();
+            _itemDAO = new ItemDAO();
         }
         public static string connectionString = "Server=.;" +
               "Database=SSIS; Integrated Security=true;MultipleActiveResultSets=True ";
-        // GET: Employe
+        // GET: Employee
 
         public ActionResult Index(string cmd, int? id, string searchStr = " ")
         {
@@ -173,44 +175,10 @@ namespace Team8ADProjectSSIS.Controllers
         public JsonResult searchReqHistory(string startDate,string endDate,string status)
         {
 
-            //   if (Session["IdEmployee"] == null)
-            //    return RedirectToAction("Login", "Home");
-
-            int idEmployee = (int)Session["IdEmployee"];
-            //Requisition req = _requisitionDAO.CreateRequisition(idEmployee);
-
-
-           /* //@Shutong: send notification here
-            int IdHead = _employeeDAO.FindHeadIdByIdEmployee(idEmployee);
-            int IdActingHead = _employeeDAO.FindActingHeadIdByIdEmployee(idEmployee);
-            var hub = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
-            hub.Clients.All.receiveNotification(IdHead);
-            EmailClass emailClass = new EmailClass();
-            string message = "Hi Department Head," + _employeeDAO.FindEmployeeById(idEmployee).Name
-                + "has raised a stationery requisition: " + req.IdRequisition + " on " + req.RaiseDate + ". Please kindly approve or reject it.";
-            _notificationChannelDAO.CreateNotificationsToIndividual(IdHead, (int)Session["IdEmployee"], message);
-            emailClass.SendTo(_employeeDAO.FindEmployeeById(IdHead).Email, "SSIS System Email", message);
-            if (IdActingHead != 0)
-            {
-                message = "Hi Department Acting Head," + _employeeDAO.FindEmployeeById(idEmployee).Name
-               + "has raised a stationery requisition: " + req.IdRequisition + " on " + req.RaiseDate + ". Please kindly approve or reject it.";
-                hub.Clients.All.receiveNotification(IdActingHead);
-                _notificationChannelDAO.CreateNotificationsToIndividual(IdHead, (int)Session["IdEmployee"], message);
-                emailClass.SendTo(_employeeDAO.FindEmployeeById(IdHead).Email, "SSIS System Email", message);
-            }
-            //end of notification sending */
-
-            //  status = GetIdStatus(req);
-            //   des = GetDescription(req);
           
-            List<Requisition> reqs = ListHistoryReqItems(startDate, endDate, status);
-
+            List<Requisition> reqs = ListHistoryReqItems(startDate, endDate, status);       
             var result = new { Req = reqs };
             return Json(result, JsonRequestBehavior.AllowGet);
-
-
-
-
 
         }
 
@@ -245,6 +213,21 @@ namespace Team8ADProjectSSIS.Controllers
                 cmddd.ExecuteNonQuery();
             }
 
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string details = @"Update Items SET AvailableUnit = (Select AvailableUnit from Items Where Description = '" + itemName +
+                                   "') -" + quantity + "WHERE IdItem =(SELECT IdItem from Items Where Description = '" +
+                                   itemName + "')";
+
+
+                SqlCommand cmddd = new SqlCommand(details, conn);
+
+                cmddd.ExecuteNonQuery();
+            }
+
+
             return Json(new
             {
                 result = "OK"
@@ -255,15 +238,84 @@ namespace Team8ADProjectSSIS.Controllers
         {
 
             int idEmployee = (int)Session["IdEmployee"];
-            //  _requisitionItemDAO.UpdateRequisitionItemUnit(selectedId, itemName, quantity);//add requisitonitem to incomplete requisition
+
 
             int length = itemName.Length;
+
+            RequisitionItem req = new RequisitionItem();
 
             if (itemName.EndsWith("\""))
             {
                 itemName.Remove(length - 1);
                 itemName.Remove(length - 2);
             }
+
+            int quan= quantity.GetValueOrDefault();
+            int selectId = selectedId.GetValueOrDefault();
+            int raisedStock = 0; int diff = 0;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                Random rand = new Random();
+                int orderNum = rand.Next(10000000, 100000000);
+
+                string details = @"Update Requisitions SET IdStatusCurrent = 2 Where IdRequisition = " + selectedId + "";
+
+
+                SqlCommand cmddd = new SqlCommand(details, conn);
+
+                cmddd.ExecuteNonQuery();
+            }
+     
+
+           req = GetRaiseUnit(selectId, itemName);
+
+            Console.WriteLine(req.Unit);
+
+            raisedStock = req.Unit;
+
+            
+
+            if (raisedStock > quantity)
+            {
+                diff = raisedStock - quan;
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+
+                    string details = @"Update Items SET AvailableUnit = (Select AvailableUnit from Items Where Description = '" + itemName +
+                                       "') +" + diff + "WHERE IdItem =(SELECT IdItem from Items Where Description = '" +
+                                       itemName + "')";
+
+
+                    SqlCommand cmddd = new SqlCommand(details, con);
+
+                    cmddd.ExecuteNonQuery();
+                }
+
+            }
+
+            if (raisedStock < quantity)
+            {
+                diff = quan - raisedStock;
+                using (SqlConnection con = new SqlConnection(connectionString))
+                {
+                    con.Open();
+
+                    string details = @"Update Items SET AvailableUnit = (Select AvailableUnit from Items Where Description = '" + itemName +
+                                       "') -" + diff + "WHERE IdItem =(SELECT IdItem from Items Where Description = '" +
+                                       itemName + "')";
+
+
+                    SqlCommand cmddd = new SqlCommand(details, con);
+
+                    cmddd.ExecuteNonQuery();
+                }
+
+            }
+
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -281,6 +333,47 @@ namespace Team8ADProjectSSIS.Controllers
                 cmddd.ExecuteNonQuery();
             }
 
+
+
+
+
+            return Json(new
+            {
+                result = "OK"
+            });
+        }
+
+
+
+        
+
+        public JsonResult updateItemAvai(string username, int? selectedId, string itemName, int? quantity)
+        {
+
+            int idEmployee = (int)Session["IdEmployee"];
+            //  _requisitionItemDAO.UpdateRequisitionItemUnit(selectedId, itemName, quantity);//add requisitonitem to incomplete requisition
+
+            int length = itemName.Length;
+
+            if (itemName.EndsWith("\""))
+            {
+                itemName.Remove(length - 1);
+                itemName.Remove(length - 2);
+            }
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string details = @"Update Items SET AvailableUnit = (Select AvailableUnit from Items Where Description = '" + itemName +
+                                   "') +" + quantity + "WHERE IdItem =(SELECT IdItem from Items Where Description = '" +
+                                   itemName + "')";
+
+
+                SqlCommand cmddd = new SqlCommand(details, conn);
+
+                cmddd.ExecuteNonQuery();
+            }
+
             return Json(new
             {
                 result = "OK"
@@ -291,28 +384,7 @@ namespace Team8ADProjectSSIS.Controllers
         public JsonResult insertReq(string username, int? selectedId, string itemName, int? quantity)
         {
             _requisitionItemDAO.CreateRequisitionItemByReqID(selectedId, itemName, quantity);
-            /* int length = itemName.Length; 
 
-             if (itemName.EndsWith("\""))
-             {
-                 itemName.Remove(length-1);
-                 itemName.Remove(length - 2);
-             }
-             using (SqlConnection conn = new SqlConnection(connectionString))
-             {
-                 conn.Open();
-
-                 Random rand = new Random();
-                 int orderNum = rand.Next(10000000, 100000000);
-
-                 string details = @"INSERT INTO RequisitionItems VALUES (" + selectedId + ",(SELECT IdItem from Items WHERE Description ='"
-                                   + itemName + "'),"+ quantity + ")";
-
-
-                 SqlCommand cmddd = new SqlCommand(details, conn);
-
-                 cmddd.ExecuteNonQuery();
-             }*/
 
             return Json(new
             {
@@ -320,7 +392,7 @@ namespace Team8ADProjectSSIS.Controllers
             });
         }
 
-        public JsonResult deleteReqItem(string username, int? selectedId, string itemName)
+        public JsonResult deleteReqItem(string username, int? selectedId, string itemName,int itemQuantity)
         {
 
             //    _requisitionItemDAO.DeleteRequisitionItem(selectedId, itemName);
@@ -348,6 +420,34 @@ namespace Team8ADProjectSSIS.Controllers
                 cmddd.ExecuteNonQuery();
             }
 
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string details = @"Update Items SET AvailableUnit = (Select AvailableUnit from Items Where Description = '" + itemName +
+                                   "') +" + itemQuantity + "WHERE IdItem =(SELECT IdItem from Items Where Description = '" +
+                                   itemName + "')";
+
+
+                SqlCommand cmddd = new SqlCommand(details, conn);
+
+                cmddd.ExecuteNonQuery();
+            }
+
+            //using (SqlConnection conn = new SqlConnection(connectionString))
+            //{
+            //    conn.Open();
+
+            //    string details = @"Update Items SET AvailableUnit = (Select AvailableUnit from Items Where Description = '" + itemName +
+            //                       "') +" + quantity + "WHERE IdItem =(SELECT IdItem from Items Where Description = '" +
+            //                       itemName + "')";
+
+
+            //    SqlCommand cmddd = new SqlCommand(details, conn);
+
+            //    cmddd.ExecuteNonQuery();
+            //}
+
             return Json(new
             {
                 result = "OK"
@@ -356,6 +456,8 @@ namespace Team8ADProjectSSIS.Controllers
 
 
 
+
+       
 
         public JsonResult deleteReq(string username, int? selectedId)
         {
@@ -374,7 +476,9 @@ namespace Team8ADProjectSSIS.Controllers
 
                 reqItems.ExecuteNonQuery();
             }
-         
+
+
+
 
             return Json(new
             {
@@ -415,6 +519,43 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return items;
         }
+
+       
+
+      
+
+        public RequisitionItem GetRaiseUnit(int ReqID, string itemName)
+        {
+            RequisitionItem requi = new RequisitionItem();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+
+                conn.Open();
+
+
+                string ch = @"SELECT * from RequisitionItems WHERE IdRequisiton = " + ReqID + 
+                            "AND IdItem = (Select IdItem From Items Where Description = '"+
+                             itemName+ "')";
+
+                SqlCommand chh = new SqlCommand(ch, conn);
+
+                SqlDataReader readerr = chh.ExecuteReader();
+                while (readerr.Read())
+                {
+                    requi = new RequisitionItem()
+                    {
+                        IdReqItem = (int)readerr["IdReqItem"],
+                        IdRequisiton = (int)readerr["IdRequisiton"],
+                        IdItem = (int)readerr["IdItem"],
+                        Unit = (int)readerr["Unit"],
+                    };
+
+                };
+            }
+            return requi;
+        }
+
 
 
         public List<Requisition> ListHistoryReqItems(string startDate, string endDate, string status)
@@ -544,17 +685,20 @@ namespace Team8ADProjectSSIS.Controllers
             return status;
         }
 
-        public List<String> GetDescription(int ReqID)
+
+        
+        
+        public List<Item> GetItemDetails(int ReqID)
         {
-            List<String> description = new List<String>();
-            List<RequisitionItem> reqItemList = _requisitionItemDAO.RetrieveRequisitionItemByReqId(ReqID);
+            List<Item> ites = new List<Item>();
+            //List<RequisitionItem> reqItemList = _requisitionItemDAO.RetrieveRequisitionItemByReqId(ReqID);
 
-            foreach (RequisitionItem ri in reqItemList)
-            {
-                description.Add(ri.Item.Description);
-            }
+            //foreach (RequisitionItem ri in reqItemList)
+            //{
+            //    description.Add(ri.Item.Description);
+            //}
 
-            /*
+
             string des = "";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -571,20 +715,23 @@ namespace Team8ADProjectSSIS.Controllers
                 SqlDataReader readerr = chh.ExecuteReader();
                 while (readerr.Read())
                 {
-                   
-                    des = (string)readerr["Description"];
-                  
-                    description.Add(des);
+                    Item ite = new Item()
+                    {
+                       Description = (string)readerr["Description"],
+                       AvailableUnit = (int)readerr["AvailableUnit"]
+                    };
+
+                    ites.Add(ite);
                 };
-              
-            }*/
-            return description;
+
+            }
+            return ites;
         }
 
 
 
 
-        public Requisition GetRequisition(int idEmployee)
+        public Requisition GetRequisition(int ReqID)
         {
             Requisition requi = new Requisition();
 
@@ -594,7 +741,7 @@ namespace Team8ADProjectSSIS.Controllers
                 conn.Open();
 
 
-                string ch = @"SELECT * from Requisitions WHERE IdEmployee = " + idEmployee + "";
+                string ch = @"SELECT * from Requisitions WHERE IdRequisition = " + ReqID + "";
 
                 SqlCommand chh = new SqlCommand(ch, conn);
 
@@ -667,7 +814,8 @@ namespace Team8ADProjectSSIS.Controllers
                     {
                      
                         Description = (String)readerr["Description"],
-                        unitOfMeasure = (String)readerr["unitOfMeasure"]
+                        unitOfMeasure = (String)readerr["unitOfMeasure"],
+                        AvailableUnit = (int)readerr["AvailableUnit"]
 
                     };
                     items.Add(it);
@@ -689,14 +837,14 @@ namespace Team8ADProjectSSIS.Controllers
 
             int req = reqID.GetValueOrDefault();
             string status = "";
-            List<String> des = new List<String>();
+            List<Item> des = new List<Item>();
             Requisition requi = new Requisition();
-            requi = GetRequisition(idEmployee);
+            requi = GetRequisition(req);
             //  ViewBag.ReqItems = ListReqItems(reqID);
             //string username = "Sam Worthington";
 
             status = GetIdStatus(req);
-            des = GetDescription(req);
+            des = GetItemDetails(req);
             List<Requisition> reqs = ListReqID(idEmployee);
             List<RequisitionItem> reqq = ListReqItems(req);
 
