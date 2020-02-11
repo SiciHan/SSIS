@@ -11,7 +11,39 @@
         <p>Please click view hyperlink to check details of requisition</p>
     </div>
 </div>
-@if (empReqList != null)
+@if (empReqList != null && empReqList.Any())
+{
+    <table>
+        <tr>
+            @if (empReqList != null && empReqList.Any())
+            {
+                <th>Date of Request</th>
+                <th>Requested By</th>
+                <th>Action</th>
+            }
+
+
+        </tr>
+        @foreach (Requisition r in empReqList)
+        {
+            <tr>
+                <td>@r.RaiseDate</td>
+                <td>@r.Employee.Name</td>
+                <td>@Html.ActionLink("View", "PendingDetail", "DepartmentActingHead", new { idRequisition = r.IdRequisition }, null)</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div style="padding:32px">
+        <div class="container">
+            <h2>There is currently no pending list of stationery requests</h2>
+        </div>
+    </div>
+
+}
+@*@if (empReqList != null)
 {
     <table>
         <tr>
@@ -29,7 +61,7 @@
             </tr>
         }
     </table>
-}
+}*@
 
 
 <style>

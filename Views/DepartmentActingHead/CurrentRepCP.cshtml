@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_ActingHeadLayout.cshtml";
     Employee e = (Employee)ViewData["employee"];
     Department d = (Department)ViewData["department"];
-    
+
 }
 
 
@@ -14,7 +14,39 @@
         <p>Please click edit hyperlink to change department rep and collection point</p>
     </div>
 </div>
-<table>
+@if (e != null)
+{
+    <table>
+        <tr>
+            <th>Department Rep</th>
+            <th>Employee Number</th>
+            <th>Email Address</th>
+            <th>Collection Point</th>
+            <th>Action</th>
+
+        </tr>
+        @if (e != null)
+        {
+            <tr>
+                <td>@e.Name</td>
+                <td>@e.IdEmployee</td>
+                <td>@e.Email</td>
+                <td>@d.CollectionPt.Location</td>
+                <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentActingHead")</td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div style="padding:32px">
+        <div class="container">
+            <h2>There is currently no department rep, please add a department rep</h2>
+        </div>
+    </div>
+}
+
+@*<table>
     <tr>
         <th>Department Rep</th>
         <th>Employee Number</th>
@@ -35,7 +67,7 @@
         </tr>
     }
 
-</table>
+</table>*@
 
 <style>
 
