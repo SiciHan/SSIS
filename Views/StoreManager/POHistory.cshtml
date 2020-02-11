@@ -16,6 +16,12 @@
     <input class="form-control" id="myInput" type="text" placeholder="Search.." style="margin-left:15px">
 </div>
 <br />
+@if (AllPO == null || AllPO.Count == 0)
+{
+    <h4 style="color:red"> No purchase order found.</h4>
+}
+else
+{
 <table>
     <tr>
         <th style="width:10%">Purchase Order Id</th>
@@ -43,6 +49,8 @@
         }
     </tbody>
 </table>
+}
+
 
 <style>
 

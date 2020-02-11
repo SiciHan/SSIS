@@ -45,56 +45,65 @@
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
-<div class="container">
-    <table>
-        <tr>
-            <th>
-                Item
-            </th>
-            <th>
-                Unit
-            </th>
-            <th>
-                Single Price
-            </th>
-            <th>
-                Store Clerk
-            </th>
-            <th>
-                Reason
-            </th>
-            <th>
-                Status
-            </th>
-        </tr>
-        @foreach (StockRecord voucher in vouchers)
-        {
+@if (vouchers == null || vouchers.Count == 0)
+{
+    <h4 style="color:red"> No voucher found.</h4>
+}
+else
+{
+    <div class="container">
+        <table>
             <tr>
-                <td>
-                    @voucher.Item.Description
-                </td>
-                <td>
-                    @voucher.Unit
-                </td>
-                <td>
-                    @prices[i]
-                </td>
-                <td>
-                    @voucher.StoreClerk.Name
-                </td>
-                <td>
-                    @voucher.Operation.Label
-                </td>
-                <td>
-                    @status[i]
-                </td>
+                <th>
+                    Item
+                </th>
+                <th>
+                    Unit
+                </th>
+                <th>
+                    Single Price
+                </th>
+                <th>
+                    Store Clerk
+                </th>
+                <th>
+                    Reason
+                </th>
+                <th>
+                    Status
+                </th>
             </tr>
-            i++;
-        }
-    </table>
-    <input type="button" class="btn btn-primary" value="Back"
-           onclick="location.href='@Url.Action("Voucher", "StoreSupervisor")'" style="margin-top:24px" />
-</div>
+            @foreach (StockRecord voucher in vouchers)
+            {
+                <tr>
+                    <td>
+                        @voucher.Item.Description
+                    </td>
+                    <td>
+                        @voucher.Unit
+                    </td>
+                    <td>
+                        @prices[i]
+                    </td>
+                    <td>
+                        @voucher.StoreClerk.Name
+                    </td>
+                    <td>
+                        @voucher.Operation.Label
+                    </td>
+                    <td>
+                        @status[i]
+                    </td>
+                </tr>
+                i++;
+            }
+        </table>
+        <input type="button" class="btn btn-primary" value="Back"
+               onclick="location.href='@Url.Action("Voucher", "StoreSupervisor")'" style="margin-top:24px" />
+    </div>
+}
+
+
 
 <style>
 
