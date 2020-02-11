@@ -151,9 +151,18 @@
 
         if (cartItemNames.length > 0) {
 
+             for (var i = 0; i < cartItemNames.length; i++) {
+                if (quantityInputs[i].value < 0) {
+                    alert("Item  " + cartItemNames[i].innerText + " raised quantity is not acceptable.\nPlease amend and submit again!");
+                    return
+                }
+            }
+
             for (var i = 0; i < cartItemNames.length; i++) {
                 if (quantityInputs[i].value > avaiquantity[i].innerText) {
-                    alert("Item  " + cartItemNames[i].innerText + " does not have enought available quantity.\nPlease amend and submit again!");
+                    console.log(avaiquantity[i].innerText);
+                    console.log(quantityInputs[i].value);
+                    alert("Item  " + cartItemNames[i].innerText + " does not have enougth available quantity.\nPlease amend and submit again!\n");
                     return
                 }
             }
@@ -179,6 +188,11 @@
                 }
             }
             for (var i = 0; i < cartItemNames.length; i++) {
+
+                   console.log(avaiquantity[i].innerText);
+                console.log(quantityInputs[i].value);
+
+
                 var g = {};
                 g.url = '/Employee/updateReq';
                 g.type = "POST";
