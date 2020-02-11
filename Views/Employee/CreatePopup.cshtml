@@ -95,6 +95,7 @@
             var cartRowContents = `
             <span class="cart-item-title">${title}</span>
             <span class="cart-title cart-column">${price}</span>
+            <span class="avai-quantity"  style="display: none;">${quan}</span>    
             <div class="cart-quantity cart-column">
                 <input class="cart-quantity-input" type="number" max="${quan}" value="1">
                 <button class="btn btn-remove" onclick="removeCart()" type="button">REMOVE</button>

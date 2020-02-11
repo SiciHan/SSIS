@@ -414,9 +414,18 @@
                 var cartItems = document.getElementsByClassName('cart-items')[0]
                 var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
                 var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
+                var avaiquantity = cartItems.getElementsByClassName('avai-quantity');
 
                 if (cartItemNames.length == 0) {
                     alert("There is no items in the requisition.");
+                    return
+                }
+
+                for (var i = 0; i < cartItemNames.length; i++) {
+                    if (quantityInputs[i].value > avaiquantity[i].innerText) {
+                        alert("Item  " + cartItemNames[i].innerText + " does not have enought available quantity.\nPlease amend and submit again!");
+                        return
+                    }
                 }
                 var f = {};
                 f.url = '/Employee/reqId/';
