@@ -62,52 +62,65 @@ function createReqitems() {
     var cartItems = document.getElementsByClassName('cart-items')[0]
     var cartItemNames = cartItems.getElementsByClassName('cart-item-title')
     var quantityInputs = cartItems.getElementsByClassName('cart-quantity-input')
-
+    var avaiquantity = cartItems.getElementsByClassName('avai-quantity');
 
     if (cartItemNames.length == 0) {
         alert("There is no items in the requisition.");
+        return
     }
 
-    else {
+  
 
-        var f = {};
-        f.url = '/Employee/reqId/';
-        f.type = "POST";
-        f.dataType = "json";
-        f.data = JSON.stringify({ username: "Sam Worthington" });
-        f.contentType = "application/json";
-        f.success = function (response) {
-
-
-
-            for (var i = 0; i < cartItemNames.length; i++) {
-                var g = {};
-                g.url = '/Employee/OnJSON';
-                g.type = "POST";
-                g.dataType = "json";
-                g.data = JSON.stringify({ itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
-                g.contentType = "application/json";
-                g.success = function (response) {
-                    // alert("Req Items write success");
-                };
-                g.error = function (response) {
-                    // alert("Req Items write failed");
-                };
-                $.ajax(g);
-            }
-
-            alert("Requisition has been sucessfully created!");
-
-            while (cartItems.hasChildNodes()) {
-                cartItems.removeChild(cartItems.firstChild)
-            }
-
-        };
-        f.error = function (response) {
-            alert("Requisition creation failed.Please try again!");
-        };
-        $.ajax(f);
+    for (var i = 0; i < cartItemNames.length; i++) {
+        if (quantityInputs[i].value > avaiquantity[i].innerText) {
+            alert("Item  " + cartItemNames[i].innerText + " does not have enought available quantity.\nPlease amend and submit again!");
+            return
+        }
     }
+
+
+    var f = {};
+    f.url = '/Employee/reqId/';
+    f.type = "POST";
+    f.dataType = "json";
+    f.data = JSON.stringify({ username: "Sam Worthington" });
+    f.contentType = "application/json";
+    f.success = function (response) {
+
+
+
+        for (var i = 0; i < cartItemNames.length; i++) {
+            var g = {};
+            g.url = '/Employee/OnJSON';
+            g.type = "POST";
+            g.dataType = "json";
+            g.data = JSON.stringify({ itemName: cartItemNames[i].innerText, quantity: quantityInputs[i].value });
+            g.contentType = "application/json";
+            g.success = function (response) {
+                // alert("Req Items write success");
+            };
+            g.error = function (response) {
+                // alert("Req Items write failed");
+            };
+            $.ajax(g);
+        }
+
+        alert("Requisition has been sucessfully created!");
+
+        while (cartItems.hasChildNodes()) {
+            cartItems.removeChild(cartItems.firstChild)
+        }
+
+    };
+    f.error = function (response) {
+        alert("Requisition creation failed.Please try again!");
+    };
+    $.ajax(f);
+    
+
+    
+
+       
 
 }
 
@@ -278,7 +291,9 @@ function addToCartRecentClicked(event) {
             var price = prices[i-2].innerText;
             console.log(price);
 
-            var quan = quantity[i-2].innerText;
+            var quan = quantity[i - 2].innerText;
+
+
             addItemToCart(title, price, quan);
 
             
@@ -345,9 +360,11 @@ function addItemToCart(title, price, quan) {
         }
     }
 
+
     var cartRowContents = ` 
         <span class="cart-item-title">${title}</span>
-        <span class="cart-title cart-column">${price}</span>      
+        <span class="cart-title cart-column">${price}</span>  
+        <span class="avai-quantity"  style="display: none;">${quan}</span>    
         <div class="cart-quantity cart-column">
             <input class="cart-quantity-input" type="number" max="${quan}" value="1">
             <button class="btn btn-primary btn-danger" type="button">REMOVE</button>
