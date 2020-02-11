@@ -207,13 +207,26 @@ namespace Team8ADProjectSSIS.Controllers
         [AuthenticateFilter]
         public JsonResult GetUnreadNotificationCount(int IdReceiver)
         {
-            
+
             int count = _notificationChannelDAO.GetUnreadNotificationCount(IdReceiver);
             return Json(count, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetName(int Id)
+        {
 
-        
+            string name = _employeeDAO.FindEmployeeById(Id).Name;
+            return Json(name, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetDepartment(int Id)
+        {
+
+            string department = _employeeDAO.FindEmployeeById(Id).CodeDepartment;
+            return Json(department, JsonRequestBehavior.AllowGet);
+        }
+
+
+
 
     }
 }

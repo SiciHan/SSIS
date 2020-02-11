@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -311,12 +312,14 @@ namespace Team8ADProjectSSIS.Controllers
             string s2 = EndDate;
             if (submit.Equals("Back"))
             {
+                Debug.WriteLine("Back");
                 return RedirectToAction("ViewDelegations", "DepartmentHead");
             }
             else if (submit.Equals("Approve Delegate"))
             {
+                Debug.WriteLine("Approve");
                 // First check if they are null
-                if(empName!=null && !string.IsNullOrEmpty(s1) && !string.IsNullOrEmpty(s2) )
+                if (empName!=null && !string.IsNullOrEmpty(s1) && !string.IsNullOrEmpty(s2) )
                 {
                     DateTime SDate = DateTime.ParseExact(s1, "dd-MM-yyyy",
                                System.Globalization.CultureInfo.InvariantCulture);
@@ -356,8 +359,26 @@ namespace Team8ADProjectSSIS.Controllers
                         _notificationChannelDAO.CreateNotificationsToIndividual(idDepartmentHead, (int)Session["IdEmployee"], message);
                         emailClass.SendTo(_employeeDAO.FindEmployeeById(idDepartmentHead).Email, "SSIS System Email", message);
                         //end of notification sending 
-
                     }
+                    else
+                    {
+                        ModelState.AddModelError("", "The end date should be later than startdate.");
+
+                        string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
+                        List<Employee> empList = _employeeDAO.FindEmployeeListByDepartmentAndRole(codeDepartment);
+                        ViewBag.EmployeeList = empList;
+                        return View("Delegation");
+                    }
+                    
+                }
+                else
+                {
+                    ModelState.AddModelError("", "The fields are invalid.");
+                    
+                    string codeDepartment = _departmentDAO.FindCodeDepartmentByIdEmployee((int)Session["IdEmployee"]);
+                    List<Employee> empList = _employeeDAO.FindEmployeeListByDepartmentAndRole(codeDepartment);
+                    ViewBag.EmployeeList = empList;
+                    return View("Delegation");
                 }
                 return RedirectToAction("ViewDelegations", "DepartmentHead");
             }
