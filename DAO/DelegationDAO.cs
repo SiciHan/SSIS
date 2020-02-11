@@ -26,7 +26,11 @@ namespace Team8ADProjectSSIS.DAO
             d.EndDate = DateTime.Now;
             // change idRole as well
             Employee e = context.Employees.Where(x => x.Role.Label.Equals("ActingHead")).FirstOrDefault();
-            e.IdRole = 1;
+            if (e != null)
+            {
+                e.IdRole = 1;
+            }
+            
             context.SaveChanges();
             return d;
         }
