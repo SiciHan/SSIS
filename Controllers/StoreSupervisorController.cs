@@ -255,10 +255,6 @@ namespace Team8ADProjectSSIS.Controllers
             return File(ExcelData, "application/xlsx", "Ordered Data.xlsx");
         }
           
-        public ActionResult PrintPDF()
-        {
-            return View();
-        }
           
         [HttpPost]
         public ActionResult HandlePO(string handle, List<int> purchase_ordersId, string remarks)

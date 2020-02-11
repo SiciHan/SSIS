@@ -105,7 +105,8 @@ function createReqitems() {
             $.ajax(g);
         }
 
-        alert("Requisition has been sucessfully created!");
+        if (!alert('Requisition has been sucessfully created!')) { window.location.reload(); }
+       
 
         while (cartItems.hasChildNodes()) {
             cartItems.removeChild(cartItems.firstChild)
