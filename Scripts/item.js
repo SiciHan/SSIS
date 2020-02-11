@@ -72,7 +72,7 @@ function createReqitems() {
   
 
     for (var i = 0; i < cartItemNames.length; i++) {
-        if (quantityInputs[i].value > avaiquantity[i].innerText) {
+        if (quantityInputs[i].value > parseInt(avaiquantity[i].innerText) ){
             alert("Item  " + cartItemNames[i].innerText + " does not have enought available quantity.\nPlease amend and submit again!");
             return
         }
@@ -105,7 +105,8 @@ function createReqitems() {
             $.ajax(g);
         }
 
-        alert("Requisition has been sucessfully created!");
+        if (!alert('Requisition has been sucessfully created!')) { window.location.reload(); }
+       
 
         while (cartItems.hasChildNodes()) {
             cartItems.removeChild(cartItems.firstChild)

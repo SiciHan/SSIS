@@ -161,7 +161,7 @@
             for (var i = 0; i < cartItemNames.length; i++) {
 
 
-                if (quantityInputs[i].value > avaiquantity[i].innerText) {
+                if (quantityInputs[i].value > parseInt(avaiquantity[i].innerText)) {
                     console.log(avaiquantity[i].innerText);
                     console.log(quantityInputs[i].value);
                     alert("Item  " + cartItemNames[i].innerText + " does not have enougth available quantity.\nPlease amend and submit again!\n");
@@ -195,7 +195,7 @@
 
                 console.log(avaiquantity[i].innerText);
                 console.log(quantityInputs[i].value);
-                   if (quantityInputs[i].value > avaiquantity[i].innerText) {
+                   if (quantityInputs[i].value > parseInt(avaiquantity[i].innerText)) {
                     alert("Item  " + cartItemNames[i].innerText + " does not have enougth available quantity.\nPlease amend and submit again!\n");
                     return
                 }
