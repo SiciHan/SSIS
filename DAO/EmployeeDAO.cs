@@ -23,13 +23,7 @@ namespace Team8ADProjectSSIS.DAO
             Employee currentRep = context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment) && e.Role.Label.Equals("Representative")).Include(x=>x.Department.CollectionPt).FirstOrDefault();
             return currentRep;
         }
-        //SH
-        public void RemoveDelegate(int idEmployee)
-        {
-            Employee emp = context.Employees.Where(e=>e.IdEmployee == idEmployee).FirstOrDefault();
-            emp.IdRole = 1;// change idrole back to 1
-            context.SaveChanges();
-        }
+        
         //SH
         public void DelegateEmployeeToActingRole(string name)
         {

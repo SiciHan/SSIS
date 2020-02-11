@@ -53,7 +53,7 @@
 {
    
     <div class="row">
-        <div class="col-md-10 col-md-offset-2">
+        <div class="col-md-10">
             <p>Employee Name: @r.Employee.Name</p>
             <p>Date of Request: @r.RaiseDate</p>
             @*<p>RequisitionId: @r.IdRequisition</p>*@
@@ -62,8 +62,8 @@
 
     </div>
     <div class="row">
-        <div class="col-md-10 col-md-offset-2">
-            <table>
+        <div class="col-md-10">
+            <table class="table table-hover">
                 <tr>
                     <th align="center">Item Id</th>
                     <th align="center">Description</th>
@@ -81,7 +81,7 @@
                 }
             </table>
             @*<h2>Approve/Reject Remarks</h2><input type="text" name="remarks" value="" />*@
-            <h2>Approve/Reject Remarks</h2><textarea name="remarks"></textarea>
+            <p><b>Approve/Reject Remarks</b></p><textarea class="form-control" name="remarks"></textarea>
         </div>
     </div>
 
@@ -90,9 +90,9 @@
            
         </div>
 
-        <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-top:24px" />
+        <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-right:150px;margin-top:24px" />
 
-        <input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-right:24px; margin-top:24px" />
+        <input type="submit" class="btn btn-danger" name="judge" value="Reject" style="float:right; margin-right:100px; margin-top:24px" />
     </div>
 
 }
