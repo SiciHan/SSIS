@@ -15,6 +15,13 @@
     <input class="form-control" id="myInput" type="text" placeholder="Search.." style="margin-left:15px">
 </div>
 <br />
+
+@if (AllRequisitions == null || AllRequisitions.Count == 0)
+{
+    <h4 style="color:red"> No requisition found.</h4>
+}
+else
+{
 <table>
     <tr>
         <th>Requisition No</th>
@@ -36,6 +43,8 @@
         }
     </tbody>
 </table>
+}
+
 
 <style>
 

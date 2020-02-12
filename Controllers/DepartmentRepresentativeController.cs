@@ -131,8 +131,20 @@ namespace Team8ADProjectSSIS.Controllers
             //List<Disbursement> disbursements = _disbursementDAO.GetReceivedDisbursements(employee.CodeDepartment, searchContext);
             List<Disbursement> disbursements = _disbursementDAO.GetReceivedAndDisbursedDisbursements(employee.CodeDepartment, searchContext);
             ViewBag.disbursements = disbursements;
-            Disbursement disbursement = _disbursementDAO.GetReceivedDisbursements(employee.CodeDepartment, searchContext)[0];
-            ViewBag.disbursedBy = _collectionPointDAO.FindClerkByCollectionPointId(disbursement.CollectionPoint.IdCollectionPt);
+
+            List<Disbursement> disbursementsReceived = _disbursementDAO.GetReceivedDisbursements(employee.CodeDepartment, searchContext);
+            Disbursement disbursement;
+            if (disbursementsReceived.Count!=0)
+            {
+                disbursement = disbursementsReceived[0];
+                ViewBag.disbursedBy = _collectionPointDAO.FindClerkByCollectionPointId(disbursement.CollectionPoint.IdCollectionPt);
+
+            }
+            else
+            {
+                ViewBag.disbursedBy = null;
+
+            }
             ViewBag.searchContext = searchContext;            
             return View();
         }

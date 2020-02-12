@@ -18,58 +18,67 @@
     <input class="form-control" id="myInput" type="text" placeholder="Search.." style="margin-left:15px">
 </div>
 <br />
-<div class="container-fluid">
-    <table>
-        <tr>
-            <th>
-                Item
-            </th>
-            <th>
-                Unit
-            </th>
-            <th>
-                Single Price
-            </th>
-            <th>
-                Store Clerk
-            </th>
-            <th>
-                Reason
-            </th>
-            <th>
-                Status
-            </th>
-        </tr>
-        <tbody id="myTable">
-            @foreach (StockRecord voucher in vouchers)
-            {
-                <tr>
-                    <td>
-                        @voucher.Item.Description
-                    </td>
-                    <td>
-                        @voucher.Unit
-                    </td>
-                    <td>
-                        @prices[i]
-                    </td>
-                    <td>
-                        @voucher.StoreClerk.Name
-                    </td>
-                    <td>
-                        @voucher.Operation.Label
-                    </td>
-                    <td>
-                        @status[i]
-                    </td>
-                </tr>
-                i++;
-            }
-        </tbody>
-    </table>
-    <input type="button" class="btn btn-primary" value="Back" onclick="location.href='@Url.Action("Voucher", "StoreManager")'"
-           style="margin-top:24px" />
-</div>
+
+@if (vouchers == null || vouchers.Count == 0)
+{
+    <h4 style="color:red"> No voucher found.</h4>
+}
+else
+{
+    <div class="container-fluid">
+        <table>
+            <tr>
+                <th>
+                    Item
+                </th>
+                <th>
+                    Unit
+                </th>
+                <th>
+                    Single Price
+                </th>
+                <th>
+                    Store Clerk
+                </th>
+                <th>
+                    Reason
+                </th>
+                <th>
+                    Status
+                </th>
+            </tr>
+            <tbody id="myTable">
+                @foreach (StockRecord voucher in vouchers)
+                {
+                    <tr>
+                        <td>
+                            @voucher.Item.Description
+                        </td>
+                        <td>
+                            @voucher.Unit
+                        </td>
+                        <td>
+                            @prices[i]
+                        </td>
+                        <td>
+                            @voucher.StoreClerk.Name
+                        </td>
+                        <td>
+                            @voucher.Operation.Label
+                        </td>
+                        <td>
+                            @status[i]
+                        </td>
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+        <input type="button" class="btn btn-primary" value="Back" onclick="location.href='@Url.Action("Voucher", "StoreManager")'"
+               style="margin-top:24px" />
+    </div>
+}
+
 
 <style>
 

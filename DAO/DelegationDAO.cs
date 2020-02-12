@@ -22,11 +22,10 @@ namespace Team8ADProjectSSIS.DAO
         public Delegation DeactivateDelegationByDelegationId(int idDelegation)
         {
             Delegation d = context.Delegations.Where(x => x.IdDelegation == idDelegation).FirstOrDefault();
+            Employee e = context.Employees.Where(x => x.IdEmployee == d.IdEmployee).FirstOrDefault();
+            e.Role = context.Roles.Where(x => x.Label.Contains("ActingHead")).FirstOrDefault();
             // set d. end date
             d.EndDate = DateTime.Now;
-            // change idRole as well
-            Employee e = context.Employees.Where(x => x.Role.Label.Equals("ActingHead")).FirstOrDefault();
-            e.IdRole = 1;
             context.SaveChanges();
             return d;
         }
@@ -112,7 +111,7 @@ namespace Team8ADProjectSSIS.DAO
             foreach(Delegation d in delegations)
             {
                 //if start date is ealier than current tiem, and current time is earlier than end date
-                if(DateTime.Compare(d.StartDate, DateTime.Now)<=0 && DateTime.Compare(DateTime.Now, d.EndDate) <= 0)
+                if(d.StartDate<=DateTime.Now && d.EndDate>=DateTime.Now)
                 {
                     return true;
                 }
