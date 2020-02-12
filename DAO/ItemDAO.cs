@@ -77,11 +77,11 @@ namespace Team8ADProjectSSIS.DAO
                         items.StockUnit = items.StockUnit - disbursementItem.UnitIssued;
                         context.SaveChanges();
                     }
-                    if (items.AvailableUnit - disbursementItem.UnitIssued >= 0)
+                    /*if (items.AvailableUnit - disbursementItem.UnitIssued >= 0)
                     {
                         items.AvailableUnit = items.AvailableUnit - disbursementItem.UnitIssued;
                         context.SaveChanges();
-                    }
+                    }*/
 
                 }
 
