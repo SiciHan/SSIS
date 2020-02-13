@@ -15,7 +15,7 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
-
+        //Huang Yuzhe
         public List<SupplierItem> GetSuppliersById(int itemId)
         {
             List<SupplierItem> suppliers = new List<SupplierItem>();
@@ -29,7 +29,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return suppliers;
         }
-
+        //Huang Yuzhe
         public SupplierItem FindByItem(Item item)
         {
             return context.SupplierItems

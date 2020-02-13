@@ -65,7 +65,7 @@ namespace Team8ADProjectSSIS.DAO
 
             }
         }
-
+        //Huang Yuzhe
         public List<StockRecord> FindVoucher()
         {
             List<StockRecord> temp = context.StockRecords // renamed to temp from vouchers
@@ -94,7 +94,7 @@ namespace Team8ADProjectSSIS.DAO
 
             return vouchers;
         }
-
+        //Huang Yuzhe
         public List<StockRecord> FindJudgedVoucher()
         {
             List<StockRecord> temp = context.StockRecords // renamed to temp from vouchers
@@ -121,7 +121,7 @@ namespace Team8ADProjectSSIS.DAO
 
             return vouchers;
         }
-
+        //Huang Yuzhe
         public List<StockRecord> FindVoucherForSupervisor()
         {
             List<StockRecord> temp = context.StockRecords // renamed to temp from vouchers
@@ -149,7 +149,7 @@ namespace Team8ADProjectSSIS.DAO
 
             return vouchers;
         }
-
+        //Huang Yuzhe
         public List<StockRecord> FindJudgedVoucherForSupervisor()
         {
             List<StockRecord> temp = context.StockRecords // renamed to temp from vouchers
@@ -177,7 +177,7 @@ namespace Team8ADProjectSSIS.DAO
             return vouchers;
         }
 
-        
+        //Huang Yuzhe
         public void UpdateVoucherToApproved(List<StockRecord> vouchers)
         {
             foreach(StockRecord voucher in vouchers)
@@ -221,7 +221,7 @@ namespace Team8ADProjectSSIS.DAO
                 context.SaveChanges();
             }
         }
-
+        //Huang Yuzhe
         public void UpdateVoucherToRejected(List<StockRecord> vouchers)
         {
             foreach (StockRecord voucher in vouchers)

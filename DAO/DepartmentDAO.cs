@@ -51,6 +51,7 @@ namespace Team8ADProjectSSIS.DAO
             return department.CodeDepartment;
         }
 
+        //Huang Yuzhe
         public List<Department> FindAllDepartments()
         {
             List<Department> departments = context.Departments.ToList();

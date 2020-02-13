@@ -120,6 +120,7 @@ namespace Team8ADProjectSSIS.Controllers
         {
             // Assume ClerkID
             int IdStoreClerk = (int)Session["IdEmployee"];
+            //Huang Yuzhe : changing collection points function
             if (idCPs != null)
             {
                 foreach (int id in idCPs)

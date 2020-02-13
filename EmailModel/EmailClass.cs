@@ -6,6 +6,7 @@ using System.Web;
 
 namespace Team8ADProjectSSIS.EmailModel
 {
+    //Huang Yuzhe
     public class EmailClass
     {
         SmtpClient client;

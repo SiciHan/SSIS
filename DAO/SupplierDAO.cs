@@ -8,6 +8,7 @@ namespace Team8ADProjectSSIS.DAO
 {
     public class SupplierDAO
     {
+        //Huang Yuzhe
         public Supplier GetSupplierById(string codeSupplier)
         {
             Supplier supplier = new Supplier();

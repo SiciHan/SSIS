@@ -69,6 +69,8 @@ namespace Team8ADProjectSSIS.Controllers
 
             return View();
         }
+
+        //Huang Yuzhe
         public ActionResult Dashboard(string category="", string department="")
         {
             List<DateTime> times = new List<DateTime>();
@@ -199,6 +201,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        //Huang Yuzhe
         public ActionResult ItemsForSuppliers()
         {
             List<Item> items = _itemDAO.GetAllItems();
@@ -206,6 +209,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        //Huang Yuzhe
         public ActionResult Suppliers(int itemId)
         {
             List<SupplierItem> supplierItems = _supplieritemDAO.GetSuppliersById(itemId);
@@ -253,6 +257,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        //Huang Yuzhe
         public ActionResult Voucher()
         {
             List<StockRecord> vouchers = _stockRecordDAO.FindVoucher();
@@ -267,6 +272,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        //Huang Yuzhe
         public ActionResult VoucherHistory()
         {
             List<StockRecord> vouchers = _stockRecordDAO.FindJudgedVoucher();
@@ -291,6 +297,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        //Huang Yuzhe
         [HttpPost]
         public ActionResult JudgeAdjustment(string judge, List<int> vouchersId)
         {

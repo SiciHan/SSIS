@@ -52,7 +52,8 @@ namespace Team8ADProjectSSIS.Controllers
 
             return View();
         }
-          
+
+        //Huang Yuzhe
         public ActionResult Voucher()
         {
             List<StockRecord> vouchers = _stockRecordDAO.FindVoucherForSupervisor();
@@ -66,7 +67,8 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["vouchers"] = vouchers;
             return View();
         }
-          
+
+        //Huang Yuzhe
         public ActionResult VoucherHistory()
         {
             List<StockRecord> vouchers = _stockRecordDAO.FindJudgedVoucherForSupervisor();
@@ -90,21 +92,24 @@ namespace Team8ADProjectSSIS.Controllers
             ViewData["status"] = status;
             return View();
         }
-          
+
+        //Huang Yuzhe
         public ActionResult PurchaseOrder()
         {
             List<PurchaseOrder> pendingPOs = _purchaseOrderDAO.FindPendingPO();
             ViewData["pengding"] = pendingPOs;
             return View();
         }
-          
+
+        //Huang Yuzhe
         public ActionResult POHistory()
         {
             List<PurchaseOrder> handledPOs = _purchaseOrderDAO.FindHandledPO();
             ViewData["handledPOs"] = handledPOs;
             return View();
         }
-          
+
+        //Huang Yuzhe
         public ActionResult PurchaseOrderDetail(int idPurchaseOrder)
         {
             List<PurchaseOrderDetail> PODetails = _purchaseOrderDetailsDAO.FindDetailPO(idPurchaseOrder);
@@ -113,7 +118,8 @@ namespace Team8ADProjectSSIS.Controllers
             ViewBag.po = po;
             return View();
         }
-          
+
+        //Huang Yuzhe
         public ActionResult DashBoard(string category = "", string department = "")
         {
             List<DateTime> times = new List<DateTime>();
@@ -255,8 +261,8 @@ namespace Team8ADProjectSSIS.Controllers
 
             return File(ExcelData, "application/xlsx", "Ordered Data.xlsx");
         }
-          
-          
+
+        //Huang Yuzhe
         [HttpPost]
         public ActionResult HandlePO(string handle, List<int> purchase_ordersId, string remarks)
         {
@@ -297,7 +303,8 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return RedirectToAction("PurchaseOrder", "StoreSupervisor");
         }
-          
+
+        //Huang Yuzhe
         [HttpPost]
         public ActionResult HandleAdjustment(string handle, List<int> vouchersId)
         {

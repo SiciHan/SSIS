@@ -131,6 +131,7 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        //Huang Yuzhe
         public int FindClerkIdByCPId(int CPId)
         {
             int ClerkId = context.CPClerks

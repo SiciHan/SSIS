@@ -35,6 +35,7 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        //Huang Yuzhe
         public List<Category> FindAllCategories()
         {
             List<Category> categories = context.Categories.ToList();

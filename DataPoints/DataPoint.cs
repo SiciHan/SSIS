@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 
 namespace Team8ADProjectSSIS.DataPoints
 {
+    //Huang Yuzhe
     //for the dashboard bar chart
     public class DataPoint
     {

@@ -59,6 +59,7 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
+        //Huang Yuzhe
         public List<int> FindByClerkId(int clerkId)
         {
             List<int> CPs = new List<int>();
@@ -78,6 +79,7 @@ namespace Team8ADProjectSSIS.DAO
                 .FirstOrDefault();//assume only one clerk handle the cp.
         }
 
+        //Huang Yuzhe
         public void ChangeCPTo(int ClerkId, List<int> new_IdCPs)
         {
             List<int> IdTables = context.CPClerks

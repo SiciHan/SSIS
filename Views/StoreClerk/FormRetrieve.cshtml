@@ -49,6 +49,7 @@
     <div class="form">
         @using (Html.BeginForm("FormRetrieve", "StoreClerk", FormMethod.Post))
         {
+            @*Huang Yuzhe*@
             <div width="513" onclick="choicetest();">
                 <input type="checkbox" name="idCPs" id="CPs" value="1" />Management School
                 <input type="checkbox" name="idCPs" id="CPs" value="2" />Stationery Store
@@ -191,7 +192,7 @@ else
                 }
             }
         }
-
+        @*Huang Yuzhe*@
         function choicetest() {
             var choicearr = document.getElementsByName("idCPs");
             var a = 0;

@@ -245,7 +245,8 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return po;
         }
-        
+
+        //Huang Yuzhe
         public List<PurchaseOrder> FindHandledPO()
         {
             List<PurchaseOrder> handledPO = context.PurchaseOrders
@@ -263,6 +264,7 @@ namespace Team8ADProjectSSIS.DAO
             return handledPO;
         }
 
+        //Huang Yuzhe
         public void UpdatePOToApproved(List<PurchaseOrder> POs)
         {
             foreach (PurchaseOrder po in POs)
@@ -276,6 +278,7 @@ namespace Team8ADProjectSSIS.DAO
             }
         }
 
+        //Huang Yuzhe
         public void UpdatePOToRejected(List<PurchaseOrder> POs, string remarks)
         {
             foreach (PurchaseOrder po in POs)
