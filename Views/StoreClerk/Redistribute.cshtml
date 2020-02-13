@@ -1,4 +1,6 @@
-﻿@using Team8ADProjectSSIS.Models
+﻿@*Author: James*@
+
+@using Team8ADProjectSSIS.Models
 
 @{
     ViewBag.Title = "Redistribute";
@@ -24,46 +26,47 @@
 
 @using (Html.BeginForm("ScheduleSingle", "StoreClerk", FormMethod.Post))
 {
-<div style="overflow-x:auto">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Description</th>
-                <th scope="col">Qty Requested</th>
-                <th scope="col">Qty from Store</th>
-                <th scope="col">Add Qty</th>
-                <th scope="col">Dept From</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (DisbursementItem i in disbursementItems)
-            {
+    <div style="overflow-x:auto">
+        <table class="table table-hover">
+            <thead>
                 <tr>
-                @if(i.UnitIssued < i.UnitRequested)
+                    <th scope="col">Description</th>
+                    <th scope="col">Qty Requested</th>
+                    <th scope="col">Qty from Store</th>
+                    <th scope="col">Add Qty</th>
+                    <th scope="col">Dept From</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DisbursementItem i in disbursementItems)
                 {
-                    @:<tr class="label-warning">
-                }
-                    <td>@i.Item.Description<input type="hidden" name="disbItemId" value="@i.IdDisbursementItem" /></td>
-                    <td>@i.UnitRequested</td>
-                    <td>@i.UnitIssued</td>
-                    <td>
-                        <input class="slider" type="range" name="transferQtySlider" id="transferQtyInput@(i.IdDisbursementItem)" value=0 min="0" max="0" oninput='transferQtyOutput@(i.IdDisbursementItem).value = transferQtyInput@(i.IdDisbursementItem).value' />
-                        <br />
-                        <div class="number-input">
-                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();transferQtyInput@(i.IdDisbursementItem).value--"></button>
-                            <input class="transferQtyNum" type="number" name="transferQtyNum" id="transferQtyOutput@(i.IdDisbursementItem)" value="0" min="0" max="0" oninput='transferQtyInput@(i.IdDisbursementItem).value = transferQtyOutput@(i.IdDisbursementItem).value' />
-                            <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();transferQtyInput@(i.IdDisbursementItem).value++" class="plus"></button>
-                        </div>
-                    </td>
-                    <td>
-                        <select id="disbItemIdDeptFrom@(i.IdDisbursementItem)" name="disbItemIdDeptFrom" class="form-control disbItemIdDeptFrom@(i.IdDisbursementItem)">
-                            <option value="0" data-unitIssued="0">Select</option>
-                            @foreach (DisbursementItem j in dropdownDisbursementItems.Where(x => x.IdItem == i.IdItem).ToList())
-                            {
-                                <option value="@j.IdDisbursementItem" data-unitIssued="@j.UnitIssued">@j.Disbursement.Department.Name: @j.UnitIssued</option>
-                            }
-                        </select>
-                        <script>
+                    <tr>
+                        @if (i.UnitIssued < i.UnitRequested)
+                        {
+                            @:
+                        <tr class="label-warning">
+                        }
+                        <td>@i.Item.Description<input type="hidden" name="disbItemId" value="@i.IdDisbursementItem" /></td>
+                        <td>@i.UnitRequested</td>
+                        <td>@i.UnitIssued</td>
+                        <td>
+                            <input class="slider" type="range" name="transferQtySlider" id="transferQtyInput@(i.IdDisbursementItem)" value=0 min="0" max="0" oninput='transferQtyOutput@(i.IdDisbursementItem).value = transferQtyInput@(i.IdDisbursementItem).value' />
+                            <br />
+                            <div class="number-input">
+                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepDown();transferQtyInput@(i.IdDisbursementItem).value--"></button>
+                                <input class="transferQtyNum" type="number" name="transferQtyNum" id="transferQtyOutput@(i.IdDisbursementItem)" value="0" min="0" max="0" oninput='transferQtyInput@(i.IdDisbursementItem).value = transferQtyOutput@(i.IdDisbursementItem).value' />
+                                <button type="button" onclick="this.parentNode.querySelector('input[type=number]').stepUp();transferQtyInput@(i.IdDisbursementItem).value++" class="plus"></button>
+                            </div>
+                        </td>
+                        <td>
+                            <select id="disbItemIdDeptFrom@(i.IdDisbursementItem)" name="disbItemIdDeptFrom" class="form-control disbItemIdDeptFrom@(i.IdDisbursementItem)">
+                                <option value="0" data-unitIssued="0">Select</option>
+                                @foreach (DisbursementItem j in dropdownDisbursementItems.Where(x => x.IdItem == i.IdItem).ToList())
+                                {
+                                    <option value="@j.IdDisbursementItem" data-unitIssued="@j.UnitIssued">@j.Disbursement.Department.Name: @j.UnitIssued</option>
+                                }
+                            </select>
+                            <script>
                                 $(function () {
                                     $('#disbItemIdDeptFrom@(i.IdDisbursementItem)').change(function () {
                                         var maxUnits = $(this).find('option:selected').attr("data-unitIssued");
@@ -79,13 +82,13 @@
                                         }).slider("value");
                                     });
                                 });
-                        </script>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+                            </script>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
     <input type="hidden" name="disbId" value="@Model.IdDisbursement" />
     <div align="right">

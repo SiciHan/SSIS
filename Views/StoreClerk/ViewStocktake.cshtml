@@ -1,4 +1,6 @@
-﻿@using Team8ADProjectSSIS.Models
+﻿@*Author: James*@
+
+@using Team8ADProjectSSIS.Models
 
 @{
     ViewBag.Title = "DisbursementDetails";
@@ -7,7 +9,7 @@
 
 <h4>For the month of <i><b>@ViewBag.targetMonth.ToString("MMM yyyy")</b></i></h4>
 
-@if(SRbyMonth.Count != 0)
+@if (SRbyMonth.Count != 0)
 {
     <table class="table table-hover">
         <thead>
@@ -22,17 +24,17 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(StockRecord sr in SRbyMonth)
+            @foreach (StockRecord sr in SRbyMonth)
             {
-            <tr>
-                <td>@sr.Date.ToString("dd-MM-yyyy")</td>
-                <td>@sr.Operation.Label</td>
-                <td>@((sr.Department != null) ? sr.Department.Name : "")</td>
-                <td>@((sr.Supplier != null) ? sr.Supplier.Name : "")</td>
-                <td>@sr.StoreClerk.Name</td>
-                <td>@sr.Item.Description</td>
-                <td>@sr.Unit</td>
-            </tr>
+                <tr>
+                    <td>@sr.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@sr.Operation.Label</td>
+                    <td>@((sr.Department != null) ? sr.Department.Name : "")</td>
+                    <td>@((sr.Supplier != null) ? sr.Supplier.Name : "")</td>
+                    <td>@sr.StoreClerk.Name</td>
+                    <td>@sr.Item.Description</td>
+                    <td>@sr.Unit</td>
+                </tr>
             }
         </tbody>
     </table>
