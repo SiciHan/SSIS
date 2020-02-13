@@ -46,7 +46,7 @@
             animationEnabled: true,
             theme: "light2", // "light1", "light2", "dark1", "dark2"
             title: {
-                text: "Trend of Requisition in current three months(" + "@Html.Raw(ViewBag.departmentSelected)" + ")"
+                text: "Trend of Fulfilled Requisition in current three months(" + "@Html.Raw(ViewBag.departmentSelected)" + ")"
             },
             axisX: {
                 title: "Time"
@@ -180,9 +180,7 @@
 </style>
 
 @section scripts{
-    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
-    <script src="~/signalr/hubs"></script>
-    <script src="~/Scripts/StoreSupervisorNotification.js"></script>
+
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.min.js"></script>
@@ -198,4 +196,8 @@
         }
 
     </script>
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/StoreSupervisorNotification.js"></script>
+
 }
