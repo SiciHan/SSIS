@@ -1,4 +1,5 @@
-﻿@using Team8ADProjectSSIS.Models
+﻿@*phyu*@
+@using Team8ADProjectSSIS.Models
 @{
     var list = ViewBag.items;
     string searchStr = (string)ViewBag.searchStr;
@@ -44,13 +45,13 @@
                     str = inputs[i].value;
                     var title = titles[i - 1].innerText;
                     var price = prices[i - 1].innerText;
-                     var quan = quantity[i-1].innerText;
+                    var quan = quantity[i - 1].innerText;
                     //  console.log(title);
-                  //  window.opener.console.log(title);
-                   // window.opener.document.getElementsByClassName('itemName')[0].innerText = title;
-                   // window.opener.document.getElementsByClassName('itemPrice')[0].innerText = price;
+                    //  window.opener.console.log(title);
+                    // window.opener.document.getElementsByClassName('itemName')[0].innerText = title;
+                    // window.opener.document.getElementsByClassName('itemPrice')[0].innerText = price;
 
-                    addItemToCart(title, price, i,quan);
+                    addItemToCart(title, price, i, quan);
 
 
                 }
@@ -68,7 +69,7 @@
             }
         }
 
-        function addItemToCart(title, price, index,quan) {
+        function addItemToCart(title, price, index, quan) {
 
             var cartRow = window.opener.document.createElement('tr')
             var cartItems = window.opener.document.getElementsByClassName('tItems')[0]
@@ -83,17 +84,17 @@
             }
 
             var cartRowContents = `
-                   <td> <span class="req-item-id">-</td>
-                  <span class="avai-quantity"  style="display: none;">${quan}</span>
-                   <td> </td>
-                   <td> <span class="cart-item-title" value="${index}">${title}</span> </td>
-                   <td> <input class="cart-quantity-input" type="number" max="${quan}" value="1"><button class="btn btn-remove" onclick="removeCart()" type="button">REMOVE</button>
-                    </td></tr>`
+                       <td> <span class="req-item-id">-</td>
+                      <span class="avai-quantity"  style="display: none;">${quan}</span>
+                       <td> </td>
+                       <td> <span class="cart-item-title" value="${index}">${title}</span> </td>
+                       <td> <input class="cart-quantity-input" type="number" max="${quan}" value="1"><button class="btn btn-remove" onclick="removeCart()" type="button">REMOVE</button>
+                        </td></tr>`
             cartRow.innerHTML = cartRowContents
             cartItems.append(cartRow)
 
 
-          
+
         }
 
         //function removeCart(event) {
