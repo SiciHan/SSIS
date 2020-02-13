@@ -54,6 +54,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        //@Shutong
         public ActionResult Notification()
         {
 

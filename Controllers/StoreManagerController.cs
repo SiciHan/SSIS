@@ -56,6 +56,8 @@ namespace Team8ADProjectSSIS.Controllers
         {
             return View();
         }
+
+        //@Shutong
         public ActionResult Notification()
         {
             int IdReceiver = 1;

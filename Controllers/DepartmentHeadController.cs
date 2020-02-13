@@ -44,7 +44,7 @@ namespace Team8ADProjectSSIS.Controllers
             _collectionPointDAO = new CollectionPointDAO();
             _delegationDAO = new DelegationDAO();
         }
-
+        //@Shutong
         public ActionResult Notification()
         {
             int IdReceiver = (int)Session["IdEmployee"];

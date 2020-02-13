@@ -59,6 +59,8 @@ namespace Team8ADProjectSSIS.Controllers
 
 
         // GET: StoreClerk
+
+        //@Shutong
         public ActionResult Index()
         {
             int IdReceiver = 1;

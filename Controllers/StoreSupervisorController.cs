@@ -40,7 +40,7 @@ namespace Team8ADProjectSSIS.Controllers
             _categoryDAO = new CategoryDAO();
             _departmentDAO = new DepartmentDAO();
         }
-          
+        //@Shutong
         public ActionResult Notification()
         {
             int IdReceiver = 1;

@@ -29,6 +29,8 @@ namespace Team8ADProjectSSIS.Controllers
             _roleDAO = new RoleDAO();
             _notificationChannelDAO = new NotificationChannelDAO();
         }
+
+        //@Shutong
         public ActionResult Chat()
         {
             return View();
@@ -37,13 +39,14 @@ namespace Team8ADProjectSSIS.Controllers
         {
             return View();
         }
+        //@Shutong
         [HttpGet]
         public ActionResult LogIn()
         {
             Session.Clear();
             return View();
         }
-
+        //@Shutong
         [HttpPost]
         public ActionResult LogIn(string UserName, string HashedPassward)
         {
@@ -96,12 +99,13 @@ namespace Team8ADProjectSSIS.Controllers
             ModelState.AddModelError("", "User name or passward is invalid.");
             return View();
         }
-
+        //@Shutong
         public ActionResult Logout()
         {
             Session.Clear();
             return View();
         }
+        //@Shutong
         public ActionResult SessionExpired()
         {
             return View();
@@ -118,7 +122,7 @@ namespace Team8ADProjectSSIS.Controllers
             ViewBag.Message = "Your contact page.";
             return View();
         }
-
+        //@Shutong
         [AuthenticateFilter]
         public JsonResult GetNotifications()
         {
@@ -126,7 +130,7 @@ namespace Team8ADProjectSSIS.Controllers
             //int IdReceiver = 1;
             return Json(_notificationChannelDAO.FindAllNotificationsByIdReceiver(IdReceiver), JsonRequestBehavior.AllowGet);
         }
-
+        //@Shutong
         [AuthenticateFilter]
         public JsonResult CreateNotificationsToGroup(string role,string message)
         {
@@ -136,7 +140,7 @@ namespace Team8ADProjectSSIS.Controllers
             string status = "OK";
             return Json(status, JsonRequestBehavior.AllowGet);
         }
-
+        //@Shutong
         [HttpPost]
         public JsonResult SendEmailToGroup(string role, string message)
         {
@@ -156,7 +160,7 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return Json(status, JsonRequestBehavior.AllowGet);
         }
-
+        //@Shutong
         [AuthenticateFilter]
         public JsonResult CreateNotificationsToIndividual(int idReceiver, string message)
         {
@@ -166,7 +170,7 @@ namespace Team8ADProjectSSIS.Controllers
             string status = "OK";
             return Json(status, JsonRequestBehavior.AllowGet);
         }
-
+        //@Shutong
         [AuthenticateFilter]
         public JsonResult MarkNotificationChannelAsRead(int IdNC)
         {
@@ -184,7 +188,7 @@ namespace Team8ADProjectSSIS.Controllers
 
             return Json(status, JsonRequestBehavior.AllowGet);
         }
-
+        //@Shutong
         [AuthenticateFilter]
         public JsonResult MarkNotificationChannelAsUnread(int IdNC)
         {
@@ -203,7 +207,7 @@ namespace Team8ADProjectSSIS.Controllers
             
             return Json(status, JsonRequestBehavior.AllowGet);
         }
-
+        //@Shutong
         [AuthenticateFilter]
         public JsonResult GetUnreadNotificationCount(int IdReceiver)
         {
@@ -211,12 +215,13 @@ namespace Team8ADProjectSSIS.Controllers
             int count = _notificationChannelDAO.GetUnreadNotificationCount(IdReceiver);
             return Json(count, JsonRequestBehavior.AllowGet);
         }
-
+        //@Shutong
         public JsonResult GetName(int Id)
         {
             string name = _employeeDAO.FindEmployeeById(Id).Name;
             return Json(name, JsonRequestBehavior.AllowGet);
         }
+        //@Shutong
         public JsonResult GetDepartment(int Id)
         {
             //string department = _employeeDAO.FindEmployeeById(Id).Name;
