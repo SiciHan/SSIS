@@ -62,7 +62,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return items;
         }
-
+        //Willis
         public void UpdateItem(List<int> IdDisbursementItem)
         {
             foreach (int x in IdDisbursementItem)
@@ -91,7 +91,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             
         }
-
+        // Willis
         public bool CheckIfLowerThanReorderLevel(int[] IdItemRetrieved) 
         {
             foreach (int IdItem in IdItemRetrieved)
@@ -130,6 +130,7 @@ namespace Team8ADProjectSSIS.DAO
 
             context.SaveChanges();
         }
+        // Willis
         public List<Item> GetDownloadableData() 
         {
             List<Item> items = context.Items.OfType<Item>().

@@ -42,6 +42,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return DClerk;
         }
+        // Willis
         public Boolean CheckExistDisbursement(List<string> DClerk, DateTime Today, DateTime LastThu) 
         {
             // Check for IdDisbursement and DisbursementItem that have DClerk and status "preparing"
@@ -69,6 +70,7 @@ namespace Team8ADProjectSSIS.DAO
             return false;
         }
 
+        //Willis
         public List<int> CreateDisbursement(List<Retrieval> RetrievalItem)
         {
             
@@ -106,6 +108,7 @@ namespace Team8ADProjectSSIS.DAO
             return PKDisbursement;
         }
 
+        //Willis
         public void UpdateDisbursement(List<int> IdDisbursement)
         {
             foreach (int id in IdDisbursement) 
@@ -130,6 +133,7 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
+        //Willis
         public List<Retrieval> RetrievePreparingItem(List<string> DClerk, DateTime Today, DateTime LastThu)
         {
             // Join DisbursementItem and Item Entity return status "preparing"
@@ -209,7 +213,7 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
-        
+        //Willis
         public List<Retrieval> CheckRetrievalFormExist(List<Retrieval> RetrievalItem, DateTime LastThu)
         {
             List<int> IdDisbursementItem = context.DisbursementItems
