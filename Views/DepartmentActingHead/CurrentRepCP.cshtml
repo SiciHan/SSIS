@@ -1,4 +1,5 @@
-﻿@using Team8ADProjectSSIS.Models;
+﻿@*YuShaohang*@
+@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "CurrentRepCP";
     Layout = "~/Views/Shared/_ActingHeadLayout.cshtml";
@@ -47,27 +48,27 @@ else
 }
 
 @*<table>
-    <tr>
-        <th>Department Rep</th>
-        <th>Employee Number</th>
-        <th>Email Address</th>
-        <th>Collection Point</th>
-        <th>Action</th>
-
-    </tr>
-
-    @if (e != null)
-    {
         <tr>
-            <td>@e.Name</td>
-            <td>@e.IdEmployee</td>
-            <td>@e.Email</td>
-            <td>@d.CollectionPt.Location</td>
-            <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentActingHead")</td>
-        </tr>
-    }
+            <th>Department Rep</th>
+            <th>Employee Number</th>
+            <th>Email Address</th>
+            <th>Collection Point</th>
+            <th>Action</th>
 
-</table>*@
+        </tr>
+
+        @if (e != null)
+        {
+            <tr>
+                <td>@e.Name</td>
+                <td>@e.IdEmployee</td>
+                <td>@e.Email</td>
+                <td>@d.CollectionPt.Location</td>
+                <td>@Html.ActionLink("Edit", "ChangeRepCP", "DepartmentActingHead")</td>
+            </tr>
+        }
+
+    </table>*@
 
 <style>
 
