@@ -29,6 +29,7 @@ namespace Team8ADProjectSSIS.DAO
             return voucher;
         }
 
+        //Willis
         public void UpdateStockRecord(int IdStoreClerk, List<int> IdDisbursementItem)
         {
             foreach (int x in IdDisbursementItem)
@@ -176,6 +177,7 @@ namespace Team8ADProjectSSIS.DAO
             return vouchers;
         }
 
+        
         public void UpdateVoucherToApproved(List<StockRecord> vouchers)
         {
             foreach(StockRecord voucher in vouchers)

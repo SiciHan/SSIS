@@ -217,6 +217,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        // Willis
         public ActionResult POHistory()
         {
             List<PurchaseOrder> AllPO = _purchaseOrderDAO.FindAllPO();
@@ -224,6 +225,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        // Willis
         public ActionResult PODetails(int IdPurchaseOrder)
         {
             List<PurchaseOrderDetail> DetailPO = _purchaseOrderDetailsDAO.FindDetailPO(IdPurchaseOrder);
@@ -232,6 +234,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        //Willis
         public ActionResult DisbursementHistory()
         {
             List<Disbursement> AllDisbursement = _disbursementDAO.GetAllDisbursements();
@@ -239,6 +242,7 @@ namespace Team8ADProjectSSIS.Controllers
             return View();
         }
 
+        //Willis
         public ActionResult DisbursementDetails(int IdDisbursement)
         {
             List<DisbursementItem> DetailDisbursement = _disbursementItemDAO.FindDetailDisbursement(IdDisbursement);
@@ -327,6 +331,7 @@ namespace Team8ADProjectSSIS.Controllers
             }
             return RedirectToAction("Voucher", "StoreManager");
         }
+        // Willis
         [HttpPost]
         public ActionResult ExportExcel()
         {
@@ -337,13 +342,14 @@ namespace Team8ADProjectSSIS.Controllers
 
             return File(ExcelData, "application/xlsx", "Ordered Data.xlsx");
         }
-
+        // Willis
         public ActionResult RequisitionHistory()
         {
             List<Requisition> AllRequisition = _requisitionDAO.FindAllRequisition();
             ViewData["AllRequisition"] = AllRequisition;
             return View();
         }
+        // Willis
         public ActionResult RequisitionDetails(int IdRequisition)
         {
             List<RequisitionItem> RequisitionDetails = _requisitionItemDAO.RetrieveRequisitionItemByReqId(IdRequisition);

@@ -17,6 +17,7 @@ namespace Team8ADProjectSSIS.DAO
             this.context = new SSISContext();
         }
 
+        // Willis
         public List<int> CreateDisbursementItem(List<int> IdDisbursement, List<Retrieval> RetrievalItem)
         {
             // RetrievalItem Group by CodeDepartment, IdItem
@@ -84,6 +85,7 @@ namespace Team8ADProjectSSIS.DAO
             return IdDisbursementItem;
         }
 
+        //Willis
         public List<int> GetIdByItemRetrieved(List<string> DClerk, int[] IdItemRetrieved)
         {
             List<int> IdDisbursementItemClerk = new List<int>();
@@ -110,7 +112,8 @@ namespace Team8ADProjectSSIS.DAO
             }
             return IdDisbursementItemClerk;
         }
-
+        
+        // Willis
         public List<int> UpdateDisbursementItem(List<int> IdDisbursementItemClerk)
         {
             List<int> IdDisbursement = new List<int>();
@@ -137,6 +140,7 @@ namespace Team8ADProjectSSIS.DAO
             return IdDisbursement;
         }
 
+        // Willis
         public void DisbursementItemByPriority(List<Retrieval> RetrievalItem)
         {
             // RetrievalItem Group by CodeDepartment, IdItem
@@ -207,6 +211,7 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
+        //Willis
         public List<DisbursementItem> FindDetailDisbursement(int IdDisbursement)
         {
             List<DisbursementItem> DetailDisbursement = context.DisbursementItems.OfType<DisbursementItem>()

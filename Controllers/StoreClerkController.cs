@@ -72,7 +72,7 @@ namespace Team8ADProjectSSIS.Controllers
 
         }
 
-        // Get: FormRetrieve Method
+        // Willis
         public ActionResult FormRetrieve()
         {
             // Assume ClerkID
@@ -112,7 +112,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
 
-        // Post Method
+        // Willis
         [HttpPost]
         public ActionResult FormRetrieve(int[] idCPs, string StartDate, string EndDate)
         {
@@ -210,7 +210,7 @@ namespace Team8ADProjectSSIS.Controllers
         }
 
 
-
+        //Willis
         [HttpPost]
         public ActionResult SaveDisbursement(int[] IdItemRetrieved)
         {
@@ -273,7 +273,7 @@ namespace Team8ADProjectSSIS.Controllers
 
         }
 
-
+        //Willis
         [HttpPost]
         public ActionResult PrintPdf(string StartDate, string EndDate)
         {

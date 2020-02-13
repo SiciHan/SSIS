@@ -61,6 +61,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
         }
 
+        
         public Requisition CreateRequisition(int IdEmployee)
         {
             Requisition requisition = new Requisition();
@@ -75,6 +76,7 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        // Willis
         public List<Retrieval> RetrieveRequisition(List<string> DClerk, DateTime StartDate, DateTime EndDate)
         {
             // Get Employee That is working in Department from DClerk
@@ -171,6 +173,7 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        // Willis
         public List<Requisition> FindAllRequisition()
         {
             return context.Requisitions.OfType<Requisition>()
