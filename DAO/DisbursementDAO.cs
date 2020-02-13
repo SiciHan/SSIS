@@ -172,6 +172,7 @@ namespace Team8ADProjectSSIS.DAO
             return RetrievalForm;
         }
 
+        //@Shutong
         internal List<Disbursement> GetReceivedAndDisbursedDisbursements(string codeDepartment, string searchContext)
         {
             List<Disbursement> model = new List<Disbursement>();
@@ -208,21 +209,22 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        
         public List<Retrieval> CheckRetrievalFormExist(List<Retrieval> RetrievalItem, DateTime LastThu)
         {
             List<int> IdDisbursementItem = context.DisbursementItems
-                                        .Select(x => x.IdDisbursementItem).ToList();
+                                        .Where(di => di.Disbursement.Date > LastThu)
+                                        .Select(di => di.IdDisbursementItem).ToList();
+
             List<int> ExistingIdRequisition = new List<int>();
             foreach (var id in IdDisbursementItem)
             {
-                /*var existing = context.DisbursementItems
-                                .Include(di => di.Item)
-                                .Include(di => di.Item.RequisitionItems)
-                                .Include(di => di.Item.RequisitionItems.Select(x => x.Requisition))
-                                .Where(di => di.IdDisbursementItem == id);*/
+                string codeDepartment = context.DisbursementItems
+                                                .Where(di => di.IdDisbursementItem == id)
+                                                .Select(di => di.Disbursement.CodeDepartment)
+                                                .FirstOrDefault();
 
-
-                var existing = context.RequisitionItems
+                var existing = context.RequisitionItems 
                                     .Join(context.Requisitions,
                                     ri => ri.IdRequisiton, r => r.IdRequisition,
                                     (ri, r) => new { ri, r })
@@ -233,7 +235,8 @@ namespace Team8ADProjectSSIS.DAO
                                     riri => riri.rir.ri.IdItem, di => di.IdItem,
                                     (riri, di) => new { riri, di })
                                     .Where(x => x.di.IdDisbursementItem == id)
-                                    .Where(x => x.riri.rir.r.ApprovedDate < LastThu)
+                                    .Where(x => x.riri.rir.r.ApprovedDate > LastThu)
+                                    .Where(x => x.riri.rir.r.Employee.CodeDepartment.Equals(codeDepartment))
                                     .Select(x => x.riri.rir.r.IdRequisition);
 
                 if (existing != null)
@@ -320,7 +323,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return models;
         }
-
+      
         public Disbursement GetScheduledDisbursement(string codeDepartment)
         {
             Disbursement model = new Disbursement();

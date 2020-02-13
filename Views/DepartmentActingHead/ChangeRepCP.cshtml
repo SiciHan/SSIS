@@ -27,7 +27,6 @@ else
         </div>
     </div>
 }
-
 @using (Html.BeginForm("GetChangeRepCP", "DepartmentActingHead", FormMethod.Post, new { @id = "form" }))
 {
     @Html.Label("Employee")
@@ -54,18 +53,15 @@ else
             <input type="radio" name="cp" value="@cp.Location" />
             @cp.Location
         }
-        @*<input type="radio" name="cp" value="@cp.Location" />
-            @cp.Location*@
+
         <span></span><span></span><span></span><span></span>
     }
     @*@Html.RadioButton("CollectionPoint", "Please select a collectionPoint")*@
     <br />
     <input type="submit" class="btn btn-danger" name="judge" value="Cancel" onclick="change()" />
     <input type="submit" class="btn btn-success" name="judge" value="Apply Change" onclick="change()" />
-    @*<input type="submit" name="judge" value="Apply Change" onclick="change()" />
-    <input type="submit" name="judge" value="Cancel" onclick="change()" />*@
 }
-@*<h>@Html.ActionLink("Reject", "CurrentRepCP", "DepartmentActingHead")</h>*@
+
 <script type="text/javascript">
     function change() {
         var e = document.getElementById("selectId");

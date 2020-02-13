@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿//Shutong
+$(document).ready(function () {
     $("#Unread").click(function () {
         $("#Unread").addClass("btn-primary");
         $("#Read").removeClass("btn-primary");

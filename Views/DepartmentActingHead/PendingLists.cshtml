@@ -29,7 +29,7 @@
             <tr>
                 <td>@r.RaiseDate</td>
                 <td>@r.Employee.Name</td>
-                <td>@Html.ActionLink("View", "PendingDetail", "DepartmentActingHead", new { idRequisition = r.IdRequisition }, null)</td>
+                <td>@Html.ActionLink("View", "PendingDetail", "DepartmentHead", new { idRequisition = r.IdRequisition }, null)</td>
             </tr>
         }
     </table>
@@ -43,25 +43,6 @@ else
     </div>
 
 }
-@*@if (empReqList != null)
-{
-    <table>
-        <tr>
-            <th>Date of Request</th>
-            <th>Requested By</th>
-            <th>Action</th>
-
-        </tr>
-        @foreach (Requisition r in empReqList)
-        {
-            <tr>
-                <td>@r.RaiseDate</td>
-                <td>@r.Employee.Name</td>
-                <td>@Html.ActionLink("View", "PendingDetail", "DepartmentActingHead", new { idRequisition = r.IdRequisition }, null)</td>
-            </tr>
-        }
-    </table>
-}*@
 
 
 <style>

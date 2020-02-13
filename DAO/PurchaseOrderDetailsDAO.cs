@@ -52,6 +52,7 @@ namespace Team8ADProjectSSIS.DAO
                                                .ToList<PurchaseOrderDetail>();
         }
 
+        //@Shutong
         public List<PurchaseOrderDetail> FindAllIncompletePODetails(List<PurchaseOrder> list)
         {
             List<PurchaseOrderDetail> res = new List<PurchaseOrderDetail>();
@@ -62,6 +63,7 @@ namespace Team8ADProjectSSIS.DAO
             return res;
         }
 
+        //@Shutong
         public PurchaseOrderDetail DeletePOD(int id)
         {
             PurchaseOrderDetail pod = context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().
@@ -79,7 +81,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return pod;
         }
-
+        //@Shutong
         public PurchaseOrderDetail UpdateOrderUnitById(int orderUnit, int idPOD)
         {
             PurchaseOrderDetail pod = context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().
@@ -89,12 +91,14 @@ namespace Team8ADProjectSSIS.DAO
             return pod;
         }
 
+        //@Shutong
         public List<PurchaseOrderDetail> FindPODetailsByPOId(int id)
         {
             return context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().Where(x => x.PurchaseOrder.IdPurchaseOrder == id)
                 .Include(p => p.Item).ToList();
         }
 
+        //@Shutong
         public PurchaseOrderDetail UpdateDeliveredUnitAndRemarksById(int idPOD,int deliveredUnit,string Remarks)
         {
             PurchaseOrderDetail pod = context.PurchaseOrderDetails.OfType<PurchaseOrderDetail>().

@@ -1,4 +1,4 @@
-﻿
+﻿//Shutong
 $(function () {
     // Click on notification icon for show notification
     $('#noti-icon').click(function (e) {

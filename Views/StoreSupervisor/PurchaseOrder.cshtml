@@ -42,44 +42,53 @@
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
-@using (Html.BeginForm("HandlePO", "StoreSupervisor", FormMethod.Post, new { @id = "form"}))
+@if (pendingPOs == null || pendingPOs.Count == 0)
 {
-    <div class="container">
-        <table>
-            <tr>
-                <th>
-                    <input type="checkbox" name="select_all" onclick="SelectAll(this.checked)" />Select All
-                </th>
-                <th>Order Date</th>
-                <th>Ordered By</th>
-                <th>Supplier</th>
-                <th>Total Item</th>
-                <th>Details</th>
-            </tr>
-            @foreach (PurchaseOrder po in pendingPOs)
-            {
-                <tr>
-                    <td>
-                        <input type="checkbox" name="purchase_ordersId" value="@po.IdPurchaseOrder" onclick="onCheck()"/>
-                    </td>
-                    <td>@po.OrderDate</td>
-                    <td>@po.StoreClerk.Name</td>
-                    <td>@po.Supplier.Name</td>
-                    <td>@po.PurchaseOrderDetails.Count</td>
-                    <td>
-                        @Html.ActionLink("Detail", "PurchaseOrderDetail", "StoreSupervisor", new { idPurchaseOrder = po.IdPurchaseOrder }, null)
-                    </td>
-                </tr>
-            }
-        </table>
-        <input type="button" class="btn btn-primary" value="History" onclick="location.href='@Url.Action("POHistory", "StoreSupervisor")'" style="margin-top:24px" />
-
-        <input type="submit" class="btn btn-danger" name="handle" value="Reject" style="float:right; margin-top:24px"
-               onclick="ConfirmReject()" disabled/>
-        <input type="submit" class="btn btn-success" name="handle" value="Approve" style="float:right; margin-right:24px; margin-top:24px"
-               onclick="ConfirmApprove()" disabled/>
-    </div>
+    <h4 style="color:red"> No purchase order found.</h4>
 }
+else
+{
+    using (Html.BeginForm("HandlePO", "StoreSupervisor", FormMethod.Post, new { @id = "form" }))
+    {
+        <div class="container">
+            <table>
+                <tr>
+                    <th>
+                        <input type="checkbox" name="select_all" onclick="SelectAll(this.checked)" />Select All
+                    </th>
+                    <th>Order Date</th>
+                    <th>Ordered By</th>
+                    <th>Supplier</th>
+                    <th>Total Item</th>
+                    <th>Details</th>
+                </tr>
+                @foreach (PurchaseOrder po in pendingPOs)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="purchase_ordersId" value="@po.IdPurchaseOrder" onclick="onCheck()" />
+                        </td>
+                        <td>@po.OrderDate</td>
+                        <td>@po.StoreClerk.Name</td>
+                        <td>@po.Supplier.Name</td>
+                        <td>@po.PurchaseOrderDetails.Count</td>
+                        <td>
+                            @Html.ActionLink("Detail", "PurchaseOrderDetail", "StoreSupervisor", new { idPurchaseOrder = po.IdPurchaseOrder }, null)
+                        </td>
+                    </tr>
+                }
+            </table>
+            <input type="button" class="btn btn-primary" value="History" onclick="location.href='@Url.Action("POHistory", "StoreSupervisor")'" style="margin-top:24px" />
+
+            <input type="submit" class="btn btn-danger" name="handle" value="Reject" style="float:right; margin-top:24px"
+                   onclick="ConfirmReject()" disabled />
+            <input type="submit" class="btn btn-success" name="handle" value="Approve" style="float:right; margin-right:24px; margin-top:24px"
+                   onclick="ConfirmApprove()" disabled />
+        </div>
+    }
+}
+
+
 
 <style>
 
@@ -155,7 +164,7 @@
                     buttons[i].disabled = true;
                 }
             }
-            
+
         }
 
         /*window.onload = function () {

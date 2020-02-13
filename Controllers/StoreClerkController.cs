@@ -722,7 +722,10 @@ namespace Team8ADProjectSSIS.Controllers
                 if (qtyDisbursed[i] < targetList[i].UnitIssued)
                 {
                     _stockRecordDAO.StockAdjustmentDuringDisbursement(qtyDisbursed[i], targetList[i], IdStoreClerk);
-                    _itemDAO.UpdateUnits(targetList[i].Item, -(targetList[i].UnitIssued - qtyDisbursed[i]));
+                    // reverses the amount disbursed to the department
+                    // commented out as net = 0 diff
+                    //_itemDAO.UpdateUnits(targetList[i].Item, -(targetList[i].UnitIssued - qtyDisbursed[i]));
+                    //_itemDAO.UpdateUnits(targetList[i].Item, (targetList[i].UnitIssued - qtyDisbursed[i]));
 
                     // sends a notification to either supervisor or manager on stock record's value
                     #region Send notification
@@ -883,14 +886,11 @@ namespace Team8ADProjectSSIS.Controllers
                     diff = item.StockUnit - actualQty[i];
 
                     // apply difference to both Stock and Available units
-                    //_itemDAO.UpdateUnits(item, diff); // Clerk shouldn't be changing the units freely. Should raise SA instead
+                    _itemDAO.UpdateUnits(item, diff);
 
                     // Raise SA instead
                     //_stockRecordDAO.RaiseSA(now, 3, null, null, IdStoreClerk, item.IdItem, -diff);
                     RaiseSAandNotifyBoss(now, 3, null, null, IdStoreClerk, item, -diff, sup, man);
-
-                    // if < Reorder level, send low stock alert
-
 
                 }
 

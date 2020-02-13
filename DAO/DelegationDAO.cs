@@ -19,6 +19,8 @@ namespace Team8ADProjectSSIS.DAO
         //{
         //    this.context = new SSISContext();
         //}
+
+        //@Shutong
         public Delegation DeactivateDelegationByDelegationId(int idDelegation)
         {
             Delegation d = context.Delegations.Where(x => x.IdDelegation == idDelegation).FirstOrDefault();
@@ -37,6 +39,7 @@ namespace Team8ADProjectSSIS.DAO
             return d;
         }
 
+        //@Shutong
         public Delegation FindDelegationByDelegationId(int idDelegation)
         {
             return context.Delegations.Where(d => d.IdDelegation == idDelegation).FirstOrDefault();
@@ -74,7 +77,7 @@ namespace Team8ADProjectSSIS.DAO
             //
             return context.Delegations.Include("Employee").ToList();
         }
-        
+        //@Shutong
         public Delegation CreateDelegation(string name, DateTime startDate,DateTime endDate)
         {
             Employee ActingHead = context.Employees.Where(e => e.Name.Equals(name)).FirstOrDefault();
@@ -88,7 +91,6 @@ namespace Team8ADProjectSSIS.DAO
             return deleg;
         }
 
-     
         public void Create(Delegation d)
         {
             using (SSISContext context = new SSISContext())
@@ -106,6 +108,7 @@ namespace Team8ADProjectSSIS.DAO
             }
         }
 
+        //@Shutong
         internal bool CheckIfInDelegationPeriod(int idActingHead)
         {
             
@@ -136,6 +139,7 @@ namespace Team8ADProjectSSIS.DAO
             }
         }
 
+        //@Shutong
         public List<Delegation> FindCurrentDelgatiobListByDepartment(string codeDepartment)
         {
          
@@ -157,6 +161,7 @@ namespace Team8ADProjectSSIS.DAO
             return delegationDepartmentList;
         }
 
+        //@Shutong
         public List<Delegation> FindFutureDelgatiobListByDepartment(string codeDepartment)
         {
 
@@ -178,6 +183,8 @@ namespace Team8ADProjectSSIS.DAO
             return delegationDepartmentList;
         }
 
+
+        //@Shutong
         public List<Delegation> FindPastDelgatiobListByDepartment(string codeDepartment)
         {
 

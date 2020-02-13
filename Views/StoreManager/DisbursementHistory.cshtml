@@ -15,25 +15,34 @@
     <input class="form-control" id="myInput" type="text" placeholder="Search.." style="margin-left:15px">
 </div>
 <br />
-<table>
-    <tr>
-        <th style="width:30%">Department Name</th>
-        <th>Date</th>
-        <th colspan="2">Status</th>
-        <th>Details</th>
-    </tr>
-    <tbody id="myTable">
-        @foreach (Disbursement i in AllDisbursement)
-        {
-            <tr>
-                <td>@i.Department.Name</td>
-                <td>@i.Date.ToString("dd-MM-yyyy")</td>
-                <td>@i.Status.Label</td>
-                <td>@Html.ActionLink("View", "DisbursementDetails", "StoreManager", new { IdDisbursement = i.IdDisbursement }, null)</td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+@if (AllDisbursement == null || AllDisbursement.Count == 0)
+{
+    <h4 style="color:red"> No disbursement found.</h4>
+}
+else
+{
+    <table>
+        <tr>
+            <th style="width:30%">Department Name</th>
+            <th>Date</th>
+            <th colspan="2">Status</th>
+            <th>Details</th>
+        </tr>
+        <tbody id="myTable">
+            @foreach (Disbursement i in AllDisbursement)
+            {
+                <tr>
+                    <td>@i.Department.Name</td>
+                    <td>@i.Date.ToString("dd-MM-yyyy")</td>
+                    <td>@i.Status.Label</td>
+                    <td>@Html.ActionLink("View", "DisbursementDetails", "StoreManager", new { IdDisbursement = i.IdDisbursement }, null)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 
 <style>
 

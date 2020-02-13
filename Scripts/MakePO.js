@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿//Shutong
+$(document).ready(function () {
 
     $("#findItems").click(function () {
         var searchStr = document.getElementById("searchStr").value;

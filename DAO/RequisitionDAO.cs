@@ -146,6 +146,7 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        //@Shutong
         internal void DeleteRequisition(int? selectedId)
         {
             int id = selectedId.GetValueOrDefault(0);
@@ -153,18 +154,19 @@ namespace Team8ADProjectSSIS.DAO
             context.Requisitions.Remove(requisition);
             context.SaveChanges();
         }
-
+        //@Shutong
         internal string GetStatusLabel(int reqID)
         {
             Requisition requisition=context.Requisitions.OfType<Requisition>().Where(x => x.IdRequisition == reqID).Include(x=>x.StatusCurrent).FirstOrDefault();
             return requisition.StatusCurrent.Label;
         }
-
+        //@Shutong
         internal List<Requisition> RetrieveRequisitionByEmpId(int idEmployee)
         {
             return context.Requisitions.OfType<Requisition>().Where(x => x.IdEmployee == idEmployee).ToList();
         }
 
+        //@SHutong
         internal Requisition RetrieveRequisitionByReqId(int ReqId)
         {
             return context.Requisitions.OfType<Requisition>().Where(x => x.IdRequisition == ReqId).FirstOrDefault();

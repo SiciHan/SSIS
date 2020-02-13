@@ -105,6 +105,7 @@ namespace Team8ADProjectSSIS.DAO
             return empReqList;
         }
 
+        //@Shutong
         public Employee UpdateRoleToActingHead(int idEmployee)
         {
             Employee employee = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Role).FirstOrDefault();
@@ -114,7 +115,7 @@ namespace Team8ADProjectSSIS.DAO
             return employee;
 
         }
-
+        //@Shutong
         internal Employee UpdateRoleToEmployee(int idEmployee)
         {
             Employee employee = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Role).FirstOrDefault();
@@ -123,7 +124,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return employee;
         }
-
+       //@Shutong
         public Employee FindEmployeeByUsername(string username)
         {
             return context.Employees.OfType<Employee>().Where(x => x.UserName.Equals(username)).Include(x=>x.Role).FirstOrDefault();
@@ -149,7 +150,7 @@ namespace Team8ADProjectSSIS.DAO
         {
             return context.Employees.Where(x => x.IdRole == IdRole).ToList();
         }
-
+        //@Shutong
         internal List<string> FindEmailsByRole(string role)
         {
             List<string> emails = new List<string>();
@@ -159,7 +160,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return emails;
         }
-
+        //@Shutong
         internal List<int> FindIdByRole(string role)
         {
 
@@ -172,14 +173,14 @@ namespace Team8ADProjectSSIS.DAO
          
         }
 
-
+        //@Shutong
         internal int FindHeadIdByIdEmployee(int idEmployee)
         {
             Employee e = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Department).FirstOrDefault();
             string codeDepartment = e.Department.CodeDepartment;
             return context.Employees.OfType<Employee>().Where(x => x.CodeDepartment == codeDepartment && x.Role.Label.Equals("Head")).FirstOrDefault().IdEmployee;
         }
-
+        //@Shutong
         internal int FindActingHeadIdByIdEmployee(int idEmployee)
         {
             Employee e = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == idEmployee).Include(x => x.Department).FirstOrDefault();
@@ -193,7 +194,7 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
-
+        //@Shutong
         internal List<Employee> FindAllClerk()
         {
            

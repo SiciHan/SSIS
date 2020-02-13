@@ -43,33 +43,42 @@
 <input type="hidden" id="hdnSession1" value="@Request.RequestContext.HttpContext.Session["IdEmployee"]" />
 <input type="hidden" id="hdnSession2" value="@Request.RequestContext.HttpContext.Session["Role"]" />
 
-<div class="container">
-    <table>
-        <tr>
-            <th>Order Date</th>
-            <th>Ordered By</th>
-            <th>Supplier</th>
-            <th>Total Item</th>
-            <th>Status</th>
-            <th>Remarks</th>
-            <th>Details</th>
-        </tr>
-        @foreach (PurchaseOrder po in handledPOs)
-        {
+@if (handledPOs == null || handledPOs.Count == 0)
+{
+    <h4 style="color:red"> No purchase order found.</h4>
+}
+else
+{
+    <div class="container">
+        <table>
             <tr>
-                <td>@po.OrderDate</td>
-                <td>@po.StoreClerk.Name</td>
-                <td>@po.Supplier.Name</td>
-                <td>@po.PurchaseOrderDetails.Count</td>
-                <td>@po.Status.Label</td>
-                <td>@po.PurchaseRemarks</td>
-                <td>
-                    @Html.ActionLink("Detail", "PurchaseOrderDetail", "StoreSupervisor", new { idPurchaseOrder = po.IdPurchaseOrder }, null)
-                </td>
+                <th>Order Date</th>
+                <th>Ordered By</th>
+                <th>Supplier</th>
+                <th>Total Item</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Details</th>
             </tr>
-        }
-    </table>
-</div>
+            @foreach (PurchaseOrder po in handledPOs)
+            {
+                <tr>
+                    <td>@po.OrderDate</td>
+                    <td>@po.StoreClerk.Name</td>
+                    <td>@po.Supplier.Name</td>
+                    <td>@po.PurchaseOrderDetails.Count</td>
+                    <td>@po.Status.Label</td>
+                    <td>@po.PurchaseRemarks</td>
+                    <td>
+                        @Html.ActionLink("Detail", "PurchaseOrderDetail", "StoreSupervisor", new { idPurchaseOrder = po.IdPurchaseOrder }, null)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+}
+
+
 
 <style>
 

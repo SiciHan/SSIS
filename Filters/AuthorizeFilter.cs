@@ -1,4 +1,5 @@
-﻿using System;
+﻿//Shutong
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace Team8ADProjectSSIS.Filters
                 }
                 if (controllerName.Contains("DepartmentHead"))
                 {
-                    if (role.Contains("Head"))
+                    if (role.Equals("Head"))
                     {
                         isAuthOk = true;
                     }
