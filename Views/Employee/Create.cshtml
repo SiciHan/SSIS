@@ -1,4 +1,5 @@
-﻿@using Team8ADProjectSSIS.Models
+﻿@*phyu*@
+@using Team8ADProjectSSIS.Models
 @{
     var list = ViewBag.items;
     string searchStr = (string)ViewBag.searchStr;
@@ -449,8 +450,8 @@
 
                     for (var i = 0; i < cartItemNames.length; i++) {
 
-                          console.log(avaiquantity[i].innerText);
-                    console.log(quantityInputs[i].value);
+                        console.log(avaiquantity[i].innerText);
+                        console.log(quantityInputs[i].value);
                         var g = {};
                         g.url = '/Employee/OnJSON';
                         g.type = "POST";
@@ -466,7 +467,7 @@
                         $.ajax(g);
                     }
 
-                      if (!alert('Requisition has been sucessfully created!')) { window.location.reload(); }
+                    if (!alert('Requisition has been sucessfully created!')) { window.location.reload(); }
 
                     while (cartItems.hasChildNodes()) {
                         cartItems.removeChild(cartItems.firstChild)

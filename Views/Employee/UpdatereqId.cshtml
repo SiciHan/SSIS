@@ -1,4 +1,5 @@
-﻿@using Team8ADProjectSSIS.Models
+﻿@*phyu*@
+@using Team8ADProjectSSIS.Models
 @{
     var reqs = (List<RequisitionItem>)ViewData["reqq"];
     ViewBag.Title = "Update";
@@ -65,7 +66,7 @@
                     current.append("<td>" + '<span class="req-item-id">' + response.Items[i].IdReqItem + "</td>");
                     current.append("<td>" + response.Items[i].IdItem + "</td>");
                     current.append("<td>" + '<span class="cart-item-title" value=' + i + '>' + response.descrip[i].Description + '</span>' + "</td>");
-                    current.append( '<span class="avai-quantity"  style="display: none;">' + response.descrip[i].AvailableUnit + '</span>');
+                    current.append('<span class="avai-quantity"  style="display: none;">' + response.descrip[i].AvailableUnit + '</span>');
                     current.append("<td>" + '<input class="cart-quantity-input" type="number" min="1" max ="' + response.descrip[i].AvailableUnit + '"value=' + response.Items[i].Unit + '><button class="btn btn-danger" type="button" value=' + i + ' onclick="removeCartItem(' + i + ')">REMOVE</button>' + "</td>");
 
                     $('table').append(current);
@@ -151,7 +152,7 @@
 
         if (cartItemNames.length > 0) {
 
-             for (var i = 0; i < cartItemNames.length; i++) {
+            for (var i = 0; i < cartItemNames.length; i++) {
                 if (quantityInputs[i].value < 0) {
                     alert("Item  " + cartItemNames[i].innerText + " raised quantity is not acceptable.\nPlease amend and submit again!");
                     return
@@ -195,7 +196,7 @@
 
                 console.log(avaiquantity[i].innerText);
                 console.log(quantityInputs[i].value);
-                   if (quantityInputs[i].value > parseInt(avaiquantity[i].innerText)) {
+                if (quantityInputs[i].value > parseInt(avaiquantity[i].innerText)) {
                     alert("Item  " + cartItemNames[i].innerText + " does not have enougth available quantity.\nPlease amend and submit again!\n");
                     return
                 }
@@ -209,8 +210,8 @@
                 console.log(quantityInputs[i].value);
                 g.contentType = "application/json";
                 g.success = function (response) {
-                      if (!alert('Requisition form updated')) { window.location.reload(); }
-                  
+                    if (!alert('Requisition form updated')) { window.location.reload(); }
+
                 };
                 g.error = function (response) {
                     console.log("Update Fail.Pls try again");
