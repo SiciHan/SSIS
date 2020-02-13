@@ -34,6 +34,7 @@ namespace Team8ADProjectSSIS.DAO
             
         }
 
+        //@Shutong
         public List<CollectionPoint> FindAll()
         {
       
@@ -68,6 +69,8 @@ namespace Team8ADProjectSSIS.DAO
             return CPs;
         }
 
+
+        //@Shutong
         internal Employee FindClerkByCollectionPointId(int idCollectionPt)
         {
             return context.CPClerks.Where(x => x.IdCollectionPt == idCollectionPt)
@@ -101,6 +104,7 @@ namespace Team8ADProjectSSIS.DAO
 
         }
 
+        //@Shutong
         internal string FindByDepartment(string codeDepartment)
         {
             Department d = context.Departments.Where(x => x.CodeDepartment.Equals(codeDepartment)).Include(x=>x.CollectionPt).FirstOrDefault();

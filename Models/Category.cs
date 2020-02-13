@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿//@SHutong
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Team8ADProjectSSIS.Models

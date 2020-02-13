@@ -1,4 +1,5 @@
-﻿$.connection.hub.start()
+﻿//Shutong
+$.connection.hub.start()
     .done(function () {
         alert("it worked");
         $.connection.chatHub.server.announce("Connected");

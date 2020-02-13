@@ -1,4 +1,4 @@
-﻿
+﻿//Shutong
 $(document).ready(function () {
     $("#cancel").click(function () {
         alert("You have cancel the Purchase Orders.");

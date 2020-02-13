@@ -33,6 +33,7 @@ namespace Team8ADProjectSSIS.DAO
             return items;
         }
         
+        //@Shutong
         public List<Item> FindLowStockItems()
         {
             SSISContext context = new SSISContext();
@@ -44,6 +45,8 @@ namespace Team8ADProjectSSIS.DAO
             context.Dispose();
             return items;
         }
+
+        //@Shutong
         public List<Item> FindItemsByKeyword(string searchStr)
         {
             string[] keywords = searchStr.Split(' ');

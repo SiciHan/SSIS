@@ -191,6 +191,11 @@ namespace Team8ADProjectSSIS.Controllers
             //ViewBag.Employee = new SelectList(empList, "IdEmployee", "Name"); // put inside drop down list
             ViewBag.EmployeeList = empList;
             ViewBag.CollectionPoint = cpList;
+
+            // find current rep
+            int idHead = (int)Session["IdEmployee"];
+            Employee oldRep = _employeeDAO.FindCurrentRepAndCPByHeadId(idHead);
+            ViewBag.oldRep = oldRep;
             return View();
         }
         [HttpPost]
