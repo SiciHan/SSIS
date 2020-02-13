@@ -20,7 +20,7 @@ namespace Team8ADProjectSSIS.DAO
         //{
         //    this.context = new SSISContext();
         //}
-        //SH
+        //@Yu Shaohang
         public Department FindDepartmentCollectionPoint(String codeDepartment)
         {
             return context.Departments.Where(d => d.CodeDepartment.Equals(codeDepartment)).FirstOrDefault();

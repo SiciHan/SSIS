@@ -44,6 +44,7 @@ namespace Team8ADProjectSSIS.DAO
         {
             return context.Delegations.Where(d => d.IdDelegation == idDelegation).FirstOrDefault();
         }
+        //@Yu Shaohang
         public Delegation RemoveDelegate(int idDelegation)
         {
             Delegation deleg = context.Delegations.Where(d => d.IdDelegation == idDelegation).FirstOrDefault();
@@ -51,7 +52,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return deleg;
         }
-        //SH
+        //@Yu Shaohang
         public List<Delegation> FindDelegationListByDepartment(string codeDepartment)
         {
            List<Delegation> delegationAllDepartment= context.Delegations.Include("Employee").ToList();
@@ -71,7 +72,7 @@ namespace Team8ADProjectSSIS.DAO
             delegationDepartmentList=delegationDepartmentList.OrderByDescending(c => c.StartDate).ToList();
             return delegationDepartmentList;
         }
-        //SH
+        //@Yu Shaohang
         public List<Delegation> FindDelegationlist()
         {
             //

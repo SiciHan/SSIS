@@ -16,7 +16,7 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
-        //SH
+        //@Yu Shaohang
         public Requisition FindRequisitionByRequisionId(int idRequisition)
         {
             
@@ -24,7 +24,7 @@ namespace Team8ADProjectSSIS.DAO
            
             return context.Requisitions.OfType<Requisition>().Include("Employee").Where(r => r.IdRequisition == idRequisition ).FirstOrDefault();
         }
-        //SH
+        //@Yu Shaohang
         public void UpdateApproveStatusAndRemarks(int idRequisition,string remarks)
         {
             Requisition r = FindRequisitionByRequisionId(idRequisition);
@@ -35,7 +35,7 @@ namespace Team8ADProjectSSIS.DAO
             r.ApprovedDate = saveNow;
             context.SaveChanges();
         }
-        //SH
+        //@Yu Shaohang
         public void UpdateRejectStatusAndRemarks(int idRequisition, string remarks)
         {
             Requisition r = FindRequisitionByRequisionId(idRequisition);
@@ -43,7 +43,7 @@ namespace Team8ADProjectSSIS.DAO
             r.HeadRemark = remarks;
             context.SaveChanges();
         }
-        //SH
+        //@Yu Shaohang
         public void UpdateApproveStatus(int idRequisition)
         {
             Requisition r = FindRequisitionByRequisionId(idRequisition);
@@ -53,7 +53,7 @@ namespace Team8ADProjectSSIS.DAO
             r.ApprovedDate = saveNow;
             context.SaveChanges();
         }
-        //SH
+        //@Yu Shaohang
         public void UpdateRejectStatus(int idRequisition)
         {
             Requisition r = FindRequisitionByRequisionId(idRequisition);
