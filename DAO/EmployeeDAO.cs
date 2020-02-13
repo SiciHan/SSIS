@@ -15,7 +15,7 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
-        //SH
+        //@Yu Shaohang
         public Employee FindCurrentRepAndCPByHeadId(int idHead)
         {
             Employee head = context.Employees.Where(e => e.IdEmployee == idHead).FirstOrDefault();
@@ -23,8 +23,8 @@ namespace Team8ADProjectSSIS.DAO
             Employee currentRep = context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment) && e.Role.Label.Equals("Representative")).Include(x=>x.Department.CollectionPt).FirstOrDefault();
             return currentRep;
         }
-        
-        //SH
+
+        //@Yu Shaohang
         public void DelegateEmployeeToActingRole(string name)
         {
             // Find the emp by empName--> change emp role to idRole=4
@@ -34,17 +34,17 @@ namespace Team8ADProjectSSIS.DAO
             
             context.SaveChanges();
         }
-        //SH
+        //@Yu Shaohang
         public Employee FindEmployeeByNameAndRole(string name)
         {
             return context.Employees.Where(e => e.Name == name).Where(e=>e.IdRole==1).Include(x => x.Role).FirstOrDefault();
         }
-        //SH
+        //@Yu Shaohang
         public List<Employee> FindEmployeeListByDepartmentAndRole(string codeDepartment)
         {
             return context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).Where(e => e.IdRole == 1).ToList();
         }
-        //SH
+        //@Yu Shaohang
         public void ChangeNewRepCP(string name,string location)
         {
             Employee e = FindEmployeeByName(name);
@@ -57,7 +57,7 @@ namespace Team8ADProjectSSIS.DAO
             dep.CollectionPt = context.CollectionPoints.OfType<CollectionPoint>().Where(c => c.Location.Equals(location)).FirstOrDefault();
             context.SaveChanges();
         }
-        //SH
+        //@Yu Shaohang
         public void PutOldRepBack(string name)
         {
             Employee e = FindEmployeeByName(name);
@@ -66,27 +66,27 @@ namespace Team8ADProjectSSIS.DAO
             e.IdRole = 1;
             context.SaveChanges();
         }
-        //SH
+        //@Yu Shaohang
         public Employee FindEmployeeByName(string name)
         {
             //return context.Employees.Include("Role").Where(e => e.Name == name).Include(x=>x.Role).FirstOrDefault();
             return context.Employees.Where(e => e.Name == name).Include(x => x.Role).FirstOrDefault();
         }
-        //SH
+        //@Yu Shaohang
         public Employee FindDepartmentRep(String codeDepartment)
         {
             return context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment) && e.IdRole == 3).FirstOrDefault();
             //return context.Employees.Where(e => e.CodeDepartment.Equals(codeDepartment)).Where(e => e.IdRole == 3).FirstOrDefault();
             //return context.Employees.Where(e => e.IdRole==3).FirstOrDefault();
         }
-        // SH
+        //@Yu Shaohang
         public List<Employee> FindEmployeeListByDepartment(string codeDepartment)
         {
             // so dep rep will also appear in the collection point list for head to change cp.
             return context.Employees.OfType<Employee>().Where(x => (x.Role.Label.Equals("Employee") || x.Role.Label.Equals("Representative")) && x.CodeDepartment.Equals(codeDepartment)).ToList();
             //return context.Employees.OfType<Employee>().Where(x =>x.Role.Label.Equals("Employee") && x.CodeDepartment.Equals(codeDepartment)).ToList();
         }
-        //SH
+        //@Yu Shaohang
         public List<Requisition> RaisesRequisitions(string codeDepartment)
         {
             List<Employee> empList = FindEmployeeListByDepartment(codeDepartment);

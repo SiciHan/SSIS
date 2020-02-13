@@ -16,12 +16,12 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
-        //SH
+        //@Yu Shaohang
         public List<RequisitionItem> FindRequisitionItem(int idRequisition)
         {
             return context.RequisitionItems.Include("Item").Where(r => r.IdRequisiton == idRequisition).ToList();
         }
-        //SH --> 
+        //@Yu Shaohang
         public List<RequisitionItem> GetItemListRequisition(int idRequisition)
         {
             RequisitionDAO _requisitionDAO = new RequisitionDAO();
