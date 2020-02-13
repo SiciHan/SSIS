@@ -1,4 +1,5 @@
-﻿@model Team8ADProjectSSIS.Models.PurchaseOrder
+﻿<!--Willis-->
+@model Team8ADProjectSSIS.Models.PurchaseOrder
 @using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "POHistory - Manager";
@@ -22,33 +23,33 @@
 }
 else
 {
-<table>
-    <tr>
-        <th style="width:10%">Purchase Order Id</th>
-        <th>Supplier</th>
-        <th style="width:10%">Approved Date</th>
-        <th style="width:10%">Order Date</th>
-        <th style="width:10%">DeliverDate</th>
-        <th>Status</th>
-        <th>Remarks</th>
-        <th>Details</th>
-    </tr>
-    <tbody id="myTable">
-        @foreach (PurchaseOrder i in AllPO)
-        {
-            <tr>
-                <td>@i.IdPurchaseOrder</td>
-                <td>@i.Supplier.CodeSupplier</td>
-                <td>@i.ApprovedDate</td>
-                <td>@i.OrderDate</td>
-                <td>@i.DeliverDate</td>
-                <td>@i.Status.Label</td>
-                <td>@i.PurchaseRemarks</td>
-                <td>@Html.ActionLink("View", "PODetails", "StoreManager", new { IdPurchaseOrder = i.IdPurchaseOrder }, null)</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <table>
+        <tr>
+            <th style="width:10%">Purchase Order Id</th>
+            <th>Supplier</th>
+            <th style="width:10%">Approved Date</th>
+            <th style="width:10%">Order Date</th>
+            <th style="width:10%">DeliverDate</th>
+            <th>Status</th>
+            <th>Remarks</th>
+            <th>Details</th>
+        </tr>
+        <tbody id="myTable">
+            @foreach (PurchaseOrder i in AllPO)
+            {
+                <tr>
+                    <td>@i.IdPurchaseOrder</td>
+                    <td>@i.Supplier.CodeSupplier</td>
+                    <td>@i.ApprovedDate</td>
+                    <td>@i.OrderDate</td>
+                    <td>@i.DeliverDate</td>
+                    <td>@i.Status.Label</td>
+                    <td>@i.PurchaseRemarks</td>
+                    <td>@Html.ActionLink("View", "PODetails", "StoreManager", new { IdPurchaseOrder = i.IdPurchaseOrder }, null)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 
