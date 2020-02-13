@@ -38,6 +38,7 @@ namespace Team8ADProjectSSIS.DAO
                 .FirstOrDefault();
         }
 
+        //@SHutong
         public SupplierItem FindSupplierItemByIditemAndCodesupplier(int iditem, string codesupplier)
         {
             return context.SupplierItems.OfType<SupplierItem>()

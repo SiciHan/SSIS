@@ -44,6 +44,7 @@ namespace Team8ADProjectSSIS.DAO
             return true;
         }
 
+        //@Shutong
         internal string FindCodeDepartmentByIdEmployee(int v)
         {
             Department department = context.Employees.OfType<Employee>().Where(x => x.IdEmployee == v).Select(x => x.Department).FirstOrDefault();

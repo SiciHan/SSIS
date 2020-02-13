@@ -1,4 +1,5 @@
-﻿//copy paste this to all pages.
+﻿//Shutong
+//copy paste this to all pages.
 $.connection.hub.start()
     .done(
         function () {

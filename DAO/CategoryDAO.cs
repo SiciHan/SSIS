@@ -40,10 +40,5 @@ namespace Team8ADProjectSSIS.DAO
             List<Category> categories = context.Categories.ToList();
             return categories;
         }
-
-        public Category Update(Category category)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

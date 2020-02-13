@@ -176,6 +176,7 @@ namespace Team8ADProjectSSIS.DAO
             return RetrievalForm;
         }
 
+        //@Shutong
         internal List<Disbursement> GetReceivedAndDisbursedDisbursements(string codeDepartment, string searchContext)
         {
             List<Disbursement> model = new List<Disbursement>();
@@ -326,7 +327,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return models;
         }
-
+      
         public Disbursement GetScheduledDisbursement(string codeDepartment)
         {
             Disbursement model = new Disbursement();

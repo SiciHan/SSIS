@@ -15,6 +15,8 @@ namespace Team8ADProjectSSIS.DAO
         {
             this.context = new SSISContext();
         }
+
+        //@Shutong
         public List<PurchaseOrder> FindIncompletePO()
         {
             return context.PurchaseOrders.OfType<PurchaseOrder>().
@@ -25,6 +27,7 @@ namespace Team8ADProjectSSIS.DAO
                 ToList<PurchaseOrder>();
         }
 
+        //@Shutong
         public List<int> FindIdOfAllIncompletePO()
         {
             return context.PurchaseOrders.OfType<PurchaseOrder>().
@@ -32,7 +35,7 @@ namespace Team8ADProjectSSIS.DAO
                 Select(x=>x.IdPurchaseOrder).
                 ToList<int>();
         }
-
+        //@Shutong
         public List<PurchaseOrder> FindPendingPO()
         {
             return context.PurchaseOrders.OfType<PurchaseOrder>().
@@ -43,7 +46,7 @@ namespace Team8ADProjectSSIS.DAO
                 Include(x => x.StoreClerk).
                 ToList<PurchaseOrder>();
         }
-
+        //@Shutong
         public List<PurchaseOrder> FindRejectedPO()
         {
             return context.PurchaseOrders.OfType<PurchaseOrder>().
@@ -54,7 +57,7 @@ namespace Team8ADProjectSSIS.DAO
     Include(x => x.StoreClerk).
     ToList<PurchaseOrder>();
         }
-
+        //@Shutong
         public List<PurchaseOrder> FindApprovedPO()
         {
             return context.PurchaseOrders.OfType<PurchaseOrder>().
@@ -65,7 +68,7 @@ namespace Team8ADProjectSSIS.DAO
         Include(x => x.StoreClerk).
         ToList<PurchaseOrder>();
         }
-
+        //@Shutong
         public List<PurchaseOrder> FindDeliveredPO()
         {
             return context.PurchaseOrders.OfType<PurchaseOrder>().
@@ -76,7 +79,7 @@ namespace Team8ADProjectSSIS.DAO
      Include(x => x.StoreClerk).
      ToList<PurchaseOrder>();
         }
-
+        //@Shutong
         public List<PurchaseOrder> FindCancelledPO()
         {
             return context.PurchaseOrders.OfType<PurchaseOrder>().
@@ -96,7 +99,7 @@ namespace Team8ADProjectSSIS.DAO
                                         .Include(po => po.Status)
                                         .ToList();
         }
-
+        //@Shutong
         public PurchaseOrder Create(string codeSupplier, int idStoreClerk)
         {
             SSISContext context = new SSISContext();
@@ -113,7 +116,7 @@ namespace Team8ADProjectSSIS.DAO
             context.Dispose();
             return purchaseOrder;
         }
-
+        //@Shutong
         public bool IsIncompletePOExist(string codeSupplier)
         {
            
@@ -123,7 +126,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return true;
         }
-
+        //@Shutong
         public PurchaseOrder FindIncompletePOWithSupplier(string codeSupplier)
         {
             SSISContext context = new SSISContext();
@@ -131,7 +134,7 @@ namespace Team8ADProjectSSIS.DAO
             context.Dispose();
             return po;
         }
-
+        //@Shutong
         public List<Supplier> FindSuppliersFromIncompletePOCart()
         {
             List<Supplier> suppliers = new List<Supplier>();
@@ -160,7 +163,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return suppliers;
         }
-
+        //@Shutong
         public PurchaseOrder UpdateStatusToPending(int purchaseOrderID)
         {
             PurchaseOrder po=context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == purchaseOrderID).Include(c=>c.Status).FirstOrDefault();
@@ -169,7 +172,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return po;
         }
-
+        //@Shutong
         public PurchaseOrder UpdateStatusToIncomplete(int purchaseOrderID)
         {
             PurchaseOrder po = context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == purchaseOrderID).Include(c => c.Status).FirstOrDefault();
@@ -178,7 +181,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return po;
         }
-
+        //@Shutong
         public PurchaseOrder UpdateStatusToCancelled(int purchaseOrderID)
         {
             PurchaseOrder po = context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == purchaseOrderID).Include(c => c.Status).FirstOrDefault();
@@ -186,7 +189,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return po;
         }
-
+        //@Shutong
         public PurchaseOrder UpdateStatusToDelivered(int purchaseOrderID)
         {
             //need to ask the user to input delivered amount and delivery Remarks
@@ -219,7 +222,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return po;
         }
-
+        //@Shutong
         public PurchaseOrder UpdateRejectedToIncomplete(int purchaseOrderID)
         {
             PurchaseOrder po = context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == purchaseOrderID).Include(c => c.Status).FirstOrDefault();
@@ -229,12 +232,12 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return po;
         }
-
+        //@SHutong
         public PurchaseOrder FindPOById(int id)
         {
             return context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == id).Include(x => x.StoreClerk).Include(x => x.Supplier).FirstOrDefault();
         }
-
+        //@Shutong
         public PurchaseOrder UpdateSchedule(int idPO, string deliverDate)
         {
             PurchaseOrder po = context.PurchaseOrders.OfType<PurchaseOrder>().Where(x => x.IdPurchaseOrder == idPO).FirstOrDefault();
@@ -242,7 +245,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
             return po;
         }
-
+        
         public List<PurchaseOrder> FindHandledPO()
         {
             List<PurchaseOrder> handledPO = context.PurchaseOrders

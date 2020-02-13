@@ -4,19 +4,38 @@
     Layout = "~/Views/Shared/_ActingHeadLayout.cshtml";
     List<Employee> empList = (List<Employee>)ViewBag.EmployeeList;
     List<CollectionPoint> cpList = (List<CollectionPoint>)ViewBag.CollectionPoint;
+    Employee oldRep = (Employee)ViewBag.oldRep;
 }
 
-<h2>Change Department Rep</h2>
-
-@using (Html.BeginForm("GetChangeRepCP", "DepartmentActingHead", FormMethod.Post, new { @id = "form"}))
+<div class="jumbotron jumbotron-fluid" style="padding:32px; margin-top:16px">
+    <div class="container">
+        <h2><b>Change Rep and Collection Point</b></h2>
+        <p>Please select employee and location</p>
+    </div>
+</div>
+@if (oldRep != null)
+{
+    <p>Current department representative: @oldRep.Name</p>
+    <p>Current collection point: @oldRep.Department.CollectionPt.Location</p>
+}
+else
+{
+    <div style="padding:32px">
+        <div class="container">
+            <h2>There is currently no department rep and collection point</h2>
+            <h2>Please select a department rep and collection point</h2>
+        </div>
+    </div>
+}
+@using (Html.BeginForm("GetChangeRepCP", "DepartmentActingHead", FormMethod.Post, new { @id = "form" }))
 {
     @Html.Label("Employee")
     @*@Html.DropDownList("Employee", "--select--")*@
     <select id="selectId">
-        @foreach(Employee emp in empList)
+        @foreach (Employee emp in empList)
         {
             <option value="@emp.Name">@emp.Name</option>
-            
+
         }
     </select>
     <br />
@@ -24,15 +43,25 @@
     @Html.Label("Location")
     foreach (CollectionPoint cp in cpList)
     {
-        <input type="radio" name="cp" value="@cp.Location" />@cp.Location
+        if (cp.Location.Equals("Stationery Store"))
+        {
+            <input type="radio" name="cp" value="@cp.Location" checked="checked" />
+            @cp.Location
+        }
+        else
+        {
+            <input type="radio" name="cp" value="@cp.Location" />
+            @cp.Location
+        }
+
         <span></span><span></span><span></span><span></span>
     }
     @*@Html.RadioButton("CollectionPoint", "Please select a collectionPoint")*@
     <br />
-    <input type="submit" name="judge" value="Apply Change" onclick="change()" />
-    <input type="submit" name="judge" value="Cancel" onclick="change()" />
+    <input type="submit" class="btn btn-danger" name="judge" value="Cancel" onclick="change()" />
+    <input type="submit" class="btn btn-success" name="judge" value="Apply Change" onclick="change()" />
 }
-@*<h>@Html.ActionLink("Reject", "CurrentRepCP", "DepartmentActingHead")</h>*@
+
 <script type="text/javascript">
     function change() {
         var e = document.getElementById("selectId");

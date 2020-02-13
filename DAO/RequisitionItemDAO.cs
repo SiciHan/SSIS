@@ -46,7 +46,7 @@ namespace Team8ADProjectSSIS.DAO
             return RetrievalForm;
 
         }
-
+        //@SHutong
         internal void CreateRequisitionItem(int idEmployee, string itemName, int quantity)
         {
             RequisitionItem requisitionItem = new RequisitionItem();
@@ -58,7 +58,7 @@ namespace Team8ADProjectSSIS.DAO
             context.RequisitionItems.Add(requisitionItem);
             context.SaveChanges();
         }
-
+        //@SHutong
         internal void UpdateRequisitionItemUnit(int? selectedId, string itemName, int? quantity)
         {
             int id = selectedId.GetValueOrDefault(0);
@@ -69,7 +69,7 @@ namespace Team8ADProjectSSIS.DAO
             context.SaveChanges();
 
         }
-
+        //@SHutong
         internal void CreateRequisitionItemByReqID(int? selectedId, string itemName, int? quantity)
         {
             RequisitionItem requisitionItem = new RequisitionItem();
@@ -80,7 +80,7 @@ namespace Team8ADProjectSSIS.DAO
             context.RequisitionItems.Add(requisitionItem);
             context.SaveChanges();
         }
-
+        //@SHutong
         internal void DeleteRequisitionItem(int? selectedId, string itemName)
         {
             int id = selectedId.GetValueOrDefault(0);
@@ -88,7 +88,7 @@ namespace Team8ADProjectSSIS.DAO
             context.RequisitionItems.Remove(requisitionItem);
             context.SaveChanges();
         }
-
+        //@SHutong
         internal void DeleteRequisitionItemByReqId(int? selectedId)
         {
             int id = selectedId.GetValueOrDefault(0);
@@ -96,7 +96,7 @@ namespace Team8ADProjectSSIS.DAO
             context.RequisitionItems.RemoveRange(reqItemList);
             context.SaveChanges();
         }
-
+        //@SHutong
         internal List<RequisitionItem> RetrieveRequisitionItemByReqId(int ReqId)
         {
             List<RequisitionItem> reqItemList = context.RequisitionItems.OfType<RequisitionItem>().Where(x => x.IdRequisiton == ReqId).Include(x=>x.Item).ToList();

@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿//Shutong
+$(document).ready(function () {
 
     $("#confirmReceiveOrder").submit(function () {
         alert("You have confirmed that you received all items in this purchase order.");
