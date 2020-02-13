@@ -1,4 +1,5 @@
-﻿@using Team8ADProjectSSIS.Models;
+﻿@*YuShaohang*@
+@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "PendingDetail";
     Layout = "~/Views/Shared/_HeadLayout.cshtml";
@@ -11,47 +12,47 @@
 
 
 @*<div class="row">
-    <div class="col-md-10 col-md-offset-2">
-        <p>Employee Name: @r.Employee.Name</p>
-        <p>Date of Request: @r.RaiseDate</p>
-        <p>RequisitionId: @r.IdRequisition</p>>
+        <div class="col-md-10 col-md-offset-2">
+            <p>Employee Name: @r.Employee.Name</p>
+            <p>Date of Request: @r.RaiseDate</p>
+            <p>RequisitionId: @r.IdRequisition</p>>
 
-    </div>
+        </div>
 
-</div>*@
+    </div>*@
 @*<div class="row">
-    <div class="col-md-10 col-md-offset-2">
-        <table>
-            <tr>
-                <th align="center">Item Id</th>
-                <th align="center">Description</th>
-                <th align="center">Quantity</th>
-
-            </tr>
-            @foreach (RequisitionItem ri in requisitionItemList)
-            {
+        <div class="col-md-10 col-md-offset-2">
+            <table>
                 <tr>
-                    <td align="center">@ri.IdItem</td>
-                    <td align="center">@ri.Item.Description</td>
-                    <td align="center">@ri.Unit</td>
+                    <th align="center">Item Id</th>
+                    <th align="center">Description</th>
+                    <th align="center">Quantity</th>
 
                 </tr>
-            }
-        </table>
-        <h2>Please type the message to acting head in the box below</h2><input type="text" name="@r.HeadRemark" value="" />
-    </div>
-</div>*@
+                @foreach (RequisitionItem ri in requisitionItemList)
+                {
+                    <tr>
+                        <td align="center">@ri.IdItem</td>
+                        <td align="center">@ri.Item.Description</td>
+                        <td align="center">@ri.Unit</td>
+
+                    </tr>
+                }
+            </table>
+            <h2>Please type the message to acting head in the box below</h2><input type="text" name="@r.HeadRemark" value="" />
+        </div>
+    </div>*@
 
 @*<div class="container-fluid">
-    <div class="col-md-10 col-md-offset-2">
-        <h>@Html.ActionLink("Approve", "Approve", "DepartmentHead", new { idRequisition = r.IdRequisition }, null)</h>
-        <h>@Html.ActionLink("Reject", "Reject", "DepartmentHead", new { idRequisition = r.IdRequisition }, null)</h>
-    </div>   
-</div>*@
+        <div class="col-md-10 col-md-offset-2">
+            <h>@Html.ActionLink("Approve", "Approve", "DepartmentHead", new { idRequisition = r.IdRequisition }, null)</h>
+            <h>@Html.ActionLink("Reject", "Reject", "DepartmentHead", new { idRequisition = r.IdRequisition }, null)</h>
+        </div>
+    </div>*@
 
 @using (Html.BeginForm("ApproveReject", "DepartmentHead", FormMethod.Post, new { @id = "form" }))
 {
-   
+
     <div class="row">
         <div class="col-md-10">
             <p>Employee Name: @r.Employee.Name</p>
@@ -87,7 +88,7 @@
 
     <div class="container-fluid">
         <div class="col-md-10 col-md-offset-2">
-           
+
         </div>
 
         <input type="submit" class="btn btn-success" name="judge" value="Approve" style="float:right; margin-right:150px;margin-top:24px" />
