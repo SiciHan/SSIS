@@ -1,4 +1,5 @@
-﻿@using Team8ADProjectSSIS.Models;
+﻿<!--Willis-->
+@using Team8ADProjectSSIS.Models;
 @{
     ViewBag.Title = "RequisitionHistory";
     List<Requisition> AllRequisitions = (List<Requisition>)ViewData["AllRequisition"];
@@ -22,27 +23,27 @@
 }
 else
 {
-<table>
-    <tr>
-        <th>Requisition No</th>
-        <th>Department</th>
-        <th>Approved Date</th>
-        <th colspan="2">Remark</th>
-        <th>Details</th>
-    </tr>
-    <tbody id="myTable">
-        @foreach (Requisition i in AllRequisitions)
-        {
-            <tr>
-                <td>@i.IdRequisition</td>
-                <td>@i.Employee.CodeDepartment</td>
-                <td>@i.ApprovedDate</td>
-                <td colspan="2">@i.HeadRemark</td>
-                <td>@Html.ActionLink("View", "RequisitionDetails", "StoreManager", new { IdRequisition = i.IdRequisition }, null)</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <table>
+        <tr>
+            <th>Requisition No</th>
+            <th>Department</th>
+            <th>Approved Date</th>
+            <th colspan="2">Remark</th>
+            <th>Details</th>
+        </tr>
+        <tbody id="myTable">
+            @foreach (Requisition i in AllRequisitions)
+            {
+                <tr>
+                    <td>@i.IdRequisition</td>
+                    <td>@i.Employee.CodeDepartment</td>
+                    <td>@i.ApprovedDate</td>
+                    <td colspan="2">@i.HeadRemark</td>
+                    <td>@Html.ActionLink("View", "RequisitionDetails", "StoreManager", new { IdRequisition = i.IdRequisition }, null)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 
