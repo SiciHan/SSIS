@@ -177,6 +177,7 @@ namespace Team8ADProjectSSIS.DAO
         }
 
         //@Shutong
+        //Yinghuai
         internal List<Disbursement> GetReceivedAndDisbursedDisbursements(string codeDepartment, string searchContext)
         {
             List<Disbursement> model = new List<Disbursement>();
@@ -274,7 +275,7 @@ namespace Team8ADProjectSSIS.DAO
             
             return RetrievalItem;
         }
-
+        //Yinghuai
         public List<Disbursement> GetAllDisbursements()
         {
             List<Disbursement> models = new List<Disbursement>();
@@ -291,7 +292,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return models;
         }
-
+        //Yinghuai
         public Disbursement GetDisbursement(int id)
         {
             Disbursement model = new Disbursement();
@@ -309,7 +310,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return model;
         }
-
+        //Yinghuai
         public List<Disbursement> GetDeptDisbursements(string codeDepartment)
         {
             List<Disbursement> models = new List<Disbursement>();
@@ -327,7 +328,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return models;
         }
-      
+      //Yinghuai
         public Disbursement GetScheduledDisbursement(string codeDepartment)
         {
             Disbursement model = new Disbursement();
@@ -345,7 +346,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return model;
         }
-
+        //Yinghuai
         public List<Disbursement> GetReceivedDisbursements(string codeDepartment, string searchContext = "")
         {
             List<Disbursement> model = new List<Disbursement>();
@@ -380,7 +381,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return model;
         }
-
+        //Yinghuai
         public bool AcknowledgeCollection(int idDisbursement, int IdCollectedBy)
         {
             using (SSISContext db = new SSISContext())
@@ -395,7 +396,7 @@ namespace Team8ADProjectSSIS.DAO
             }
             return true;
         }
-
+        //Yinghuai
         public bool UpdateCollectionPt(int idDisbursement, int idCollectionPt)
         {
             Disbursement model = null;

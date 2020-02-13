@@ -14,6 +14,7 @@ namespace Team8ADProjectSSIS.Controllers
 {
     [AuthorizeFilter]
     [AuthenticateFilter]
+    //Yinghuai
     public class DepartmentRepresentativeController : Controller
     {
         private readonly DisbursementDAO _disbursementDAO;
